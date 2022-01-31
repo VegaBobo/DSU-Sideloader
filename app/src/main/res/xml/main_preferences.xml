@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Preference
+        android:icon="@drawable/ic_info"
+        android:enabled="true"
+        android:key="about"
+        android:summary="@string/about_text"
+        android:title="@string/about" />
+
+    <Preference
+        android:icon="@drawable/ic_settings"
+        android:enabled="true"
+        android:key="op_mode"
+        android:title="@string/op_mode" />
+
+    <androidx.preference.SwitchPreference
+        android:icon="@drawable/ic_bug_report"
+        android:defaultValue="false"
+        android:key="debug_mode"
+        android:summary="@string/debug_installation_text"
+        android:title="@string/debug_installation" />
+
+    <androidx.preference.SeekBarPreference
+        android:icon="@drawable/ic_sd_card"
+        android:defaultValue="false"
+        android:key="userdata_size"
+        android:title="@string/userdata_size"
+        android:summary="@string/userdata_size_text"
+        app:defaultValue="2"
+        app:showSeekBarValue="true"
+        app:min="1"
+        android:max="32"/>
+
+</androidx.preference.PreferenceScreen>

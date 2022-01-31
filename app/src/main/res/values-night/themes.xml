@@ -1,0 +1,22 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.DSUHelper" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="colorPrimary">@color/system_accent</item>
+        <item name="colorPrimaryDark">@color/system_accent_darker</item>
+        <item name="colorSecondary">@color/system_accent</item>
+        <item name="colorError">@color/error</item>
+
+        <item name="colorPrimaryVariant">@color/system_accent</item>
+        <item name="colorSecondaryVariant">@color/system_accent_2</item>
+        <item name="scrimBackground">@color/netrual_color</item>
+
+        <item name="colorSurface">@color/netrual_color</item>
+        <item name="colorSecondaryContainer">@color/system_accent_soft</item>
+
+        <item name="android:navigationBarColor">@color/netrual_color_2</item>
+        <item name="android:statusBarColor">@color/netrual_color</item>
+        <item name="android:colorBackground">@color/netrual_color</item>
+
+    </style>
+</resources>
