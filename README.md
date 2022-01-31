@@ -3,6 +3,8 @@
 
 A simple app made to help users easily install GSIs via DSU's Android feature.
 
+<img src="https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/preview.jpg" alt="preview" width="200"/>
+
 ## Requirements
 - Android 10 or higher
 - Unlocked Bootloader
