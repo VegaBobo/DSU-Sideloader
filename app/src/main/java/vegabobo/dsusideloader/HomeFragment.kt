@@ -86,8 +86,15 @@ class HomeFragment : Fragment() {
             }
 
         edGsiPath.setOnClickListener {
-            var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
+            var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
             chooseFile.type = "*/*"
+            val mimetypes = arrayOf(
+                "application/gzip",
+                "application/x-gzip",
+                "application/x-xz",
+                "application/octet-stream"
+            )
+            chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
             chooseFile = Intent.createChooser(chooseFile, getString(R.string.saf_choose_file))
             fileSelection.launch(chooseFile)
         }
