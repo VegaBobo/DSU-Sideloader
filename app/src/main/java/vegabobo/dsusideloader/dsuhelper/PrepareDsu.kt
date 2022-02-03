@@ -46,11 +46,24 @@ class PrepareDsu(
                 transformFile2Gzip(uri, DeCompressionUtils.Constants.IMG_TO_GZ, gsiDsuObject)
             }
             ".gz" -> {
+
+                var gzUri = uri
+                if (uri.path.toString().contains("msf:")) {
+                    updateText(c.getString(R.string.gz_copy))
+                    gzUri = WorkspaceFilesUtils.copyFileToSafFolder(
+                        c,
+                        uri,
+                        file,
+                        WorkspaceFilesUtils.getWorkspaceFolder(c)
+                    )
+                }
+
                 if (gsiDsuObject!!.fileSize != -1L)
                     gsiDsuObject.absolutePath =
-                        FilenameUtils.getFilePath(uri, true)
+                        FilenameUtils.getFilePath(gzUri, true)
+
                 transformFile2Gzip(
-                    uri,
+                    gzUri,
                     DeCompressionUtils.Constants.GZ_TO_GSI_OBJECT,
                     gsiDsuObject
                 )

@@ -1,8 +1,11 @@
 package vegabobo.dsusideloader.util
 
 import android.content.Context
+import android.net.Uri
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
+import java.io.InputStream
+import java.io.OutputStream
 
 class WorkspaceFilesUtils {
 
@@ -24,6 +27,32 @@ class WorkspaceFilesUtils {
             }
         }
 
+        fun copyFileToSafFolder(
+            context: Context,
+            inputFile: Uri,
+            outputFilename: String,
+            workspaceFolder: DocumentFile
+        ): Uri {
+            val input: InputStream?
+            val output: OutputStream?
+            val finalFile: DocumentFile? =
+                workspaceFolder.createFile("application/octet-stream", outputFilename)
+            try {
+                output = context.contentResolver.openOutputStream(finalFile!!.uri)
+                input = context.contentResolver.openInputStream(inputFile)
+                val buffer = ByteArray(1024)
+                var read: Int
+                while (input!!.read(buffer).also { read = it } != -1) {
+                    output!!.write(buffer, 0, read)
+                }
+                input.close()
+                output!!.flush()
+                output.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return finalFile!!.uri
+        }
     }
 
 }

@@ -72,4 +72,5 @@
     <string name="credits_google">Muitas outras pelo Google/Android</string>
     <string name="save_logs_file">Salvar logs para o arquivo</string>
     <string name="debug_build_info">Você está executando uma build depurável.\nDSU Sideloader %1$s (%2$d)</string>
+    <string name="gz_copy">Copiando arquivo gz para nossa pasta…</string>
 </resources>
