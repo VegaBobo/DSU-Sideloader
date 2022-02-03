@@ -24,6 +24,7 @@ import vegabobo.dsusideloader.checks.CompatibilityCheck
 import vegabobo.dsusideloader.checks.OperationMode
 import vegabobo.dsusideloader.dsuhelper.GsiDsuObject
 import vegabobo.dsusideloader.dsuhelper.PrepareDsu
+import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.SPUtils
 import vegabobo.dsusideloader.util.SetupStorageAccess
 import vegabobo.dsusideloader.util.WorkspaceFilesUtils
@@ -73,7 +74,7 @@ class HomeFragment : Fragment() {
                     val uri = result.data!!.data
                     selectedGsi = uri!!
                     btnInstall.isEnabled = true
-                    edGsiPath.setText(uri.lastPathSegment.toString())
+                    edGsiPath.setText(FilenameUtils.queryName(requireContext().contentResolver, uri))
                     btnInstall.setTextColor(
                         ContextCompat.getColor(
                             requireActivity(),
@@ -268,59 +269,67 @@ class HomeFragment : Fragment() {
     }
 
     private fun beginInstall(selectedGsi: Uri, gsiDsuObject: GsiDsuObject) {
-        var selectedFile = selectedGsi.lastPathSegment.toString().split(":")[1]
 
-        if (selectedFile.contains("/"))
-            selectedFile = selectedFile.substring(selectedFile.lastIndexOf('/') + 1)
+        val selectedFile = FilenameUtils.queryName(requireActivity().contentResolver, selectedGsi)
 
-        when (selectedFile.substring(selectedFile.lastIndexOf("."))) {
-            ".xz", ".gz", ".img" -> {
+        // file need to have a extension, if not, show error dialog.
+        if (selectedFile.contains(".")) {
 
-                MaterialAlertDialogBuilder(requireActivity())
-                    .setTitle(R.string.info)
-                    .setMessage(getString(R.string.warning))
-                    .setPositiveButton(getString(R.string.proceed)) { _, _ ->
+            when (selectedFile.substring(selectedFile.lastIndexOf("."))) {
+                ".xz", ".gz", ".img" -> {
 
-                        MaterialAlertDialogBuilder(requireActivity())
-                            .setTitle(getString(R.string.installation))
-                            .setMessage(
-                                getString(
-                                    R.string.installation_details,
-                                    selectedFile,
-                                    gsiDsuObject.userdataSize.toString(),
-                                    if (gsiDsuObject.fileSize == -1L) getString(R.string.auto) else gsiDsuObject.fileSize
-                                )
-                            )
-                            .setPositiveButton(getString(R.string.proceed)) { _, _ ->
-                                WorkspaceFilesUtils.cleanWorkspaceFolder(requireActivity(), true)
-                                Thread(
-                                    PrepareDsu(
-                                        requireActivity(),
-                                        selectedGsi,
-                                        gsiDsuObject
+                    MaterialAlertDialogBuilder(requireActivity())
+                        .setTitle(R.string.info)
+                        .setMessage(getString(R.string.warning))
+                        .setPositiveButton(getString(R.string.proceed)) { _, _ ->
+
+                            MaterialAlertDialogBuilder(requireActivity())
+                                .setTitle(getString(R.string.installation))
+                                .setMessage(
+                                    getString(
+                                        R.string.installation_details,
+                                        selectedFile,
+                                        gsiDsuObject.userdataSize.toString(),
+                                        if (gsiDsuObject.fileSize == -1L) getString(R.string.auto) else gsiDsuObject.fileSize
                                     )
-                                ).start()
-                            }
-                            .setNegativeButton(getString(R.string.cancel), null)
-                            .setCancelable(true)
-                            .show()
+                                )
+                                .setPositiveButton(getString(R.string.proceed)) { _, _ ->
+                                    WorkspaceFilesUtils.cleanWorkspaceFolder(
+                                        requireActivity(),
+                                        true
+                                    )
+                                    Thread(
+                                        PrepareDsu(
+                                            requireActivity(),
+                                            selectedGsi,
+                                            gsiDsuObject
+                                        )
+                                    ).start()
+                                }
+                                .setNegativeButton(getString(R.string.cancel), null)
+                                .setCancelable(true)
+                                .show()
 
-                    }
-                    .setNegativeButton(getString(R.string.cancel), null)
-                    .show()
-
-
+                        }
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .show()
+                }
+                else -> {
+                    showUnsupportedDialog()
+                }
             }
-
-            else -> {
-                MaterialAlertDialogBuilder(requireActivity())
-                    .setTitle(R.string.unsupported)
-                    .setMessage(getString(R.string.file_unsupported))
-                    .setPositiveButton(getString(R.string.got_it), null)
-                    .setCancelable(true)
-                    .show()
-            }
+        } else {
+            showUnsupportedDialog()
         }
+    }
+
+    private fun showUnsupportedDialog() {
+        MaterialAlertDialogBuilder(requireActivity())
+            .setTitle(R.string.unsupported)
+            .setMessage(getString(R.string.file_unsupported))
+            .setPositiveButton(getString(R.string.got_it), null)
+            .setCancelable(true)
+            .show()
     }
 
     private fun showNoAvaiableStorageDialog() {

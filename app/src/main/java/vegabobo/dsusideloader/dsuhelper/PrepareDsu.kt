@@ -36,8 +36,7 @@ class PrepareDsu(
             dialog.show()
         }
 
-        val file =
-            uri.lastPathSegment.toString().split(":")[1]
+        val file = FilenameUtils.queryName(c.contentResolver, uri)
 
         val dsu: GsiDsuObject? = when (file.substring(file.lastIndexOf("."))) {
             ".xz" -> {
