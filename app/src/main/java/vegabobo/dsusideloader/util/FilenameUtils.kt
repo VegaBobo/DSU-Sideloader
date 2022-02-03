@@ -13,19 +13,16 @@ class FilenameUtils {
             val input = uri.path.toString()
             val safStorage = input.split("/document/")[1].replace("/tree/", "")
             val path = safStorage.split(":")[1]
+            if (path.contains("/storage/emulated"))
+                return if (addQuotes) "'file://'$path" else "file://$path"
             return if (safStorage.contains("primary")) {
-                return if (addQuotes) {
-                    "'file:///storage/emulated/0/$path'"
-                } else {
-                    "file:///storage/emulated/0/$path"
-                }
+                val storagePath = "file:///storage/emulated/0/"
+                val finalPath = "$storagePath$path"
+                return if (addQuotes) "'$finalPath'" else finalPath
             } else {
-                if (addQuotes) {
-                    "'file:///storage/emulated/" + safStorage.split(":")[1] + "/$path'"
-                } else {
-                    "file:///storage/emulated/" + safStorage.split(":")[1] + "/$path"
-                }
-
+                val storagePath = "file:///storage/"
+                val finalPath = storagePath + safStorage.replace(":", "/")
+                if (addQuotes) "'$finalPath'" else finalPath
             }
         }
 
