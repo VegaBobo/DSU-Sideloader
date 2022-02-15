@@ -92,6 +92,7 @@ class HomeFragment : Fragment() {
                 "application/gzip",
                 "application/x-gzip",
                 "application/x-xz",
+                "application/zip",
                 "application/octet-stream"
             )
             chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
@@ -283,7 +284,7 @@ class HomeFragment : Fragment() {
         if (selectedFile.contains(".")) {
 
             when (selectedFile.substring(selectedFile.lastIndexOf("."))) {
-                ".xz", ".gz", ".img" -> {
+                ".xz", ".gz", ".img", ".zip" -> {
 
                     MaterialAlertDialogBuilder(requireActivity())
                         .setTitle(R.string.info)

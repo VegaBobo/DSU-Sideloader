@@ -25,6 +25,7 @@ class PrepareDsu(
 ) : Runnable {
 
     private lateinit var dialog: AlertDialog
+    var cleanWorkspace = true
 
     override fun run() {
 
@@ -46,7 +47,6 @@ class PrepareDsu(
                 transformFile2Gzip(uri, DeCompressionUtils.Constants.IMG_TO_GZ, gsiDsuObject)
             }
             ".gz" -> {
-
                 var gzUri = uri
                 if (uri.path.toString().contains("msf:")) {
                     updateText(c.getString(R.string.gz_copy))
@@ -57,25 +57,41 @@ class PrepareDsu(
                         WorkspaceFilesUtils.getWorkspaceFolder(c)
                     )
                 }
-
                 if (gsiDsuObject!!.fileSize != -1L)
                     gsiDsuObject.absolutePath =
                         FilenameUtils.getFilePath(gzUri, true)
-
                 transformFile2Gzip(
                     gzUri,
                     DeCompressionUtils.Constants.GZ_TO_GSI_OBJECT,
                     gsiDsuObject
                 )
             }
-            else -> {
-                GsiDsuObject()
+            ".zip" -> {
+                val dsuPackageUri = if (uri.path.toString().contains("msf:")) {
+                    updateText(c.getString(R.string.copying_file))
+                    WorkspaceFilesUtils.copyFileToSafFolder(
+                        c,
+                        uri,
+                        "dsu.zip",
+                        WorkspaceFilesUtils.getWorkspaceFolder(c)
+                    )
+                } else {
+                    uri
+                }
+                cleanWorkspace = false
+                gsiDsuObject!!.absolutePath = FilenameUtils.getFilePath(dsuPackageUri, true)
+                gsiDsuObject
             }
+            else ->
+                gsiDsuObject
         }
 
-        dialog.dismiss()
+        c.runOnUiThread {
+            dialog.dismiss()
+        }
 
-        WorkspaceFilesUtils.cleanWorkspaceFolder(c, false)
+        if (cleanWorkspace)
+            WorkspaceFilesUtils.cleanWorkspaceFolder(c, false)
 
         when (OperationMode.getOperationMode()) {
 
