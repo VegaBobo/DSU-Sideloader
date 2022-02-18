@@ -1,8 +1,6 @@
 #!/bin/sh
 
 # Script made to launch DSU installation activity.
-# Unrooted users can run this script using ADB to start
-# installation of GSI via DSU.
 # Values are populared by String.format
 
 # Prevent users running Magisk
@@ -19,6 +17,12 @@ if [ ! -z "$magisk_version" ]; then
   fi
 fi
 
+# clean logcat before running commands
+debug_mode=%s
+if [ $debug_mode == true ]; then
+  logcat -c
+fi
+
 # required prop
 setprop persist.sys.fflag.override.settings_dynamic_system true
 
@@ -26,13 +30,14 @@ setprop persist.sys.fflag.override.settings_dynamic_system true
 am start-activity -n com.android.dynsystem/com.android.dynsystem.VerificationActivity \
   -a android.os.image.action.START_INSTALL %s
 
-# if debug mode == log it (greping for gsid and dynsys)
-# else delete installation file
-debug_mode=%s
+echo
+echo "DSU installation has been started! check your notifications"
+
 if [ $debug_mode == true ]; then
-  logcat -c
-  echo "" > /sdcard/dsu_sideloader_logs.txt
-  (logcat | grep -e gsid -e dynsys) | tee /sdcard/dsu_sideloader_logs.txt
-else
-  rm '%s'
+  echo
+  echo "You're running on debug mode, logs are saved in /sdcard/logcat_dsu.txt"
+  echo "Once a error happen, you can press CTRL+C to exit"
+  echo
+  (echo "%s" > /sdcard/logcat_dsu.txt)
+  (logcat >> /sdcard/logcat_dsu.txt)
 fi

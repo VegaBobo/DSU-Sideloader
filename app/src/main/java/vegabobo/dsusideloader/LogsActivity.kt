@@ -12,37 +12,44 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.topjohnwu.superuser.CallbackList
 import com.topjohnwu.superuser.Shell
-import vegabobo.dsusideloader.dsuhelper.GsiDsuObject
-import vegabobo.dsusideloader.dsuhelper.RootDSUDeployer
 import java.io.IOException
 import java.io.OutputStream
 
-
 class LogsActivity : AppCompatActivity() {
 
-    var logsRaw = ""
+    var entireLogcat = ""
+    private var installInfo = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_logs)
 
-        RootDSUDeployer(intent.extras!!.get("dsu") as GsiDsuObject)
+        val installationScript = intent.extras!!.getString("script")!!
+        installInfo = intent.extras!!.getString("installation_info")!!
+
+        Shell.su("logcat -c").exec()
+        Shell.su(installationScript).exec()
 
         val tvLog = findViewById<TextView>(R.id.tv_logs)
         val btnSaveLogs = findViewById<Button>(R.id.btnSaveLogs)
 
-        var logs = ""
+        var logLines = 0
 
         val callbackList: CallbackList<String?> = object : CallbackList<String?>() {
             override fun onAddElement(s: String?) {
-                logsRaw = logsRaw + s + "\n"
-                val p = (s as String).split(" ", limit = 5)[4]
-                logs = logs + p + "\n"
-                tvLog.text = logs
+                entireLogcat = entireLogcat + s + "\n"
+                if (logLines != -1 && logLines < 200) {
+                    tvLog.append("\n"+s)
+                    logLines++
+                } else {
+                    if(logLines!=-1)
+                        tvLog.text = "Logs are too big, export to see everything.\n\n${tvLog.text}"
+                    logLines = -1
+                }
             }
         }
 
-        Shell.su("logcat | grep -e gsid -e dynsys | grep -v SHELLOUT | grep -v SHELLIN | grep -v SHELL_OUT | grep -v SHELL_IN")
+        Shell.su("logcat | grep -v SHELLOUT | grep -v SHELLIN | grep -v SHELL_OUT | grep -v SHELL_IN")
             .to(callbackList)
             .submit {}
 
@@ -77,7 +84,7 @@ class LogsActivity : AppCompatActivity() {
         try {
             val output: OutputStream? =
                 this@LogsActivity.contentResolver.openOutputStream(uri)
-            output!!.write(logsRaw.toByteArray())
+            output!!.write(("$installInfo$entireLogcat").toByteArray())
             output.flush()
             output.close()
             Toast.makeText(this@LogsActivity, getString(R.string.logs_saved), Toast.LENGTH_SHORT)
