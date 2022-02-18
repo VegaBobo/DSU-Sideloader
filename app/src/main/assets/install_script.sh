@@ -24,10 +24,7 @@ setprop persist.sys.fflag.override.settings_dynamic_system true
 
 # invoke DSU activity
 am start-activity -n com.android.dynsystem/com.android.dynsystem.VerificationActivity \
-  -a android.os.image.action.START_INSTALL \
-  -d %s \
-  --el KEY_SYSTEM_SIZE %s \
-  --el KEY_USERDATA_SIZE %s
+  -a android.os.image.action.START_INSTALL %s
 
 # if debug mode == log it (greping for gsid and dynsys)
 # else delete installation file

@@ -94,24 +94,30 @@ class PrepareDsu(
             WorkspaceFilesUtils.cleanWorkspaceFolder(c, false)
 
         when (OperationMode.getOperationMode()) {
-
             OperationMode.Constants.ROOT_MAGISK, OperationMode.Constants.OTHER_ROOT_SOLUTION -> {
 
+                val dsuCommand = DSUCommand(dsu!!, c, true)
+
                 if (SPUtils.isDebugModeEnabled(c)) {
-                    Shell.su("logcat -c").submit()
-                    val intent = Intent(c, LogsActivity::class.java)
-                    intent.putExtra("dsu", dsu)
-                    c.startActivity(intent)
+                    c.startActivity(
+                        Intent(c, LogsActivity::class.java).putExtra(
+                            "script",
+                            dsuCommand.getInstallScript()
+                        ).putExtra(
+                            "installation_info",
+                            dsuCommand.installationInfoAsString()
+                        )
+                    )
                 } else {
                     showFinishedDialog()
-                    RootDSUDeployer(dsu!!)
+                    Shell.su(dsuCommand.getInstallScript()).exec()
                 }
 
             }
-
             OperationMode.Constants.UNROOTED -> {
-                val p = GenAdbDsuInstallationScript(dsu!!, c).generateScriptFile()
-                showAdbCommandToDeployGSI(p)
+                val dsuCommand = DSUCommand(dsu!!, c, false)
+                showAdbCommandToDeployGSI(dsuCommand.writeInstallScript())
+
             }
 
         }
