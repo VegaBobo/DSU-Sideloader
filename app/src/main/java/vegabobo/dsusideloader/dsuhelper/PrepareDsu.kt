@@ -67,7 +67,8 @@ class PrepareDsu(
                 )
             }
             ".zip" -> {
-                val dsuPackageUri = if (uri.path.toString().contains("msf:")) {
+                val dsuPackageUri = if (
+                    uri.path.toString().contains("msf:")) {
                     updateText(c.getString(R.string.copying_file))
                     WorkspaceFilesUtils.copyFileToSafFolder(
                         c,
@@ -79,7 +80,15 @@ class PrepareDsu(
                     uri
                 }
                 cleanWorkspace = false
-                gsiDsuObject!!.absolutePath = FilenameUtils.getFilePath(dsuPackageUri, true)
+                val filePath = FilenameUtils.getFilePath(dsuPackageUri, true)
+
+                // workaround for java.net.URISyntaxException: Illegal character in path at index
+                // com.android.dynsystem.InstallationAsyncTask.verifyAndPrepare(InstallationAsyncTask.java:273)
+                if (filePath.contains(" "))
+                    gsiDsuObject!!.absolutePath = filePath.replace(" ", "%20")
+                else
+                    gsiDsuObject!!.absolutePath = filePath
+
                 gsiDsuObject
             }
             else ->
@@ -119,7 +128,6 @@ class PrepareDsu(
                 showAdbCommandToDeployGSI(dsuCommand.writeInstallScript())
 
             }
-
         }
     }
 
