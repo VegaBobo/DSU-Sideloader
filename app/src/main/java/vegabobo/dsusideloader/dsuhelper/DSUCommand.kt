@@ -45,7 +45,7 @@ class DSUCommand(
     private fun genArguments(): String {
         var arguments = ""
         arguments += addArgument("-d", "${gsiDsuObject.absolutePath}")
-        arguments += addArgument("--el", "KEY_SYSTEM_SIZE", gsiDsuObject.getUserdataInBytes())
+        arguments += addArgument("--el", "KEY_USERDATA_SIZE", gsiDsuObject.getUserdataInBytes())
         if (gsiDsuObject.fileSize != -1L)
             arguments += addArgument(
                 "--el", "KEY_SYSTEM_SIZE", gsiDsuObject.fileSize
