@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.documentfile.provider.DocumentFile
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import vegabobo.dsusideloader.R
 
@@ -19,14 +20,6 @@ class SetupStorageAccess(
         if (!arePermissionsGranted(SPUtils.getSafRwPath(c))) {
             setupSAFActivityResult()
             askSafStorageAccess()
-        }
-    }
-
-    private fun setupSafStorage() {
-        val rwPath = SPUtils.getSafRwPath(c)
-        if (rwPath.isEmpty() || arePermissionsGranted(rwPath)) {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-            v.launch(intent)
         }
     }
 
@@ -49,16 +42,37 @@ class SetupStorageAccess(
     }
 
     private fun arePermissionsGranted(
-        uriString: String
+        folderUri: String
     ): Boolean {
-        val list = c.contentResolver.persistedUriPermissions
-        for (i in list.indices) {
-            val persistedUriString = list[i].uri.toString()
-            if (persistedUriString == uriString && list[i].isWritePermission && list[i].isReadPermission) {
-                return true
+        val foldersUriPermissions = c.contentResolver.persistedUriPermissions
+        for (folder in foldersUriPermissions) {
+            val persistedUriString = folder.uri.toString()
+            if (folderUri == persistedUriString) {
+
+                // If folder with granted permissions doesn't exists
+                // (eg. user deleted folder, or apk data restored externally from a backup)
+                // then, we should ask user to grant permissions to a folder again
+                if (!DocumentFile.fromTreeUri(c, folder.uri)!!.exists())
+                    return false
+
+                // check if uri has r/w permission
+                if (folder.isWritePermission && folder.isReadPermission)
+                    return true
+
+            } else {
+                // if we have permission in some folder we don't need to, permission to it will be revoked
+                c.revokeUriPermission(
+                    folder.uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
             }
         }
         return false
+    }
+
+    private fun setupSafStorage() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        v.launch(intent)
     }
 
     private fun askSafStorageAccess() {
