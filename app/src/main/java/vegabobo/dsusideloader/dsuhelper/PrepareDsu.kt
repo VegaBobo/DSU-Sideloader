@@ -119,7 +119,7 @@ class PrepareDsu(
                     )
                 } else {
                     showFinishedDialog()
-                    Shell.su(dsuCommand.getInstallScript()).exec()
+                    Shell.cmd(dsuCommand.getInstallScript()).exec()
                 }
 
             }

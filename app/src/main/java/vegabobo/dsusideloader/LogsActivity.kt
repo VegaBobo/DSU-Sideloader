@@ -27,8 +27,8 @@ class LogsActivity : AppCompatActivity() {
         val installationScript = intent.extras!!.getString("script")!!
         installInfo = intent.extras!!.getString("installation_info")!!
 
-        Shell.su("logcat -c").exec()
-        Shell.su(installationScript).exec()
+        Shell.cmd("logcat -c").exec()
+        Shell.cmd(installationScript).exec()
 
         val tvLog = findViewById<TextView>(R.id.tv_logs)
         val btnSaveLogs = findViewById<Button>(R.id.btnSaveLogs)
@@ -49,7 +49,7 @@ class LogsActivity : AppCompatActivity() {
             }
         }
 
-        Shell.su("logcat | grep -v SHELLOUT | grep -v SHELLIN | grep -v SHELL_OUT | grep -v SHELL_IN")
+        Shell.cmd("logcat | grep -v SHELLOUT | grep -v SHELLIN | grep -v SHELL_OUT | grep -v SHELL_IN")
             .to(callbackList)
             .submit {}
 
