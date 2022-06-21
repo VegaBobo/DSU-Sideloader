@@ -13,6 +13,19 @@
         android:theme="@style/Theme.DSUHelper"
         tools:targetApi="31">
         <activity
+            android:name=".NewMainActivity"
+            android:exported="true"
+            android:label="@string/title_activity_new_main"
+            android:theme="@style/Theme.DSUHelper">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+        <activity
             android:name=".AboutActivity"
             android:exported="false" />
         <activity
@@ -27,11 +40,6 @@
         <activity
             android:name=".SplashActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
