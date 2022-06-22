@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="transparent">#00000000</color>
+    <color name="bg">#00000000</color>
     <color name="app_background">@android:color/system_neutral1_800</color>
     <color name="app_icon">@android:color/system_accent1_100</color>
     <color name="system_accent">@android:color/system_accent1_500</color>

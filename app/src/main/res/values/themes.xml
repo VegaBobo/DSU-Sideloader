@@ -1,12 +1,11 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.DSUHelper" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.DSUHelper" parent="Theme.Material3.DayNight">
 
         <item name="colorPrimary">@color/system_accent</item>
         <item name="colorPrimaryDark">@color/system_accent_darker</item>
         <item name="colorSecondary">@color/system_accent_2</item>
-        <item name="android:statusBarColor">@color/netrual_color</item>
-        <item name="android:colorBackground">@color/netrual_color</item>
+        <item name="android:colorBackground">@color/bg</item>
         <item name="colorError">@color/error</item>
 
         <item name="colorPrimaryVariant">@color/system_accent</item>
@@ -15,9 +14,10 @@
 
         <item name="scrimBackground">@color/netrual_color</item>
         <item name="colorSurface">@color/netrual_color</item>
-        <item name="android:navigationBarColor">@color/netrual_color_2</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/bg</item>
 
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
     </style>
 
 </resources>

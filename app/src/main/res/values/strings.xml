@@ -75,4 +75,16 @@
     <string name="debug_build_info">You\'re running a debug build.\nDSU Sideloader %1$s (%2$d)</string>
     <string name="gz_copy">Copying gz file into our folder…</string>
     <string name="copying_file">Copying file…</string>
+
+    <!-- WIP STRINGS -->
+
+    <string name="title_activity_new_main">DSU Sideloader v2</string>
+    <string name="clear">Clear</string>
+    <string name="userdata_size_n">Userdata size</string>
+    <string name="userdata_size_gb">Size in GB</string>
+    <string name="userdata_size_ct">Custom userdata size</string>
+    <string name="image_size">Image size</string>
+    <string name="image_size_custom">Size in bytes</string>
+    <string name="what_dsu">What is DSU?</string>
+    <string name="dsu_info">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor viverra lorem sollicitudin rhoncus.</string>
 </resources>
