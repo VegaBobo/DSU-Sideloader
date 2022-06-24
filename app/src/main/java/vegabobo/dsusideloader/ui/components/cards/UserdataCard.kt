@@ -24,7 +24,6 @@ fun UserdataCard(
         AnimatedVisibility(visible = isToggleEnabled) {
             FileSelectionBox(
                 enabled = true,
-                onClickTextField = {},
                 isError = isError,
                 value = stringResource(id = R.string.userdata_size_gb),
                 title = stringResource(id = R.string.userdata_size_n)

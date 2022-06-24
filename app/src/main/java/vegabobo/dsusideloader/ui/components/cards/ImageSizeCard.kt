@@ -3,7 +3,6 @@ package vegabobo.dsusideloader.ui.components.cards
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -32,7 +31,6 @@ fun ImageSizeCard(
             Column {
                 FileSelectionBox(
                     enabled = true,
-                    onClickTextField = {},
                     isError = isError,
                     value = "",
                     title = stringResource(id = R.string.image_size_custom)
