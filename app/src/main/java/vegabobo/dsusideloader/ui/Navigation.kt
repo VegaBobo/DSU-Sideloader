@@ -17,15 +17,9 @@ object Destinations {
 
 @Composable
 fun Navigation() {
-
-    val insets = WindowInsets
-        .systemBars
-        .only(WindowInsetsSides.Vertical)
-        .asPaddingValues()
-
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Homepage) {
-        composable(Homepage) { Home(navController, insets) }
-        composable(Settings) { SettingsC(navController, insets) }
+        composable(Homepage) { Home(navController) }
+        composable(Settings) { SettingsC(navController) }
     }
 }

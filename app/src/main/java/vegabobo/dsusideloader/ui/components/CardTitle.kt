@@ -1,6 +1,7 @@
 package vegabobo.dsusideloader.ui.components
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,6 +13,7 @@ fun CardTitle(cardTitle: String){
     Text(
         text = cardTitle,
         fontSize = 20.sp,
-        modifier = Modifier.padding(top = 6.dp, bottom = 6.dp)
+        modifier = Modifier.padding(top = 6.dp, bottom = 6.dp),
+        style = MaterialTheme.typography.titleLarge
     )
 }
