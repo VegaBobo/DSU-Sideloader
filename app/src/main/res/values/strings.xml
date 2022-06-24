@@ -87,4 +87,6 @@
     <string name="image_size_custom">Size in bytes</string>
     <string name="what_dsu">What is DSU?</string>
     <string name="dsu_info">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor viverra lorem sollicitudin rhoncus.</string>
+    <string name="placeholder">placeholder</string>
+    <string name="other">Other</string>
 </resources>
