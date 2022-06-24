@@ -1,28 +1,30 @@
 package vegabobo.dsusideloader.ui.components
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import vegabobo.dsusideloader.R
 
 @Composable
 fun FileSelectionBox(
     enabled: Boolean,
-    onClickTextField: (String) -> Unit,
+    textFieldInteraction: MutableInteractionSource? = MutableInteractionSource(),
     isError: Boolean,
     value: String,
     title: String,
+    readOnly: Boolean = false
 ) {
     OutlinedTextField(
         value = value,
-        onValueChange = onClickTextField,
+        onValueChange = { },
         enabled = enabled,
         isError = isError,
+        readOnly = readOnly,
+        interactionSource = textFieldInteraction!!,
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp),
