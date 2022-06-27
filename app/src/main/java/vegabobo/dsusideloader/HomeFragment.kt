@@ -309,7 +309,7 @@ class HomeFragment : Fragment() {
                                     Thread(
                                         PrepareDsu(
                                             requireActivity(),
-                                            selectedGsi,
+                                            //selectedGsi,
                                             gsiDsuObject
                                         )
                                     ).start()

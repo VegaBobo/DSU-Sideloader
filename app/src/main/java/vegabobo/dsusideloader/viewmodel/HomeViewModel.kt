@@ -1,38 +1,93 @@
 package vegabobo.dsusideloader.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.app.Activity
+import android.content.Intent
+import androidx.activity.ComponentActivity
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-
-object Toggle {
-    const val USERDATA_TOGGLE = 0
-    const val IMGSIZE_TOGGLE = 1
-}
+import vegabobo.dsusideloader.*
+import vegabobo.dsusideloader.dsuhelper.GsiDsuObject
+import vegabobo.dsusideloader.util.FilenameUtils
 
 class HomeViewModel : ViewModel() {
 
+    var fileSelection: ActivityResultLauncher<Intent>? = null
+
+    val userdataCard = mutableStateOf(UserdataCard()).value
+    val imageSizeCard = mutableStateOf(ImageSizeCard()).value
+    val installationCard = mutableStateOf(InstallationCard()).value
+    val installationDialog = mutableStateOf(InstallationDialog()).value
+    val gsiInstallation = mutableStateOf(GsiDsuObject()).value
+
     fun onClickSelectFile() {
-        TODO("Not yet implemented")
+        var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        chooseFile.type = "*/*"
+        val mimetypes = arrayOf(
+            "application/gzip",
+            "application/x-gzip",
+            "application/x-xz",
+            "application/zip",
+            "application/octet-stream"
+        )
+        chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
+        chooseFile = Intent.createChooser(chooseFile, "")
+        fileSelection!!.launch(chooseFile)
     }
-
-    val _userdataSizeToggle = MutableLiveData(false)
-    val userdataToggle: LiveData<Boolean> = _userdataSizeToggle
-
-    val _imageSizeToggle = MutableLiveData(false)
-    val imageSizeToggle: LiveData<Boolean> = _imageSizeToggle
 
     fun onTouchToggle(toggle: Int) {
-        toggle(
-            when (toggle) {
-                Toggle.USERDATA_TOGGLE -> _userdataSizeToggle
-                Toggle.IMGSIZE_TOGGLE -> _imageSizeToggle
-                else -> MutableLiveData(false)
+        when (toggle) {
+            Toggles.USERDATA_TOGGLE -> userdataCard.toggle()
+            Toggles.IMGSIZE_TOGGLE -> imageSizeCard.toggle()
+        }
+    }
+
+    fun fileSelectionResult(activity: ComponentActivity) {
+        fileSelection = activity.registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri = result.data!!.data
+                val z = GsiDsuObject()
+                z.targetUri = uri!!
+                installationCard.lock(
+                    FilenameUtils.queryName(activity.contentResolver, uri)
+                )
             }
-        )
+        }
     }
 
-    private fun toggle(m: MutableLiveData<Boolean>) {
-        m.value = m.value!!.not()
+    fun onClickInstall() {
+        if (userdataCard.isEnabled() && userdataCard.isContentNotEmpty())
+            gsiInstallation.setUserdataSize(userdataCard.obtainText())
+        else
+            gsiInstallation.userdataSize = GsiDsuObject.Constants.DEFAULT_USERDATA_SIZE_IN_GB
+
+        if (imageSizeCard.isEnabled() && imageSizeCard.isContentNotEmpty())
+            gsiInstallation.setFileSize(imageSizeCard.obtainText())
+        else
+            gsiInstallation.fileSize = GsiDsuObject.Constants.DEFAULT_FILE_SIZE
+
+        installationDialog.toggle()
     }
 
+    fun onClickClear() {
+        installationCard.clear()
+    }
+
+    fun onConfirmDialog() {
+    }
+
+    fun onCancelDialog() {
+        installationDialog.toggle()
+    }
+
+    fun updateUserdataSize(input: String) {
+        userdataCard.setTextContentSuffix(input, "GB")
+    }
+
+    fun updateImageSize(input: String) {
+        imageSizeCard.setTextContentSuffix(input, "b")
+    }
 }

@@ -9,11 +9,15 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import vegabobo.dsusideloader.ui.Navigation
 import vegabobo.dsusideloader.ui.theme.DSUHelperTheme
+import vegabobo.dsusideloader.viewmodel.HomeViewModel
 
 class NewMainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        val homeViewModel = HomeViewModel()
+        homeViewModel.fileSelectionResult(this)
 
         setContent {
 
@@ -24,7 +28,7 @@ class NewMainActivity : ComponentActivity() {
 
             DSUHelperTheme {
                 Surface(modifier = Modifier.padding(insets)) {
-                    Navigation()
+                    Navigation(homeViewModel)
                 }
             }
 

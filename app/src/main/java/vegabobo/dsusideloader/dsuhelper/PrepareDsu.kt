@@ -20,22 +20,24 @@ import vegabobo.dsusideloader.util.WorkspaceFilesUtils
 
 class PrepareDsu(
     private val c: Context,
-    private val uri: Uri,
+    //private val uri: Uri,
     private val gsiDsuObject: GsiDsuObject?
 ) : Runnable {
 
     private lateinit var dialog: AlertDialog
     var cleanWorkspace = true
 
+    var uri = gsiDsuObject!!.targetUri
+
     override fun run() {
 
-        val builder = MaterialAlertDialogBuilder(c)
-        (c as Activity).runOnUiThread {
-            builder.setCancelable(false)
-            builder.setView(R.layout.progress)
-            dialog = builder.create()
-            dialog.show()
-        }
+//        val builder = MaterialAlertDialogBuilder(c)
+//        (c as Activity).runOnUiThread {
+//            builder.setCancelable(false)
+//            builder.setView(R.layout.progress)
+//            dialog = builder.create()
+//            dialog.show()
+//        }
 
         val file = FilenameUtils.queryName(c.contentResolver, uri)
 
@@ -95,9 +97,9 @@ class PrepareDsu(
                 gsiDsuObject
         }
 
-        c.runOnUiThread {
-            dialog.dismiss()
-        }
+//        c.runOnUiThread {
+//            dialog.dismiss()
+//        }
 
         if (cleanWorkspace)
             WorkspaceFilesUtils.cleanWorkspaceFolder(c, false)

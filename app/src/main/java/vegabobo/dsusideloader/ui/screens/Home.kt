@@ -10,29 +10,28 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarScrollState
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
+import vegabobo.dsusideloader.Toggles
 import vegabobo.dsusideloader.ui.Destinations
+import vegabobo.dsusideloader.ui.Dialog
 import vegabobo.dsusideloader.ui.components.TopBar
-import vegabobo.dsusideloader.ui.components.cards.ImageSizeCard
+import vegabobo.dsusideloader.ui.components.cards.GenericCard
 import vegabobo.dsusideloader.ui.components.cards.InfoCard
 import vegabobo.dsusideloader.ui.components.cards.InstallationCard
-import vegabobo.dsusideloader.ui.components.cards.UserdataCard
 import vegabobo.dsusideloader.viewmodel.HomeViewModel
-import vegabobo.dsusideloader.viewmodel.Toggle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
     navController: NavController,
-    homeViewModel: HomeViewModel = viewModel()
+    homeViewModel: HomeViewModel
 ) {
 
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
@@ -41,8 +40,30 @@ fun Home(
         rememberTopAppBarScrollState()
     )
 
-    val userdataToggle by homeViewModel.userdataToggle.observeAsState(false)
-    val imageSizeToggle by homeViewModel.imageSizeToggle.observeAsState(false)
+    val userdataCard = homeViewModel.userdataCard
+    val imageSizeCard = homeViewModel.imageSizeCard
+    val installationCard = homeViewModel.installationCard
+    val installationDialogVisibility = homeViewModel.installationDialog
+    val gsiDsu = homeViewModel.gsiInstallation
+
+    if (installationCard.text.value.isEmpty())
+        homeViewModel.installationCard.text.value = stringResource(id = R.string.select_file)
+
+    val context = LocalContext.current
+
+    if (installationDialogVisibility.isEnabled.value)
+        Dialog(
+            title = stringResource(id = R.string.info),
+            text = stringResource(
+                id = R.string.installation_details,
+                installationCard.text.value,
+                gsiDsu.userdataSize,
+                if (gsiDsu.fileSize == -1L) stringResource(id = R.string.auto) else gsiDsu.fileSize,
+            ),
+            confirmText = stringResource(id = R.string.proceed),
+            cancelText = stringResource(id = R.string.cancel),
+            onClickConfirm = { homeViewModel.onConfirmDialog() },
+            onClickCancel = { homeViewModel.onCancelDialog() })
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -65,26 +86,40 @@ fun Home(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 InstallationCard(
-                    onClickClear = {},
-                    onClickInstall = { },
-                    onClickTextField = { homeViewModel.onClickSelectFile() }
+                    onClickInstall = { homeViewModel.onClickInstall() },
+                    onClickClear = { homeViewModel.onClickClear() },
+                    onClickTextField = { homeViewModel.onClickSelectFile() },
+                    textFieldText = installationCard.text.value,
+                    isError = installationCard.isError.value,
+                    isInstallable = installationCard.isInstallable.value,
+                    isEnabled = installationCard.isEnabled.value
                 )
                 Spacer(modifier = Modifier.padding(top = 2.dp, bottom = 2.dp))
-                UserdataCard(
+                GenericCard(
+                    cardTitle = stringResource(id = R.string.userdata_size_ct),
+                    textFieldTitle = stringResource(id = R.string.userdata_size_n),
                     addToggle = true,
-                    isToggleEnabled = userdataToggle,
+                    isToggleEnabled = userdataCard.isEnabled.value,
                     isError = false,
                     onCheckedChange = {
-                        homeViewModel.onTouchToggle(Toggle.USERDATA_TOGGLE)
-                    })
+                        homeViewModel.onTouchToggle(Toggles.USERDATA_TOGGLE)
+                    },
+                    value = userdataCard.text.value,
+                    onValueChange = { homeViewModel.updateUserdataSize(it) },
+                )
                 Spacer(modifier = Modifier.padding(top = 2.dp, bottom = 2.dp))
-                ImageSizeCard(
+                GenericCard(
+                    cardTitle = stringResource(id = R.string.image_size),
+                    textFieldTitle = stringResource(id = R.string.image_size_custom),
                     addToggle = true,
-                    isToggleEnabled = imageSizeToggle,
+                    isToggleEnabled = imageSizeCard.isEnabled.value,
                     isError = false,
                     onCheckedChange = {
-                        homeViewModel.onTouchToggle(Toggle.IMGSIZE_TOGGLE)
-                    })
+                        homeViewModel.onTouchToggle(Toggles.IMGSIZE_TOGGLE)
+                    },
+                    value = imageSizeCard.text.value,
+                    onValueChange = { homeViewModel.updateImageSize(it) }
+                )
                 Spacer(modifier = Modifier.padding(top = 2.dp, bottom = 2.dp))
                 InfoCard()
             }
