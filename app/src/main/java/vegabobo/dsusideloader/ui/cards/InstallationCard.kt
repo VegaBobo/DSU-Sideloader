@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.ui.components.cards
+package vegabobo.dsusideloader.ui.cards
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState

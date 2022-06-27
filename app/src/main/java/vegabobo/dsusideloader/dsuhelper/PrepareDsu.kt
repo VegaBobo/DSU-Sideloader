@@ -50,18 +50,18 @@ class PrepareDsu(
             }
             ".gz" -> {
                 var gzUri = uri
-                if (uri.path.toString().contains("msf:")) {
+                if (uri!!.path.toString().contains("msf:")) {
                     updateText(c.getString(R.string.gz_copy))
                     gzUri = WorkspaceFilesUtils.copyFileToSafFolder(
                         c,
-                        uri,
+                        uri!!,
                         file,
                         WorkspaceFilesUtils.getWorkspaceFolder(c)
                     )
                 }
                 if (gsiDsuObject!!.fileSize != -1L)
                     gsiDsuObject.absolutePath =
-                        FilenameUtils.getFilePath(gzUri, true)
+                        FilenameUtils.getFilePath(gzUri!!, true)
                 transformFile2Gzip(
                     gzUri,
                     DeCompressionUtils.Constants.GZ_TO_GSI_OBJECT,
@@ -70,11 +70,11 @@ class PrepareDsu(
             }
             ".zip" -> {
                 val dsuPackageUri = if (
-                    uri.path.toString().contains("msf:")) {
+                    uri!!.path.toString().contains("msf:")) {
                     updateText(c.getString(R.string.copying_file))
                     WorkspaceFilesUtils.copyFileToSafFolder(
                         c,
-                        uri,
+                        uri!!,
                         "dsu.zip",
                         WorkspaceFilesUtils.getWorkspaceFolder(c)
                     )
@@ -82,7 +82,7 @@ class PrepareDsu(
                     uri
                 }
                 cleanWorkspace = false
-                val filePath = FilenameUtils.getFilePath(dsuPackageUri, true)
+                val filePath = FilenameUtils.getFilePath(dsuPackageUri!!, true)
 
                 // workaround for java.net.URISyntaxException: Illegal character in path at index
                 // com.android.dynsystem.InstallationAsyncTask.verifyAndPrepare(InstallationAsyncTask.java:273)
@@ -134,8 +134,8 @@ class PrepareDsu(
     }
 
 
-    private fun transformFile2Gzip(uri: Uri, op: Int, gsiDsuObject: GsiDsuObject?): GsiDsuObject? {
-
+    private fun transformFile2Gzip(uri: Uri?, op: Int, gsiDsuObject: GsiDsuObject?): GsiDsuObject? {
+        if (uri == null) return null
         val workspaceFolder = WorkspaceFilesUtils.getWorkspaceFolder(c)
         val outputFilename = FilenameUtils.queryName(c.contentResolver, uri)
 

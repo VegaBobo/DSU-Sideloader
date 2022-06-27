@@ -1,18 +1,16 @@
-package vegabobo.dsusideloader.ui.components.cards
+package vegabobo.dsusideloader.ui.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.CardBox
 
 @Composable
-fun InfoCard(
-    cardTitle: String = stringResource(id = R.string.what_dsu),
-    text: String = stringResource(id = R.string.dsu_info),
+fun CardWithText(
+    cardTitle: String,
+    text: String,
     addToggle: Boolean = false,
     isToggleEnabled: Boolean = false,
 ) {

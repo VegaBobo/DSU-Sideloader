@@ -9,37 +9,41 @@ open class Toggle(
     fun toggle() {
         this.isEnabled.value = isEnabled.value.not()
     }
+
+    fun isEnabled(): Boolean {
+        return this.isEnabled.value
+    }
 }
 
 open class ToggleWithText(
     open val text: MutableState<String> = mutableStateOf("")
 ) : Toggle() {
 
-    private fun obtainTextWithSuffix(suffix: String): String {
-        return text.value.filter { it.isDigit() } + suffix
+    fun setText(text: String) {
+        this.text.value = text
     }
 
-    fun obtainText(): String {
-        return obtainTextWithSuffix("")
+    fun getText(): String {
+        return this.text.value
     }
 
-    fun setTextContentSuffix(input: String, suffix: String) {
-        text.value = input
-        text.value = obtainTextWithSuffix(suffix)
-        if (text.value == suffix)
-            text.value = ""
+    fun getDigits(): String {
+        return addSuffix(this.text.value, "")
     }
 
-    fun isEnabled(): Boolean {
-        return this.isEnabled.value
+    fun addSuffix(input: String, suffix: String): String {
+        var newText = input.filter { it.isDigit() } + suffix
+        if (newText == suffix)
+            newText = ""
+        return newText
     }
 
-    fun isContentEmpty(): Boolean {
+    fun isTextEmpty(): Boolean {
         return this.text.value.isEmpty()
     }
 
-    fun isContentNotEmpty(): Boolean {
-        return !isContentEmpty()
+    fun isTextNotEmpty(): Boolean {
+        return !isTextEmpty()
     }
 
 }

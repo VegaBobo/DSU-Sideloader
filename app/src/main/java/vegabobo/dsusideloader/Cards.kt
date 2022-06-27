@@ -4,8 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 
 object Toggles {
-    const val USERDATA_TOGGLE = 0
-    const val IMGSIZE_TOGGLE = 1
+    const val USERDATA = 0
+    const val IMGSIZE = 1
 }
 
 class UserdataCard : ToggleWithText()
@@ -17,6 +17,15 @@ class InstallationCard(
     val isInstallable: MutableState<Boolean> = mutableStateOf(false),
     override val isEnabled: MutableState<Boolean> = mutableStateOf(true)
 ) : ToggleWithText() {
+
+    fun isError(): Boolean{
+        return this.isError.value
+    }
+
+    fun isInstallable(): Boolean{
+        return this.isInstallable.value
+    }
+
     fun lock(textFieldContent: String) {
         this.isInstallable.value = true
         this.isEnabled.value = false

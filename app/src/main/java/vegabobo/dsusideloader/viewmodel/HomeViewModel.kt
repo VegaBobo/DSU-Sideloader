@@ -2,6 +2,7 @@ package vegabobo.dsusideloader.viewmodel
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,6 +20,7 @@ class HomeViewModel : ViewModel() {
     val imageSizeCard = mutableStateOf(ImageSizeCard()).value
     val installationCard = mutableStateOf(InstallationCard()).value
     val installationDialog = mutableStateOf(InstallationDialog()).value
+
     val gsiInstallation = mutableStateOf(GsiDsuObject()).value
 
     fun onClickSelectFile() {
@@ -38,8 +40,8 @@ class HomeViewModel : ViewModel() {
 
     fun onTouchToggle(toggle: Int) {
         when (toggle) {
-            Toggles.USERDATA_TOGGLE -> userdataCard.toggle()
-            Toggles.IMGSIZE_TOGGLE -> imageSizeCard.toggle()
+            Toggles.USERDATA -> userdataCard.toggle()
+            Toggles.IMGSIZE -> imageSizeCard.toggle()
         }
     }
 
@@ -59,13 +61,13 @@ class HomeViewModel : ViewModel() {
     }
 
     fun onClickInstall() {
-        if (userdataCard.isEnabled() && userdataCard.isContentNotEmpty())
-            gsiInstallation.setUserdataSize(userdataCard.obtainText())
+        if (userdataCard.isEnabled() && userdataCard.isTextNotEmpty())
+            gsiInstallation.setUserdataSize(userdataCard.getDigits())
         else
             gsiInstallation.userdataSize = GsiDsuObject.Constants.DEFAULT_USERDATA_SIZE_IN_GB
 
-        if (imageSizeCard.isEnabled() && imageSizeCard.isContentNotEmpty())
-            gsiInstallation.setFileSize(imageSizeCard.obtainText())
+        if (imageSizeCard.isEnabled() && imageSizeCard.isTextNotEmpty())
+            gsiInstallation.setFileSize(imageSizeCard.getDigits())
         else
             gsiInstallation.fileSize = GsiDsuObject.Constants.DEFAULT_FILE_SIZE
 
@@ -84,10 +86,12 @@ class HomeViewModel : ViewModel() {
     }
 
     fun updateUserdataSize(input: String) {
-        userdataCard.setTextContentSuffix(input, "GB")
+        val inputWithSuffix = userdataCard.addSuffix(input, "GB")
+        userdataCard.setText(inputWithSuffix)
     }
 
     fun updateImageSize(input: String) {
-        imageSizeCard.setTextContentSuffix(input, "b")
+        val inputWithSuffix = imageSizeCard.addSuffix(input, "b")
+        imageSizeCard.setText(inputWithSuffix)
     }
 }
