@@ -34,7 +34,7 @@ fun FileSelectionBox(
         interactionSource = textFieldInteraction!!,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp),
+            .padding(3.dp),
         label = {
             Text(text = title)
         })

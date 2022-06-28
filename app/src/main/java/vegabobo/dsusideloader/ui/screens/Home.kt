@@ -44,7 +44,7 @@ fun Home(
         )
 
     ApplicationScreen(
-        modifier = Modifier.padding(14.dp),
+        modifier = Modifier.padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         topBar = {
             TopBar(
@@ -64,21 +64,18 @@ fun Home(
             isInstallable = installationCard.isInstallable(),
             isEnabled = installationCard.isEnabled()
         )
-        Spacer(modifier = Modifier.padding(top = 2.dp, bottom = 2.dp))
         UserdataCard(
             value = userdataCard.getText(),
             isToggleEnabled = userdataCard.isEnabled(),
             onCheckedChange = { homeViewModel.onTouchToggle(Toggles.USERDATA) },
             onValueChange = { homeViewModel.updateUserdataSize(it) },
         )
-        Spacer(modifier = Modifier.padding(top = 2.dp, bottom = 2.dp))
         ImageSizeCard(
             value = imageSizeCard.getText(),
             isToggleEnabled = imageSizeCard.isEnabled(),
             onCheckedChange = { homeViewModel.onTouchToggle(Toggles.IMGSIZE) },
             onValueChange = { homeViewModel.updateImageSize(it) }
         )
-        Spacer(modifier = Modifier.padding(top = 2.dp, bottom = 2.dp))
         DsuInfoCard()
     }
 
