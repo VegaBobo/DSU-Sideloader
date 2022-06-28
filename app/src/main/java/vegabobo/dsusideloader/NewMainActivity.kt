@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import vegabobo.dsusideloader.ui.Navigation
 import vegabobo.dsusideloader.ui.theme.DSUHelperTheme
+import vegabobo.dsusideloader.util.SetupStorageAccess
 import vegabobo.dsusideloader.viewmodel.HomeViewModel
 
 class NewMainActivity : ComponentActivity() {
@@ -33,5 +34,8 @@ class NewMainActivity : ComponentActivity() {
             }
 
         }
+
+        SetupStorageAccess(this@NewMainActivity)
+
     }
 }

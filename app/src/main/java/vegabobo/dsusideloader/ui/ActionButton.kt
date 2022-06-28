@@ -1,9 +1,6 @@
 package vegabobo.dsusideloader.ui
 
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 
 @Composable
@@ -13,10 +10,10 @@ fun ActionButton(
     isEnabled: Boolean = true,
     altColor: Boolean = false
 ) {
-    Button(
+    FilledTonalButton(
         onClick = onClick, enabled = isEnabled,
         colors =
-        if (altColor) ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer)
+        if (altColor) ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surfaceVariant)
         else ButtonDefaults.buttonColors()
     ) {
         Text(

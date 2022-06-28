@@ -29,7 +29,7 @@ fun ConfirmInstallationDialog(
         text.ifEmpty {
             stringResource(
                 id = R.string.installation_details,
-                gsiDsuObject.name,
+                gsiDsuObject.name!!,
                 gsiDsuObject.userdataSize,
                 fileSize
             )

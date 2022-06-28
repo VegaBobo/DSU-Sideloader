@@ -1,15 +1,12 @@
 package vegabobo.dsusideloader.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberTopAppBarScrollState
+import androidx.compose.material3.Snackbar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -19,7 +16,6 @@ import vegabobo.dsusideloader.ui.Destinations
 import vegabobo.dsusideloader.ui.cards.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
-import vegabobo.dsusideloader.ui.components.CardWithTextField
 import vegabobo.dsusideloader.ui.dialogs.ConfirmInstallationDialog
 import vegabobo.dsusideloader.viewmodel.HomeViewModel
 
@@ -38,15 +34,18 @@ fun Home(
     if (installationCard.isTextEmpty())
         installationCard.setText(stringResource(id = R.string.select_file))
 
+    val context = LocalContext.current
+
     if (installationDialogVisibility.isEnabled())
         ConfirmInstallationDialog(
             gsiDsuObject = gsiDsu,
-            onClickConfirm = { homeViewModel.onConfirmDialog() },
-            onClickCancel = { homeViewModel.onCancelDialog() }
+            onClickConfirm = { homeViewModel.onConfirmInstallationDialog(context) },
+            onClickCancel = { homeViewModel.onCancelInstallationDialog() }
         )
 
     ApplicationScreen(
         modifier = Modifier.padding(14.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         topBar = {
             TopBar(
                 title = stringResource(id = R.string.app_name),

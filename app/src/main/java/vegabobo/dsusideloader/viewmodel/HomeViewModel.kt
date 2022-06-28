@@ -1,6 +1,7 @@
 package vegabobo.dsusideloader.viewmodel
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -8,8 +9,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import vegabobo.dsusideloader.*
 import vegabobo.dsusideloader.dsuhelper.GsiDsuObject
+import vegabobo.dsusideloader.dsuhelper.PrepareDsu
 import vegabobo.dsusideloader.util.FilenameUtils
 
 class HomeViewModel : ViewModel() {
@@ -51,8 +57,7 @@ class HomeViewModel : ViewModel() {
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data!!.data
-                val z = GsiDsuObject()
-                z.targetUri = uri!!
+                gsiInstallation.targetUri = uri
                 installationCard.lock(
                     FilenameUtils.queryName(activity.contentResolver, uri)
                 )
@@ -78,10 +83,17 @@ class HomeViewModel : ViewModel() {
         installationCard.clear()
     }
 
-    fun onConfirmDialog() {
+    fun onConfirmInstallationDialog(c: Context) {
+        installationDialog.toggle()
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                PrepareDsu(c, gsiInstallation.targetUri!!, gsiInstallation).run()
+            }
+        }
+
     }
 
-    fun onCancelDialog() {
+    fun onCancelInstallationDialog() {
         installationDialog.toggle()
     }
 

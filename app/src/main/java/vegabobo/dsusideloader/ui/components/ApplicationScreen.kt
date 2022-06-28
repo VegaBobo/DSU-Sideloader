@@ -11,12 +11,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApplicationScreen(
     modifier: Modifier = Modifier,
+    verticalArrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(0.dp),
     topBar: @Composable (TopAppBarScrollBehavior) -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
@@ -36,7 +38,7 @@ fun ApplicationScreen(
                     .padding(innerPadding)
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = verticalArrangement,
             ) {
                 content()
             }

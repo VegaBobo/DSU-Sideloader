@@ -3,6 +3,7 @@ package vegabobo.dsusideloader.util
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +26,7 @@ class SetupStorageAccess(
 
     private fun setupSAFActivityResult() {
         v =
-            (c as AppCompatActivity).registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            (c as ComponentActivity).registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val data: Intent? = result.data
                     val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
