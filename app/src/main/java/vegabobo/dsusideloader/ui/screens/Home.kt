@@ -3,7 +3,6 @@ package vegabobo.dsusideloader.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Snackbar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -11,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.Toggles
+import vegabobo.dsusideloader.model.Toggles
 import vegabobo.dsusideloader.ui.Destinations
 import vegabobo.dsusideloader.ui.cards.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
