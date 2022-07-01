@@ -45,7 +45,7 @@ fun Home(
 
     if (installationDialogVisibility.isEnabled())
         ConfirmInstallationDialog(
-            gsiDsuObject = gsiDsu,
+            GSI = gsiDsu,
             onClickConfirm = { homeViewModel.onConfirmInstallationDialog(context) },
             onClickCancel = { homeViewModel.onCancelInstallationDialog() }
         )
@@ -63,14 +63,21 @@ fun Home(
             }
         },
         outsideContent = {
-            AnimatedVisibility(visible = homeViewModel.isInstalling.value, enter = fadeIn(), exit = fadeOut()) {
+            AnimatedVisibility(
+                visible = homeViewModel.isInstalling.value,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
                 InstallationSnackBar(
                     paddingValues = it,
-                    text = homeViewModel.installationText.value,
+                    text = homeViewModel.installationProgress.getProgress(context),
                     onClickButton = {
                         homeViewModel.isInstalling.value =
                             !homeViewModel.isInstalling.value
-                    }
+                    },
+                    showProgressIndicator = !homeViewModel.installationProgress.isFinished(),
+                    textButton = if (homeViewModel.installationProgress.isFinished())
+                        stringResource(id = R.string.close) else stringResource(id = R.string.cancel)
                 )
             }
         }) {

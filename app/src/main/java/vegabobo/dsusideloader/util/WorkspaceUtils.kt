@@ -7,17 +7,17 @@ import androidx.documentfile.provider.DocumentFile
 import java.io.InputStream
 import java.io.OutputStream
 
-class WorkspaceFilesUtils {
+class WorkspaceUtils {
 
     companion object {
 
         fun getWorkspaceFolder(context: Context): DocumentFile {
             val workspaceFolder =
                 DocumentFile.fromTreeUri(context, (SPUtils.getSafRwPath(context)).toUri())!!
-            if (workspaceFolder.findFile(DeCompressionUtils.Constants.WORKSPACE_FOLDER) == null)
-                workspaceFolder.createDirectory(DeCompressionUtils.Constants.WORKSPACE_FOLDER)!!
+            if (workspaceFolder.findFile(FileOperation.Constants.WORKSPACE_FOLDER) == null)
+                workspaceFolder.createDirectory(FileOperation.Constants.WORKSPACE_FOLDER)!!
 
-            return workspaceFolder.findFile(DeCompressionUtils.Constants.WORKSPACE_FOLDER)!!
+            return workspaceFolder.findFile(FileOperation.Constants.WORKSPACE_FOLDER)!!
         }
 
         fun cleanWorkspaceFolder(context: Context, deleteAlsoGzFile: Boolean) {
@@ -30,13 +30,13 @@ class WorkspaceFilesUtils {
         fun copyFileToSafFolder(
             context: Context,
             inputFile: Uri,
-            outputFilename: String,
-            workspaceFolder: DocumentFile
+            outputFilename: String
         ): Uri {
             val input: InputStream?
             val output: OutputStream?
             val finalFile: DocumentFile? =
-                workspaceFolder.createFile("application/octet-stream", outputFilename)
+                getWorkspaceFolder(context)
+                    .createFile("application/octet-stream", outputFilename)
             try {
                 output = context.contentResolver.openOutputStream(finalFile!!.uri)
                 input = context.contentResolver.openInputStream(inputFile)

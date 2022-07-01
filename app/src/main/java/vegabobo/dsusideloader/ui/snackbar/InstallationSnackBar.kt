@@ -19,17 +19,18 @@ fun InstallationSnackBar(
     paddingValues: PaddingValues = PaddingValues(0.dp),
     alphaFactor: Float = 0.3F,
     text: String,
-    textButton: String = stringResource(id = R.string.cancel),
-    onClickButton: () -> Unit
+    textButton: String,
+    onClickButton: () -> Unit,
+    showProgressIndicator: Boolean = true
 ) {
     OpaqueOverlay(paddingValues = paddingValues, alphaFactor = alphaFactor) {
         Box(modifier = Modifier.align(Alignment.BottomStart)) {
             Column {
-//                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 SnackBar(
                     text = text,
                     textButton = textButton,
-                    onClickButton = { onClickButton() }
+                    onClickButton = { onClickButton() },
+                    showProgressIndicator = showProgressIndicator
                 )
             }
         }

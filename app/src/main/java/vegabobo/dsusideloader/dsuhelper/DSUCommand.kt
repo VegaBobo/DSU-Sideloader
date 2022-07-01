@@ -3,10 +3,10 @@ package vegabobo.dsusideloader.dsuhelper
 import android.content.Context
 import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.SPUtils
-import vegabobo.dsusideloader.util.WorkspaceFilesUtils
+import vegabobo.dsusideloader.util.WorkspaceUtils
 
 class DSUCommand(
-    private val gsiDsuObject: GsiDsuObject, val context: Context, private val skipDebugMode: Boolean
+    private val GSI: GSI, val context: Context, private val skipDebugMode: Boolean
 ) {
 
     object Constants {
@@ -27,7 +27,7 @@ class DSUCommand(
     }
 
     fun writeInstallScript(): String {
-        val workspaceFolder = WorkspaceFilesUtils.getWorkspaceFolder(context)
+        val workspaceFolder = WorkspaceUtils.getWorkspaceFolder(context)
         val d = workspaceFolder.createFile("text/x-shellscript", Constants.INSTALL_SCRIPT_FILENAME)
         val scriptFile = FilenameUtils.getFilePath(d!!.uri, false).replace("file://", "")
         val outputStream = context.contentResolver.openOutputStream(d.uri)
@@ -44,11 +44,11 @@ class DSUCommand(
 
     private fun genArguments(): String {
         var arguments = ""
-        arguments += addArgument("-d", "${gsiDsuObject.absolutePath}")
-        arguments += addArgument("--el", "KEY_USERDATA_SIZE", gsiDsuObject.getUserdataInBytes())
-        if (gsiDsuObject.fileSize != -1L)
+        arguments += addArgument("-d", "${GSI.absolutePath}")
+        arguments += addArgument("--el", "KEY_USERDATA_SIZE", GSI.getUserdataInBytes())
+        if (GSI.fileSize != -1L)
             arguments += addArgument(
-                "--el", "KEY_SYSTEM_SIZE", gsiDsuObject.fileSize
+                "--el", "KEY_SYSTEM_SIZE", GSI.fileSize
             )
         return arguments.trim()
     }
@@ -70,9 +70,9 @@ class DSUCommand(
 
     fun installationInfoAsString():String{
         return "Installation info: " +
-        "\nAbsolute path: " + this.gsiDsuObject.absolutePath +
-        "\nFile size: " + this.gsiDsuObject.fileSize +
-        "\nUserdata size: " + this.gsiDsuObject.userdataSize +
+        "\nAbsolute path: " + this.GSI.absolutePath +
+        "\nFile size: " + this.GSI.fileSize +
+        "\nUserdata size: " + this.GSI.userdataSize +
         "\n\nLogcat:\n"
     }
 

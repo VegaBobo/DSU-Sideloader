@@ -9,23 +9,18 @@ import java.io.BufferedInputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
-class DeCompressionUtils(
+class FileOperation(
     private val context: Context,
     private val inputFile: Uri,
     private val outputFile: String,
-    private val workspaceFolder: DocumentFile
+    private val workspaceFolder: DocumentFile = WorkspaceUtils.getWorkspaceFolder(context)
 ) {
 
     object Constants {
-        const val GZ_TO_GSI_OBJECT = 0
-        const val XZ_TO_IMG = 1
-        const val IMG_TO_GZ = 2
-        const val GZ_TO_IMG = 3
         const val WORKSPACE_FOLDER = "workspace_dsuhelper"
     }
 
-
-    fun extractXZFile(): Uri? {
+    fun extractXZFile(): Uri {
         return try {
             val extractedFile: DocumentFile? =
                 workspaceFolder.createFile("application/octet-stream", outputFile)
@@ -43,11 +38,11 @@ class DeCompressionUtils(
             extractedFile.uri
         } catch (e: Exception) {
             Log.e("extractXZFile", e.stackTraceToString())
-            null
+            return Uri.EMPTY
         }
     }
 
-    fun compressGzip(): Uri? {
+    fun compressGzip(): Uri {
         val compressedFile: DocumentFile? =
             workspaceFolder.createFile("application/octet-stream", outputFile)
         return try {
@@ -65,11 +60,11 @@ class DeCompressionUtils(
             compressedFile.uri
         } catch (e: Exception) {
             Log.e("compressGzip", e.stackTraceToString())
-            null
+            return Uri.EMPTY
         }
     }
 
-    fun decompressGzip(): Uri? {
+    fun decompressGzip(): Uri {
         return try {
             val documentFile: DocumentFile? =
                 workspaceFolder.createFile("application/octet-stream", outputFile)
@@ -87,7 +82,7 @@ class DeCompressionUtils(
             documentFile!!.uri
         } catch (e: Exception) {
             Log.e("decompressGzip", e.stackTraceToString())
-            null
+            return Uri.EMPTY
         }
 
     }

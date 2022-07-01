@@ -3,14 +3,14 @@ package vegabobo.dsusideloader.ui.dialogs
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.dsuhelper.GsiDsuObject
+import vegabobo.dsusideloader.dsuhelper.GSI
 import vegabobo.dsusideloader.ui.Dialog
 
 @Composable
 fun ConfirmInstallationDialog(
     title: String = stringResource(id = R.string.info),
     text: String = "",
-    gsiDsuObject: GsiDsuObject,
+    GSI: GSI,
     confirmText: String = stringResource(id = R.string.proceed),
     cancelText: String = stringResource(id = R.string.cancel),
     automaticSizeText: String = stringResource(id = R.string.auto),
@@ -19,9 +19,9 @@ fun ConfirmInstallationDialog(
 ) {
 
     val fileSize =
-        if (gsiDsuObject.fileSize == -1L)
+        if (GSI.fileSize == -1L)
             automaticSizeText
-        else gsiDsuObject.fileSize
+        else GSI.fileSize
 
     Dialog(
         title = title,
@@ -29,8 +29,8 @@ fun ConfirmInstallationDialog(
         text.ifEmpty {
             stringResource(
                 id = R.string.installation_details,
-                gsiDsuObject.name!!,
-                gsiDsuObject.userdataSize,
+                GSI.name!!,
+                GSI.userdataSize,
                 fileSize
             )
         },

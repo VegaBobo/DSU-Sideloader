@@ -12,7 +12,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import vegabobo.dsusideloader.dsuhelper.GsiDsuObject
+import vegabobo.dsusideloader.dsuhelper.GSI
 import vegabobo.dsusideloader.dsuhelper.PrepareDsu
 import vegabobo.dsusideloader.model.*
 import vegabobo.dsusideloader.util.FilenameUtils
@@ -26,9 +26,9 @@ class HomeViewModel : ViewModel() {
     val installationCard = mutableStateOf(InstallationCard()).value
     val installationDialog = mutableStateOf(InstallationDialog()).value
 
-    val gsiInstallation = mutableStateOf(GsiDsuObject()).value
+    val gsiInstallation = mutableStateOf(GSI()).value
 
-    val installationText = mutableStateOf("Installation")
+    val installationProgress = mutableStateOf(InstallationProgress()).value
     val isInstalling = mutableStateOf(false)
 
     fun onClickSelectFile() {
@@ -59,9 +59,10 @@ class HomeViewModel : ViewModel() {
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val uri = result.data!!.data
-                gsiInstallation.targetUri = uri
+                gsiInstallation.targetUri = uri!!
+                gsiInstallation.name = FilenameUtils.queryName(activity.contentResolver, uri)
                 installationCard.lock(
-                    FilenameUtils.queryName(activity.contentResolver, uri)
+                    gsiInstallation.name
                 )
             }
         }
@@ -71,26 +72,27 @@ class HomeViewModel : ViewModel() {
         if (userdataCard.isEnabled() && userdataCard.isTextNotEmpty())
             gsiInstallation.setUserdataSize(userdataCard.getDigits())
         else
-            gsiInstallation.userdataSize = GsiDsuObject.Constants.DEFAULT_USERDATA_SIZE_IN_GB
+            gsiInstallation.userdataSize = GSI.Constants.DEFAULT_USERDATA_SIZE_IN_GB
 
         if (imageSizeCard.isEnabled() && imageSizeCard.isTextNotEmpty())
             gsiInstallation.setFileSize(imageSizeCard.getDigits())
         else
-            gsiInstallation.fileSize = GsiDsuObject.Constants.DEFAULT_FILE_SIZE
+            gsiInstallation.fileSize = GSI.Constants.DEFAULT_FILE_SIZE
 
         installationDialog.toggle()
     }
 
     fun onClickClear() {
-        isInstalling.value = true
         installationCard.clear()
     }
 
-    fun onConfirmInstallationDialog(c: Context) {
+    fun onConfirmInstallationDialog(context: Context) {
         installationDialog.toggle()
+        isInstalling.value = true
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                PrepareDsu(c, gsiInstallation.targetUri!!, gsiInstallation).run()
+                PrepareDsu(context, gsiInstallation, this@HomeViewModel).run()
+                onClickClear()
             }
         }
 

@@ -1,9 +1,11 @@
 package vegabobo.dsusideloader.util
 
 import android.content.ContentResolver
+import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
+import androidx.documentfile.provider.DocumentFile
 
 class FilenameUtils {
 
@@ -34,6 +36,10 @@ class FilenameUtils {
             val name: String = returnCursor.getString(nameIndex)
             returnCursor.close()
             return name
+        }
+
+        fun getLengthFromFile(context: Context, uri: Uri): Long {
+            return DocumentFile.fromSingleUri(context, uri)!!.length()
         }
 
     }

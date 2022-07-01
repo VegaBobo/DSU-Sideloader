@@ -22,17 +22,17 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
 import vegabobo.dsusideloader.checks.CompatibilityCheck
 import vegabobo.dsusideloader.checks.OperationMode
-import vegabobo.dsusideloader.dsuhelper.GsiDsuObject
+import vegabobo.dsusideloader.dsuhelper.GSI
 import vegabobo.dsusideloader.dsuhelper.PrepareDsu
 import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.SPUtils
 import vegabobo.dsusideloader.util.SetupStorageAccess
-import vegabobo.dsusideloader.util.WorkspaceFilesUtils
+import vegabobo.dsusideloader.util.WorkspaceUtils
 import kotlin.math.roundToInt
 
 class HomeFragment : Fragment() {
 
-    private val gsiDsuObject = GsiDsuObject()
+    private val GSI = GSI()
     var selectedGsi: Uri = Uri.EMPTY
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,7 +46,7 @@ class HomeFragment : Fragment() {
         if (!hasAvailableStorage())
             showNoAvaiableStorageDialog()
 
-        gsiDsuObject.userdataSize = SPUtils.getUserdataSize(requireActivity())
+        GSI.userdataSize = SPUtils.getUserdataSize(requireActivity())
 
         val edGsiPath = requireView().findViewById<TextInputEditText>(R.id.ed_gsi_path)
         val btnInstall = requireView().findViewById<MaterialButton>(R.id.btn_install)
@@ -64,9 +64,9 @@ class HomeFragment : Fragment() {
             txDebugBuildInfo.text = getString(R.string.debug_build_info, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
         }
 
-        tc.text = getString(R.string.default_userdata_help, gsiDsuObject.userdataSize)
+        tc.text = getString(R.string.default_userdata_help, GSI.userdataSize)
 
-        edDSsize.setText(getString(R.string.gigabyte_holder, gsiDsuObject.userdataSize))
+        edDSsize.setText(getString(R.string.gigabyte_holder, GSI.userdataSize))
 
         val fileSelection =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -101,21 +101,21 @@ class HomeFragment : Fragment() {
         }
 
         btnIncrease.setOnClickListener {
-            gsiDsuObject.userdataSize++
-            edDSsize.setText(getString(R.string.gigabyte_holder, gsiDsuObject.userdataSize))
+            GSI.userdataSize++
+            edDSsize.setText(getString(R.string.gigabyte_holder, GSI.userdataSize))
 
         }
 
         btnDecrease.setOnClickListener {
-            if (gsiDsuObject.userdataSize >= 2)
-                gsiDsuObject.userdataSize--
-            edDSsize.setText(getString(R.string.gigabyte_holder, gsiDsuObject.userdataSize))
+            if (GSI.userdataSize >= 2)
+                GSI.userdataSize--
+            edDSsize.setText(getString(R.string.gigabyte_holder, GSI.userdataSize))
         }
 
         cbDSsize.setOnClickListener {
             if (cbDSsize.isChecked) {
-                gsiDsuObject.userdataSize = SPUtils.getUserdataSize(requireContext())
-                edDSsize.setText(getString(R.string.gigabyte_holder, gsiDsuObject.userdataSize))
+                GSI.userdataSize = SPUtils.getUserdataSize(requireContext())
+                edDSsize.setText(getString(R.string.gigabyte_holder, GSI.userdataSize))
                 edDSsize.isEnabled = false
                 btnIncrease.visibility = View.GONE
                 btnDecrease.visibility = View.GONE
@@ -152,7 +152,7 @@ class HomeFragment : Fragment() {
         btnInstall.setOnClickListener {
 
             if (!cbGSIsize.isChecked) {
-                gsiDsuObject.fileSize = if (edGSIsize.toString().isNotEmpty()) {
+                GSI.fileSize = if (edGSIsize.toString().isNotEmpty()) {
                     edGSIsize.text.toString().toLong()
                 } else {
                     Toast.makeText(
@@ -165,10 +165,10 @@ class HomeFragment : Fragment() {
             }
 
             if (!cbDSsize.isChecked) {
-                gsiDsuObject.userdataSize = edDSsize.text.toString().split("GB")[0].toInt()
+                GSI.userdataSize = edDSsize.text.toString().split("GB")[0].toInt()
             }
 
-            beginInstall(selectedGsi, gsiDsuObject)
+            beginInstall(selectedGsi, GSI)
         }
 
         val cb = requireView().findViewById<MaterialCheckBox>(R.id.cb_keepawake)
@@ -276,7 +276,7 @@ class HomeFragment : Fragment() {
         return true
     }
 
-    private fun beginInstall(selectedGsi: Uri, gsiDsuObject: GsiDsuObject) {
+    private fun beginInstall(selectedGsi: Uri, GSI: GSI) {
 
         val selectedFile = FilenameUtils.queryName(requireActivity().contentResolver, selectedGsi)
 
@@ -297,22 +297,22 @@ class HomeFragment : Fragment() {
                                     getString(
                                         R.string.installation_details,
                                         selectedFile,
-                                        gsiDsuObject.userdataSize.toString(),
-                                        if (gsiDsuObject.fileSize == -1L) getString(R.string.auto) else gsiDsuObject.fileSize
+                                        GSI.userdataSize.toString(),
+                                        if (GSI.fileSize == -1L) getString(R.string.auto) else GSI.fileSize
                                     )
                                 )
                                 .setPositiveButton(getString(R.string.proceed)) { _, _ ->
-                                    WorkspaceFilesUtils.cleanWorkspaceFolder(
+                                    WorkspaceUtils.cleanWorkspaceFolder(
                                         requireActivity(),
                                         true
                                     )
-                                    Thread(
-                                        PrepareDsu(
-                                            requireActivity(),
-                                            selectedGsi,
-                                            gsiDsuObject
-                                        )
-                                    ).start()
+//                                    Thread(
+//                                        PrepareDsu(
+//                                            requireActivity(),
+//                                            selectedGsi,
+//                                            GSI
+//                                        )
+//                                    ).start()
                                 }
                                 .setNegativeButton(getString(R.string.cancel), null)
                                 .setCancelable(true)
