@@ -1,6 +1,10 @@
 package vegabobo.dsusideloader.ui.screens
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
@@ -12,10 +16,14 @@ import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.model.Toggles
 import vegabobo.dsusideloader.ui.Destinations
-import vegabobo.dsusideloader.ui.cards.*
+import vegabobo.dsusideloader.ui.cards.DsuInfoCard
+import vegabobo.dsusideloader.ui.cards.ImageSizeCard
+import vegabobo.dsusideloader.ui.cards.InstallationCard
+import vegabobo.dsusideloader.ui.cards.UserdataCard
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.dialogs.ConfirmInstallationDialog
+import vegabobo.dsusideloader.ui.snackbar.InstallationSnackBar
 import vegabobo.dsusideloader.viewmodel.HomeViewModel
 
 @Composable
@@ -52,6 +60,18 @@ fun Home(
                 scrollBehavior = it,
             ) {
                 navController.navigate(Destinations.Settings)
+            }
+        },
+        outsideContent = {
+            AnimatedVisibility(visible = homeViewModel.isInstalling.value, enter = fadeIn(), exit = fadeOut()) {
+                InstallationSnackBar(
+                    paddingValues = it,
+                    text = homeViewModel.installationText.value,
+                    onClickButton = {
+                        homeViewModel.isInstalling.value =
+                            !homeViewModel.isInstalling.value
+                    }
+                )
             }
         }) {
         InstallationCard(

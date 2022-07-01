@@ -21,18 +21,9 @@ class NewMainActivity : ComponentActivity() {
         homeViewModel.fileSelectionResult(this)
 
         setContent {
-
-            val insets = WindowInsets
-                .systemBars
-                .only(WindowInsetsSides.Vertical)
-                .asPaddingValues()
-
             DSUHelperTheme {
-                Surface(modifier = Modifier.padding(insets)) {
-                    Navigation(homeViewModel)
-                }
+                Navigation(homeViewModel)
             }
-
         }
 
         SetupStorageAccess(this@NewMainActivity)

@@ -4,11 +4,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 @Composable
 fun Dialog(
+    modifier: Modifier = Modifier,
     title: String = "",
     text: String = "",
     confirmText: String = "",
@@ -18,6 +20,7 @@ fun Dialog(
     context: @Composable () -> Unit = {},
 ) {
     AlertDialog(
+        modifier = modifier,
         onDismissRequest = onClickCancel,
         confirmButton = {
             if (confirmText.isNotEmpty())

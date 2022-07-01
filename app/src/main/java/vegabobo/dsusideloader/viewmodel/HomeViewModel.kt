@@ -28,6 +28,9 @@ class HomeViewModel : ViewModel() {
 
     val gsiInstallation = mutableStateOf(GsiDsuObject()).value
 
+    val installationText = mutableStateOf("Installation")
+    val isInstalling = mutableStateOf(false)
+
     fun onClickSelectFile() {
         var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
         chooseFile.type = "*/*"
@@ -79,6 +82,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun onClickClear() {
+        isInstalling.value = true
         installationCard.clear()
     }
 
