@@ -46,8 +46,10 @@ fun InstallationCard(
         Spacer(modifier = Modifier.padding(2.dp))
         Row {
             Spacer(modifier = Modifier.weight(1F))
-            if (isInstallable)
+            if (isInstallable) {
                 ActionButton(text = btnClearTitle, onClick = onClickClear, altColor = true)
+                Spacer(modifier = Modifier.padding(end = 6.dp))
+            }
             ActionButton(
                 text = btnInstallTitle,
                 onClick = onClickInstall,
