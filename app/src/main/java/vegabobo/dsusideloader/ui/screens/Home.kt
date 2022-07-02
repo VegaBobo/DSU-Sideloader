@@ -51,7 +51,7 @@ fun Home(
         )
 
     ApplicationScreen(
-        modifier = Modifier.padding(18.dp),
+        modifier = Modifier.padding(start = 18.dp, end = 18.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         topBar = {
             TopBar(
@@ -75,34 +75,49 @@ fun Home(
                         homeViewModel.isInstalling.value =
                             !homeViewModel.isInstalling.value
                     },
-                    showProgressIndicator = !homeViewModel.installationProgress.isFinished(),
+                    //showProgressIndicator = !homeViewModel.installationProgress.isFinished(),
+                    showProgressIndicator = false,
                     textButton = if (homeViewModel.installationProgress.isFinished())
                         stringResource(id = R.string.close) else stringResource(id = R.string.cancel)
                 )
             }
         }) {
-        InstallationCard(
-            onClickInstall = { homeViewModel.onClickInstall() },
-            onClickClear = { homeViewModel.onClickClear() },
-            onClickTextField = { homeViewModel.onClickSelectFile() },
-            textFieldText = installationCard.getText(),
-            isError = installationCard.isError(),
-            isInstallable = installationCard.isInstallable(),
-            isEnabled = installationCard.isEnabled()
-        )
-        UserdataCard(
-            value = userdataCard.getText(),
-            isToggleEnabled = userdataCard.isEnabled(),
-            onCheckedChange = { homeViewModel.onTouchToggle(Toggles.USERDATA) },
-            onValueChange = { homeViewModel.updateUserdataSize(it) },
-        )
-        ImageSizeCard(
-            value = imageSizeCard.getText(),
-            isToggleEnabled = imageSizeCard.isEnabled(),
-            onCheckedChange = { homeViewModel.onTouchToggle(Toggles.IMGSIZE) },
-            onValueChange = { homeViewModel.updateImageSize(it) }
-        )
-        DsuInfoCard()
+        if (!homeViewModel.deviceSupport.hasDynamicPartitions()) {
+            UnsupportedCard(onClickButton = { homeViewModel.actionFinishApp() })
+        } else {
+            if (!homeViewModel.deviceSupport.hasSetupStorageAccess())
+                AttentionCard(onClick = {
+                    homeViewModel.setupStorageAction()
+                })
+            if (!homeViewModel.deviceSupport.hasFreeStorage())
+                StorageWarningCard {
+                    homeViewModel.deviceSupport.hasFreeStorage.value = true
+                }
+        }
+        if (homeViewModel.deviceSupport.isCompatible()) {
+            InstallationCard(
+                onClickInstall = { homeViewModel.onClickInstall() },
+                onClickClear = { homeViewModel.onClickClear() },
+                onClickTextField = { homeViewModel.onClickSelectFileAction() },
+                textFieldText = installationCard.getText(),
+                isError = installationCard.isError(),
+                isInstallable = installationCard.isInstallable(),
+                isEnabled = installationCard.isEnabled()
+            )
+            UserdataCard(
+                value = userdataCard.getText(),
+                isToggleEnabled = userdataCard.isEnabled(),
+                onCheckedChange = { homeViewModel.onTouchToggle(Toggles.USERDATA) },
+                onValueChange = { homeViewModel.updateUserdataSize(it) },
+            )
+            ImageSizeCard(
+                value = imageSizeCard.getText(),
+                isToggleEnabled = imageSizeCard.isEnabled(),
+                onCheckedChange = { homeViewModel.onTouchToggle(Toggles.IMGSIZE) },
+                onValueChange = { homeViewModel.updateImageSize(it) }
+            )
+            DsuInfoCard()
+        }
     }
 
 }
