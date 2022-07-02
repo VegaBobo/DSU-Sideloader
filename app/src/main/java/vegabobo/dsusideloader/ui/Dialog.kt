@@ -2,6 +2,7 @@ package vegabobo.dsusideloader.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,7 +29,11 @@ fun Dialog(
         },
         dismissButton = {
             if (cancelText.isNotEmpty())
-                ActionButton(text = cancelText, onClick = onClickCancel, altColor = true)
+                ActionButton(
+                    text = cancelText, onClick = onClickCancel,
+                    colorText = MaterialTheme.colorScheme.primary,
+                    colorButton = MaterialTheme.colorScheme.surfaceVariant
+                )
         },
         text = {
             Column {

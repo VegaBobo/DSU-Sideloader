@@ -5,6 +5,7 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -47,7 +48,12 @@ fun InstallationCard(
         Row {
             Spacer(modifier = Modifier.weight(1F))
             if (isInstallable) {
-                ActionButton(text = btnClearTitle, onClick = onClickClear, altColor = true)
+                ActionButton(
+                    text = btnClearTitle,
+                    onClick = onClickClear,
+                    colorText = MaterialTheme.colorScheme.primary,
+                    colorButton = MaterialTheme.colorScheme.surfaceVariant
+                )
                 Spacer(modifier = Modifier.padding(end = 6.dp))
             }
             ActionButton(

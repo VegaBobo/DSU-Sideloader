@@ -9,20 +9,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun CardBox(
+    modifier: Modifier = Modifier,
     cardTitle: String,
     addToggle: Boolean = false,
     isToggleEnabled: Boolean = false,
+    cardColor: Color = MaterialTheme.colorScheme.inverseOnSurface,
     onCheckedChange: ((Boolean) -> Unit) = {},
     content: @Composable (ColumnScope) -> Unit,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.inverseOnSurface)
+            .background(cardColor)
             .padding(all = 10.dp)
             .fillMaxWidth()
     ) {
