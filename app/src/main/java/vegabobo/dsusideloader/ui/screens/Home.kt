@@ -16,10 +16,7 @@ import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.model.Toggles
 import vegabobo.dsusideloader.ui.Destinations
-import vegabobo.dsusideloader.ui.cards.DsuInfoCard
-import vegabobo.dsusideloader.ui.cards.ImageSizeCard
-import vegabobo.dsusideloader.ui.cards.InstallationCard
-import vegabobo.dsusideloader.ui.cards.UserdataCard
+import vegabobo.dsusideloader.ui.cards.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.dialogs.ConfirmInstallationDialog
@@ -46,7 +43,7 @@ fun Home(
     if (installationDialogVisibility.isEnabled())
         ConfirmInstallationDialog(
             GSI = gsiDsu,
-            onClickConfirm = { homeViewModel.onConfirmInstallationDialog(context) },
+            onClickConfirm = { homeViewModel.onConfirmInstallationDialogAction() },
             onClickCancel = { homeViewModel.onCancelInstallationDialog() }
         )
 

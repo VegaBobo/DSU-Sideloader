@@ -38,9 +38,6 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (isEnvCompatible(true))
-            SetupStorageAccess(requireContext())
-
         // gsid refuses to start installation when < 40% free storage
         // prevent user from using app on this circumstances
         if (!hasAvailableStorage())
