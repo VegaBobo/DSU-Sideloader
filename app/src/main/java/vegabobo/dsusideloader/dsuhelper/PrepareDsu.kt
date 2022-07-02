@@ -2,12 +2,11 @@ package vegabobo.dsusideloader.dsuhelper
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import vegabobo.dsusideloader.util.FileOperation
 import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.WorkspaceUtils
 import vegabobo.dsusideloader.viewmodel.HomeViewModel
-import vegabobo.dsusideloader.viewmodel.InstallationProgress
+import vegabobo.dsusideloader.model.InstallationProgress
 
 class PrepareDsu(
     private val context: Context,

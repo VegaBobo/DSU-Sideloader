@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.viewmodel
+package vegabobo.dsusideloader.model
 
 import android.content.Context
 import androidx.compose.runtime.MutableState
@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import vegabobo.dsusideloader.R
 
 class InstallationProgress(
-    val currentProgress: MutableState<Int> = mutableStateOf(-1)
+    private val currentProgress: MutableState<Int> = mutableStateOf(-1)
 ) {
 
     object Steps {
@@ -26,18 +26,20 @@ class InstallationProgress(
     }
 
     fun getProgress(context: Context): String {
-        return when (getProgress()){
+        return when (getProgress()) {
             Steps.FINISHED -> context.getString(R.string.done)
             Steps.COPYING_FILE -> context.getString(R.string.copying_file)
             Steps.DECOMPRESSING_XZ -> context.getString(R.string.extracting_xz)
             Steps.COMPRESSING_TO_GZ -> context.getString(R.string.compressing_img_to_gzip)
             Steps.DECOMPRESSING_GZIP -> context.getString(R.string.extracting_gzip)
-            else -> { context.getString(R.string.error) }
+            else -> {
+                context.getString(R.string.error)
+            }
         }
     }
 
-    fun isFinished(): Boolean{
-        return getProgress()==Steps.FINISHED
+    fun isFinished(): Boolean {
+        return getProgress() == Steps.FINISHED
     }
 
 }
