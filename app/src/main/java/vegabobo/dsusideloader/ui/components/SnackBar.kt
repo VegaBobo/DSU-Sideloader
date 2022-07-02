@@ -20,7 +20,7 @@ fun SnackBar(
     text: String,
     textButton: String,
     onClickButton: () -> Unit,
-    showProgressIndicator: Boolean = true
+    showProgressIndicator: Boolean = false
 ) {
     val shape =
         if (showProgressIndicator)
