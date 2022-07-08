@@ -3,116 +3,126 @@ package vegabobo.dsusideloader.viewmodel
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import vegabobo.dsusideloader.ActivityAction
 import vegabobo.dsusideloader.NewMainActivity
 import vegabobo.dsusideloader.dsuhelper.GSI
 import vegabobo.dsusideloader.dsuhelper.PrepareDsu
-import vegabobo.dsusideloader.model.*
 import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.SPUtils
 
+data class HomeUiState(
+
+    // Installation card
+    val installationFieldText: String = "",
+    val isInstallationFieldEnabled: Boolean = true,
+    val isInstallable: Boolean = false,
+
+    // Userdata card
+    val isCustomUserdataSelected: Boolean = false,
+    val userdataFieldText: String = "",
+
+    // ImageSize card
+    val isCustomImageSizeSelected: Boolean = false,
+    val imageSizeFieldText: String = "",
+
+    // Warning cards
+    val showSetupStorageCard: Boolean = false,
+    val showLowStorageCard: Boolean = false,
+    val showUnsupportedCard: Boolean = false,
+
+    // Installation
+    val showInstallationDialog: Boolean = false,
+    val isInstalling: Boolean = false,
+    val installationText: String = ""
+)
+
 class HomeViewModel : ViewModel() {
 
-    val activityAction: MutableStateFlow<Int> = MutableStateFlow(-1)
+    // UI state
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    val userdataCard = mutableStateOf(UserdataCard()).value
-    val imageSizeCard = mutableStateOf(ImageSizeCard()).value
-    val installationCard = mutableStateOf(InstallationCard()).value
-    val installationDialog = mutableStateOf(InstallationDialog()).value
+    // used to call actions in MainActivity
+    val activityAction: MutableStateFlow<Int> = MutableStateFlow(ActivityAction.NONE)
 
-    val deviceSupport = mutableStateOf(DeviceSupport()).value
+    var gsiToBeInstalled = GSI()
 
-    val gsiInstallation = mutableStateOf(GSI()).value
+    // Installation card
 
-    val installationProgress = mutableStateOf(InstallationProgress()).value
-    val isInstalling = mutableStateOf(false)
+    fun onClickInstallButton() {
+        gsiToBeInstalled.setUserdataSize(uiState.value.userdataFieldText)
+        gsiToBeInstalled.setFileSize(uiState.value.imageSizeFieldText)
+        _uiState.update { it.copy(showInstallationDialog = true) }
+    }
 
-    fun onTouchToggle(toggle: Int) {
-        when (toggle) {
-            Toggles.USERDATA -> userdataCard.toggle()
-            Toggles.IMGSIZE -> imageSizeCard.toggle()
+    fun onClickClearButton() {
+        _uiState.update {
+            it.copy(
+                installationFieldText = "",
+                isInstallationFieldEnabled = true,
+                isInstallable = false,
+            )
         }
     }
 
-    fun onClickInstall() {
-        if (userdataCard.isEnabled() && userdataCard.isTextNotEmpty())
-            gsiInstallation.setUserdataSize(userdataCard.getDigits())
-        else
-            gsiInstallation.userdataSize = GSI.Constants.DEFAULT_USERDATA_SIZE_IN_GB
+    // Userdata card
 
-        if (imageSizeCard.isEnabled() && imageSizeCard.isTextNotEmpty())
-            gsiInstallation.setFileSize(imageSizeCard.getDigits())
-        else
-            gsiInstallation.fileSize = GSI.Constants.DEFAULT_FILE_SIZE
-
-        installationDialog.toggle()
-    }
-
-    fun onClickClear() {
-        installationCard.clear()
-    }
-
-    fun onConfirmInstallationDialogAction(){
-        activityAction.value = NewMainActivity.Action.INSTALL_GSI
-    }
-
-    fun onConfirmInstallationDialog(activity: NewMainActivity) {
-        installationDialog.toggle()
-        isInstalling.value = true
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                PrepareDsu(activity, gsiInstallation, this@HomeViewModel).run()
-                onClickClear()
-            }
-        }
-
-    }
-
-    fun onCancelInstallationDialog() {
-        installationDialog.toggle()
+    fun onCheckUserdataCard() {
+        _uiState.update { it.copy(isCustomUserdataSelected = it.isCustomUserdataSelected.not()) }
     }
 
     fun updateUserdataSize(input: String) {
-        val inputWithSuffix = userdataCard.addSuffix(input, "GB")
-        userdataCard.setText(inputWithSuffix)
+        val inputWithSuffix = FilenameUtils.appendToString(input, "GB")
+        _uiState.update { it.copy(userdataFieldText = inputWithSuffix) }
+    }
+
+    // Imagesize card
+
+    fun onCheckImageSizeCard() {
+        _uiState.update { it.copy(isCustomImageSizeSelected = it.isCustomImageSizeSelected.not()) }
     }
 
     fun updateImageSize(input: String) {
-        val inputWithSuffix = imageSizeCard.addSuffix(input, "b")
-        imageSizeCard.setText(inputWithSuffix)
+        val inputWithSuffix = FilenameUtils.appendToString(input, "b")
+        _uiState.update { it.copy(imageSizeFieldText = inputWithSuffix) }
     }
 
-    fun onSetupStorageResult(data: Intent, activity: NewMainActivity) {
-        val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        activity.contentResolver.takePersistableUriPermission(
-            data.data!!,
-            takeFlags
-        )
-        SPUtils.writeSafRwPath(activity, data.data.toString())
-        deviceSupport.hasSetupStorageAccess.value = true
+    // Installation dialog
+
+    fun onConfirmInstallationDialog() {
+        activityAction.value = ActivityAction.INSTALL_GSI
     }
 
-    fun setupStorage(arl: ActivityResultLauncher<Intent>) {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-        arl.launch(intent)
+    fun onCancelInstallationDialog() {
+        _uiState.update { it.copy(showInstallationDialog = false, isInstalling = false) }
     }
 
-    fun setupStorageAction(){
-        activityAction.value = NewMainActivity.Action.SETUP_FILE_ACCESS
+    fun onConfirmInstallationAction(activity: NewMainActivity) {
+        _uiState.update { it.copy(showInstallationDialog = false, isInstalling = true) }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                PrepareDsu(activity, gsiToBeInstalled, this@HomeViewModel).run()
+                onClickClearButton()
+            }
+        }
     }
 
-    fun onClickSelectFileAction(){
-        activityAction.value = NewMainActivity.Action.OPEN_FILE_SELECTION
+    // File selection (installation card)
+
+    fun onSelectFileAction() {
+        activityAction.value = ActivityAction.OPEN_FILE_SELECTION
     }
 
-    fun onClickSelectFile(arl: ActivityResultLauncher<Intent>) {
+    fun onSelectFileResult(arl: ActivityResultLauncher<Intent>) {
         var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
         chooseFile.type = "*/*"
         val mimetypes = arrayOf(
@@ -127,19 +137,71 @@ class HomeViewModel : ViewModel() {
         arl.launch(chooseFile)
     }
 
-    fun finishApp(newMainActivity: NewMainActivity) {
-        newMainActivity.finishAffinity()
+    fun onSelectFileSuccessfully(uri: Uri, activity: NewMainActivity) {
+        gsiToBeInstalled.targetUri = uri
+        gsiToBeInstalled.name = FilenameUtils.queryName(activity.contentResolver, uri)
+        _uiState.update {
+            it.copy(
+                installationFieldText = gsiToBeInstalled.name,
+                isInstallationFieldEnabled = false,
+                isInstallable = true,
+                showSetupStorageCard = true
+            )
+        }
     }
 
-    fun actionFinishApp(){
-        activityAction.value = NewMainActivity.Action.FINISH_APP
+    // Setup storage
+
+    fun onSetupStorageAction() {
+        activityAction.value = ActivityAction.SETUP_FILE_ACCESS
     }
 
-    fun onFileSelectionResult(uri: Uri, activity: NewMainActivity) {
-        gsiInstallation.targetUri = uri
-        gsiInstallation.name = FilenameUtils.queryName(activity.contentResolver, uri)
-        installationCard.lock(
-            gsiInstallation.name
+    fun onSetupStorageResult(arl: ActivityResultLauncher<Intent>) {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        arl.launch(intent)
+    }
+
+    fun onSetupStorageSuccessfully(data: Intent, activity: NewMainActivity) {
+        val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        activity.contentResolver.takePersistableUriPermission(
+            data.data!!,
+            takeFlags
         )
+        SPUtils.writeSafRwPath(activity, data.data.toString())
+        _uiState.update { it.copy(showSetupStorageCard = false) }
     }
+
+    // Installation
+
+    fun updateInstallationText(text: String) {
+        _uiState.update { it.copy(installationText = text) }
+    }
+
+    // Warning cards
+
+    fun showSetupStorageCard(arePermissionsGranted: Boolean) {
+        _uiState.update { it.copy(showSetupStorageCard = arePermissionsGranted) }
+    }
+
+    fun showNoDynamicPartitionsCard(isDeviceSupported: Boolean) {
+        _uiState.update { it.copy(showUnsupportedCard = isDeviceSupported) }
+    }
+
+    fun showNoAvailStorageCard(hasAvailableStorage: Boolean) {
+        _uiState.update { it.copy(showLowStorageCard = hasAvailableStorage) }
+    }
+
+    fun isDeviceCompatible(): Boolean {
+        return uiState.value.showUnsupportedCard &&
+                uiState.value.showSetupStorageCard &&
+                uiState.value.showLowStorageCard
+    }
+
+    // Other
+
+    fun finishAppAction() {
+        activityAction.value = ActivityAction.FINISH_APP
+    }
+
 }

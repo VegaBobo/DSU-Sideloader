@@ -31,11 +31,13 @@ class GSI(
     }
 
     fun setFileSize(size: String) {
-        this.fileSize = size.toLong()
+        if(size.isNotEmpty())
+            this.fileSize = size.toLong()
     }
 
     fun setUserdataSize(size: String) {
-        this.userdataSize = size.toInt()
+        if(size.isNotEmpty())
+            this.userdataSize = size.toInt()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

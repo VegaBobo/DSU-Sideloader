@@ -2,11 +2,19 @@ package vegabobo.dsusideloader.dsuhelper
 
 import android.content.Context
 import android.net.Uri
+import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.util.FileOperation
 import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.WorkspaceUtils
 import vegabobo.dsusideloader.viewmodel.HomeViewModel
-import vegabobo.dsusideloader.model.InstallationProgress
+
+object InstallationSteps {
+    const val FINISHED = 0
+    const val COPYING_FILE = 1 // -> c.getString(R.string.gz_copy)
+    const val DECOMPRESSING_XZ = 2 // -> c.getString(R.string.gz_copy)
+    const val COMPRESSING_TO_GZ = 3 // -> c.getString(R.string.compressing_img_to_gzip)
+    const val DECOMPRESSING_GZIP = 4 // -> c.getString(R.string.extracting_gzip)
+}
 
 class PrepareDsu(
     private val context: Context,
@@ -22,7 +30,7 @@ class PrepareDsu(
         prepare()
         gsi.fileSize = preparedFilesize
         gsi.absolutePath = preparedGsiPath
-        updateText(InstallationProgress.Steps.FINISHED)
+        updateText(InstallationSteps.FINISHED)
         Deploy(context, gsi).inst()
     }
 
@@ -53,7 +61,7 @@ class PrepareDsu(
     }
 
     fun copyFile(inputFile: Uri, updateInstallationText: Boolean): Uri {
-        if (updateInstallationText) updateText(InstallationProgress.Steps.COPYING_FILE)
+        if (updateInstallationText) updateText(InstallationSteps.COPYING_FILE)
         return WorkspaceUtils.copyFileToSafFolder(
             context,
             inputFile,
@@ -78,7 +86,7 @@ class PrepareDsu(
 
     fun prepareXz(uri: Uri, outputName: String) {
         val outputFile = "$outputName.img"
-        updateText(InstallationProgress.Steps.DECOMPRESSING_XZ)
+        updateText(InstallationSteps.DECOMPRESSING_XZ)
         val fileOperation = FileOperation(context, uri, outputFile)
         val imgFile = fileOperation.extractXZFile()
         prepareImage(imgFile, outputFile)
@@ -86,7 +94,7 @@ class PrepareDsu(
 
     fun prepareImage(uri: Uri, outputName: String) {
         val outputFile = "$outputName.gz"
-        updateText(InstallationProgress.Steps.COMPRESSING_TO_GZ)
+        updateText(InstallationSteps.COMPRESSING_TO_GZ)
         preparedFilesize = FilenameUtils.getLengthFromFile(context, uri)
         val fileOperation = FileOperation(context, uri, outputFile)
         val gzFile = fileOperation.compressGzip()
@@ -95,7 +103,7 @@ class PrepareDsu(
 
     fun prepareGz(uri: Uri, outputName: String) {
         val outputFile = "$outputName.img"
-        updateText(InstallationProgress.Steps.DECOMPRESSING_GZIP)
+        updateText(InstallationSteps.DECOMPRESSING_GZIP)
         val fileOperation = FileOperation(context, uri, outputFile)
         val imgFile = fileOperation.decompressGzip()
         preparedFilesize = FilenameUtils.getLengthFromFile(context, imgFile)
@@ -107,7 +115,17 @@ class PrepareDsu(
     }
 
     private fun updateText(value: Int) {
-        homeViewModel.installationProgress.set(value)
+        val text = when (value) {
+            InstallationSteps.FINISHED -> context.getString(R.string.done)
+            InstallationSteps.COPYING_FILE -> context.getString(R.string.copying_file)
+            InstallationSteps.DECOMPRESSING_XZ -> context.getString(R.string.extracting_xz)
+            InstallationSteps.COMPRESSING_TO_GZ -> context.getString(R.string.compressing_img_to_gzip)
+            InstallationSteps.DECOMPRESSING_GZIP -> context.getString(R.string.extracting_gzip)
+            else -> {
+                context.getString(R.string.error)
+            }
+        }
+        homeViewModel.updateInstallationText(text)
     }
 
 }

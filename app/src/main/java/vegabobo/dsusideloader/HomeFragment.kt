@@ -23,10 +23,8 @@ import com.google.android.material.textview.MaterialTextView
 import vegabobo.dsusideloader.checks.CompatibilityCheck
 import vegabobo.dsusideloader.checks.OperationMode
 import vegabobo.dsusideloader.dsuhelper.GSI
-import vegabobo.dsusideloader.dsuhelper.PrepareDsu
 import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.SPUtils
-import vegabobo.dsusideloader.util.SetupStorageAccess
 import vegabobo.dsusideloader.util.WorkspaceUtils
 import kotlin.math.roundToInt
 
@@ -213,7 +211,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun isPropsValid(showDialogs: Boolean): Boolean {
-        if (!CompatibilityCheck.checkDynamicPartitions()) {
+        if (!CompatibilityCheck.hasDynamicPartitions()) {
             if (showDialogs) {
                 checkDialog(
                     getString(R.string.unsupported),

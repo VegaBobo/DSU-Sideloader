@@ -11,6 +11,13 @@ class FilenameUtils {
 
     companion object {
 
+        fun appendToString(input: String, textToAppend: String): String {
+            var newText = input.filter { it.isDigit() } + textToAppend
+            if (newText == textToAppend)
+                newText = ""
+            return newText
+        }
+
         fun getFilePath(uri: Uri, addQuotes: Boolean): String {
             val input = uri.path.toString()
             val safStorage = input.split("/document/")[1].replace("/tree/", "")

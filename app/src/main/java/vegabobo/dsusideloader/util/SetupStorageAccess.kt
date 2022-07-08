@@ -8,7 +8,7 @@ class SetupStorageAccess {
 
     companion object {
 
-        fun arePermissionsGranted(context: Context): Boolean {
+        fun hasGrantedStorage(context: Context): Boolean {
             val folderFromSharedPreferences = SPUtils.getSafRwPath(context)
             return arePermissionsGrantedToFolder(context, folderFromSharedPreferences)
         }

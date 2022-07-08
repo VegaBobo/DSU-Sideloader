@@ -7,20 +7,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.model.Toggles
 import vegabobo.dsusideloader.ui.Destinations
 import vegabobo.dsusideloader.ui.cards.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.dialogs.ConfirmInstallationDialog
 import vegabobo.dsusideloader.ui.snackbar.InstallationSnackBar
+import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 import vegabobo.dsusideloader.viewmodel.HomeViewModel
 
 @Composable
@@ -29,21 +28,13 @@ fun Home(
     homeViewModel: HomeViewModel
 ) {
 
-    val userdataCard = homeViewModel.userdataCard
-    val imageSizeCard = homeViewModel.imageSizeCard
-    val installationCard = homeViewModel.installationCard
-    val installationDialogVisibility = homeViewModel.installationDialog
-    val gsiDsu = homeViewModel.gsiInstallation
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val gsiDsu = homeViewModel.gsiToBeInstalled
 
-    if (installationCard.isTextEmpty())
-        installationCard.setText(stringResource(id = R.string.select_file))
-
-    val context = LocalContext.current
-
-    if (installationDialogVisibility.isEnabled())
+    if (uiState.showInstallationDialog)
         ConfirmInstallationDialog(
             GSI = gsiDsu,
-            onClickConfirm = { homeViewModel.onConfirmInstallationDialogAction() },
+            onClickConfirm = { homeViewModel.onConfirmInstallationDialog() },
             onClickCancel = { homeViewModel.onCancelInstallationDialog() }
         )
 
@@ -61,56 +52,53 @@ fun Home(
         },
         outsideContent = {
             AnimatedVisibility(
-                visible = homeViewModel.isInstalling.value,
+                visible = uiState.isInstalling,
                 enter = fadeIn(),
                 exit = fadeOut()
             ) {
                 InstallationSnackBar(
                     paddingValues = it,
-                    text = homeViewModel.installationProgress.getProgress(context),
-                    onClickButton = {
-                        homeViewModel.isInstalling.value =
-                            !homeViewModel.isInstalling.value
-                    },
+                    text = uiState.installationText,
+                    onClickButton = { },
                     //showProgressIndicator = !homeViewModel.installationProgress.isFinished(),
                     showProgressIndicator = false,
-                    textButton = if (homeViewModel.installationProgress.isFinished())
+                    textButton = if (!uiState.isInstalling)
                         stringResource(id = R.string.close) else stringResource(id = R.string.cancel)
                 )
             }
         }) {
-        if (!homeViewModel.deviceSupport.hasDynamicPartitions()) {
-            UnsupportedCard(onClickButton = { homeViewModel.actionFinishApp() })
+        if (uiState.showUnsupportedCard) {
+            UnsupportedCard(onClickButton = { homeViewModel.finishAppAction() })
         } else {
-            if (!homeViewModel.deviceSupport.hasSetupStorageAccess())
+            if (uiState.showSetupStorageCard)
                 AttentionCard(onClick = {
-                    homeViewModel.setupStorageAction()
+                    homeViewModel.onSetupStorageAction()
                 })
-            if (!homeViewModel.deviceSupport.hasFreeStorage())
+            if (uiState.showLowStorageCard)
                 StorageWarningCard {
-                    homeViewModel.deviceSupport.hasFreeStorage.value = true
+                    homeViewModel.showNoAvailStorageCard(false)
                 }
         }
-        if (homeViewModel.deviceSupport.isCompatible()) {
+        if (homeViewModel.isDeviceCompatible()) {
             InstallationCard(
-                onClickInstall = { homeViewModel.onClickInstall() },
-                onClickClear = { homeViewModel.onClickClear() },
-                onClickTextField = { homeViewModel.onClickSelectFileAction() },
-                textFieldText = installationCard.getText(),
-                isError = installationCard.isError(),
-                isInstallable = installationCard.isInstallable(),
-                isEnabled = installationCard.isEnabled()
+                onClickInstall = { homeViewModel.onClickInstallButton() },
+                onClickClear = { homeViewModel.onClickClearButton() },
+                onClickTextField = { homeViewModel.onSelectFileAction() },
+                textFieldText = uiState.installationFieldText,
+                isError = false,
+                isInstallable = uiState.isInstallable,
+                isEnabled = uiState.isInstallationFieldEnabled
             )
             UserdataCard(
-                value = userdataCard.getText(),
-                isToggleEnabled = userdataCard.isEnabled(),
-                onCheckedChange = { homeViewModel.onTouchToggle(Toggles.USERDATA) },
+                value = uiState.userdataFieldText,
+                isToggleEnabled = uiState.isCustomUserdataSelected,
+                onCheckedChange = { homeViewModel.onCheckUserdataCard() },
                 onValueChange = { homeViewModel.updateUserdataSize(it) },
             )
             ImageSizeCard(
-                value = imageSizeCard.getText(),
-                isToggleEnabled = imageSizeCard.isEnabled(),
-                onCheckedChange = { homeViewModel.onTouchToggle(Toggles.IMGSIZE) },
+                value = uiState.imageSizeFieldText,
+                isToggleEnabled = uiState.isCustomImageSizeSelected,
+                onCheckedChange = { homeViewModel.onCheckImageSizeCard() },
                 onValueChange = { homeViewModel.updateImageSize(it) }
             )
             DsuInfoCard()

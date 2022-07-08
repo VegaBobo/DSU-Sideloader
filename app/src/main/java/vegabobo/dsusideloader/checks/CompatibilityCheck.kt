@@ -14,7 +14,7 @@ class CompatibilityCheck {
             return getSystemProperty("ro.build.type")!! != "user"
         }
 
-        fun checkDynamicPartitions(): Boolean {
+        fun hasDynamicPartitions(): Boolean {
             return getSystemProperty("ro.boot.dynamic_partitions") == "true"
         }
 

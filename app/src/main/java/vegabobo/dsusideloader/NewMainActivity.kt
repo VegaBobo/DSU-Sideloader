@@ -3,7 +3,6 @@ package vegabobo.dsusideloader
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -20,6 +19,14 @@ import vegabobo.dsusideloader.util.SetupStorageAccess
 import vegabobo.dsusideloader.util.StorageUtils
 import vegabobo.dsusideloader.viewmodel.HomeViewModel
 
+object ActivityAction {
+    const val NONE = -1
+    const val FINISH_APP = 0
+    const val SETUP_FILE_ACCESS = 1
+    const val OPEN_FILE_SELECTION = 2
+    const val INSTALL_GSI = 3
+}
+
 class NewMainActivity : ComponentActivity() {
 
     companion object {
@@ -31,13 +38,6 @@ class NewMainActivity : ComponentActivity() {
                     .setTimeout(10)
             )
         }
-    }
-
-    object Action {
-        const val FINISH_APP = 0
-        const val SETUP_FILE_ACCESS = 1
-        const val OPEN_FILE_SELECTION = 2
-        const val INSTALL_GSI = 3
     }
 
     private val hVm: HomeViewModel by viewModels()
@@ -53,10 +53,9 @@ class NewMainActivity : ComponentActivity() {
         setupStorageAccess()
         fileSelectionResult()
 
-        hVm.deviceSupport.hasSetupStorageAccess.value =
-            SetupStorageAccess.arePermissionsGranted(this@NewMainActivity)
-        hVm.deviceSupport.hasDynamicPartitions.value = CompatibilityCheck.checkDynamicPartitions()
-        hVm.deviceSupport.hasFreeStorage.value = StorageUtils.hasAvailableStorage()
+        hVm.showSetupStorageCard(hasNotGrantedStorageAccess())
+        hVm.showNoDynamicPartitionsCard(hasNotDynamicPartitions())
+        hVm.showNoAvailStorageCard(hasNotAvailableStorage())
 
         setContent {
             DSUHelperTheme {
@@ -67,19 +66,18 @@ class NewMainActivity : ComponentActivity() {
         lifecycleScope.launch {
             hVm.activityAction.collect {
                 when (it) {
-                    Action.FINISH_APP ->
-                        hVm.finishApp(this@NewMainActivity)
-                    Action.SETUP_FILE_ACCESS ->
-                        hVm.setupStorage(setupStorageAccess)
-                    Action.OPEN_FILE_SELECTION ->
-                        hVm.onClickSelectFile(fileSelection)
-                    Action.INSTALL_GSI ->
-                        hVm.onConfirmInstallationDialog(this@NewMainActivity)
+                    ActivityAction.FINISH_APP ->
+                        finishActivity(0)
+                    ActivityAction.SETUP_FILE_ACCESS ->
+                        hVm.onSetupStorageResult(setupStorageAccess)
+                    ActivityAction.OPEN_FILE_SELECTION ->
+                        hVm.onSelectFileResult(fileSelection)
+                    ActivityAction.INSTALL_GSI ->
+                        hVm.onConfirmInstallationAction(this@NewMainActivity)
                 }
-                hVm.activityAction.value = -1
+                hVm.activityAction.value = ActivityAction.NONE
             }
         }
-
     }
 
     private fun setupStorageAccess() {
@@ -88,7 +86,7 @@ class NewMainActivity : ComponentActivity() {
                 ActivityResultContracts.StartActivityForResult()
             ) { result ->
                 if (result.resultCode == Activity.RESULT_OK)
-                    hVm.onSetupStorageResult(result.data!!, this)
+                    hVm.onSetupStorageSuccessfully(result.data!!, this)
             }
     }
 
@@ -97,12 +95,20 @@ class NewMainActivity : ComponentActivity() {
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             if (result.resultCode == Activity.RESULT_OK)
-                hVm.onFileSelectionResult(result.data!!.data!!, this)
+                hVm.onSelectFileSuccessfully(result.data!!.data!!, this)
         }
     }
 
-    private fun startInstallation() {
-        hVm.onConfirmInstallationDialog(this)
+    private fun hasNotGrantedStorageAccess(): Boolean {
+        return !SetupStorageAccess.hasGrantedStorage(this@NewMainActivity)
+    }
+
+    private fun hasNotDynamicPartitions(): Boolean {
+        return !CompatibilityCheck.hasDynamicPartitions()
+    }
+
+    private fun hasNotAvailableStorage(): Boolean {
+        return !StorageUtils.hasAvailableStorage()
     }
 
 }
