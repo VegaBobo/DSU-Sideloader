@@ -193,9 +193,9 @@ class HomeViewModel : ViewModel() {
     }
 
     fun isDeviceCompatible(): Boolean {
-        return uiState.value.showUnsupportedCard &&
-                uiState.value.showSetupStorageCard &&
-                uiState.value.showLowStorageCard
+        return  !uiState.value.showUnsupportedCard &&
+                !uiState.value.showSetupStorageCard &&
+                !uiState.value.showLowStorageCard
     }
 
     // Other
