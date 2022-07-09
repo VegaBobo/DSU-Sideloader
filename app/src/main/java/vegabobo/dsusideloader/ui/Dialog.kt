@@ -37,13 +37,13 @@ fun Dialog(
         },
         text = {
             Column {
-                if (confirmText.isNotEmpty())
+                if (title.isNotEmpty())
                     Text(
                         text = title,
                         fontWeight = FontWeight.Medium,
                         fontSize = 20.sp
                     )
-                if (cancelText.isNotEmpty())
+                if (text.isNotEmpty())
                     Text(
                         text = text
                     )

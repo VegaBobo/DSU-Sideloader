@@ -35,8 +35,7 @@ class FilenameUtils {
             }
         }
 
-        fun queryName(resolver: ContentResolver, uri: Uri?): String {
-            if (uri==null) return ""
+        fun queryName(resolver: ContentResolver, uri: Uri): String {
             val returnCursor: Cursor = resolver.query(uri, null, null, null, null)!!
             val nameIndex: Int = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
             returnCursor.moveToFirst()

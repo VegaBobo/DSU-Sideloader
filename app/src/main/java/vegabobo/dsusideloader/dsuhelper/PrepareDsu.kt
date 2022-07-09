@@ -31,7 +31,8 @@ class PrepareDsu(
         gsi.fileSize = preparedFilesize
         gsi.absolutePath = preparedGsiPath
         updateText(InstallationSteps.FINISHED)
-        Deploy(context, gsi).inst()
+        if(!homeViewModel.installationJob.isCancelled)
+            Deploy(context, gsi).inst()
     }
 
     private fun getExtension(file: String): String {
@@ -87,8 +88,8 @@ class PrepareDsu(
     fun prepareXz(uri: Uri, outputName: String) {
         val outputFile = "$outputName.img"
         updateText(InstallationSteps.DECOMPRESSING_XZ)
-        val fileOperation = FileOperation(context, uri, outputFile)
-        val imgFile = fileOperation.extractXZFile()
+        val fileOperation = FileOperation(context, uri, outputFile, homeViewModel)
+        val imgFile = fileOperation.unpack()
         prepareImage(imgFile, outputFile)
     }
 
@@ -96,16 +97,16 @@ class PrepareDsu(
         val outputFile = "$outputName.gz"
         updateText(InstallationSteps.COMPRESSING_TO_GZ)
         preparedFilesize = FilenameUtils.getLengthFromFile(context, uri)
-        val fileOperation = FileOperation(context, uri, outputFile)
-        val gzFile = fileOperation.compressGzip()
+        val fileOperation = FileOperation(context, uri, outputFile, homeViewModel)
+        val gzFile = fileOperation.pack()
         preparedGsiPath = FilenameUtils.getFilePath(gzFile, true)
     }
 
     fun prepareGz(uri: Uri, outputName: String) {
         val outputFile = "$outputName.img"
         updateText(InstallationSteps.DECOMPRESSING_GZIP)
-        val fileOperation = FileOperation(context, uri, outputFile)
-        val imgFile = fileOperation.decompressGzip()
+        val fileOperation = FileOperation(context, uri, outputFile, homeViewModel)
+        val imgFile = fileOperation.unpack()
         preparedFilesize = FilenameUtils.getLengthFromFile(context, imgFile)
         preparedGsiPath = FilenameUtils.getFilePath(uri, true)
     }

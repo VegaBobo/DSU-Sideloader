@@ -6,12 +6,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 import vegabobo.dsusideloader.ActivityAction
 import vegabobo.dsusideloader.NewMainActivity
 import vegabobo.dsusideloader.dsuhelper.GSI
@@ -42,10 +43,14 @@ data class HomeUiState(
     // Installation
     val showInstallationDialog: Boolean = false,
     val isInstalling: Boolean = false,
-    val installationText: String = ""
+    val installationText: String = "",
+    val installationProgress: Float = 0.0f,
+    val showCancelDialog: Boolean = false
 )
 
 class HomeViewModel : ViewModel() {
+
+    var installationJob = Job()
 
     // UI state
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -58,10 +63,15 @@ class HomeViewModel : ViewModel() {
 
     // Installation card
 
-    fun onClickInstallButton() {
+    fun onClickInstallOrCancelButton(isInstalling: Boolean) {
+        if (isInstalling) {
+            _uiState.update { it.copy(showCancelDialog = true) }
+            return
+        }
         gsiToBeInstalled.setUserdataSize(uiState.value.userdataFieldText)
         gsiToBeInstalled.setFileSize(uiState.value.imageSizeFieldText)
         _uiState.update { it.copy(showInstallationDialog = true) }
+
     }
 
     fun onClickClearButton() {
@@ -108,8 +118,10 @@ class HomeViewModel : ViewModel() {
 
     fun onConfirmInstallationAction(activity: NewMainActivity) {
         _uiState.update { it.copy(showInstallationDialog = false, isInstalling = true) }
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+        if (installationJob.isCancelled)
+            installationJob = Job()
+        viewModelScope.launch(Dispatchers.IO + installationJob) {
+            runBlocking(Dispatchers.IO) {
                 PrepareDsu(activity, gsiToBeInstalled, this@HomeViewModel).run()
                 onClickClearButton()
             }
@@ -145,7 +157,6 @@ class HomeViewModel : ViewModel() {
                 installationFieldText = gsiToBeInstalled.name,
                 isInstallationFieldEnabled = false,
                 isInstallable = true,
-                showSetupStorageCard = true
             )
         }
     }
@@ -193,7 +204,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun isDeviceCompatible(): Boolean {
-        return  !uiState.value.showUnsupportedCard &&
+        return !uiState.value.showUnsupportedCard &&
                 !uiState.value.showSetupStorageCard &&
                 !uiState.value.showLowStorageCard
     }
@@ -202,6 +213,26 @@ class HomeViewModel : ViewModel() {
 
     fun finishAppAction() {
         activityAction.value = ActivityAction.FINISH_APP
+    }
+
+    fun updateProgress(progress: Float) {
+        _uiState.update { it.copy(installationProgress = progress) }
+    }
+
+    fun onClickCancelInstallationButton() {
+        if (installationJob.isActive)
+            installationJob.cancel()
+        _uiState.update {
+            it.copy(
+                isInstalling = false,
+                isInstallable = true,
+                showCancelDialog = false
+            )
+        }
+    }
+
+    fun onDismissCancelDialog() {
+        _uiState.update { it.copy(showCancelDialog = false) }
     }
 
 }

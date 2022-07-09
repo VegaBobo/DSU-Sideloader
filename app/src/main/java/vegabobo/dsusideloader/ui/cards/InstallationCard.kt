@@ -4,8 +4,11 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -27,7 +30,10 @@ fun InstallationCard(
     onClickTextField: () -> Unit,
     isError: Boolean = false,
     isEnabled: Boolean = true,
-    isInstallable: Boolean = false
+    isInstallable: Boolean = false,
+    isInstalling: Boolean = false,
+    installationText: String = "",
+    installationProgressBar: Float = 0.0f,
 ) {
 
     val textFieldInteraction = remember { MutableInteractionSource() }
@@ -36,18 +42,27 @@ fun InstallationCard(
         onClickTextField()
 
     CardBox(cardTitle = cardTitle, addToggle = false) {
-        FileSelectionBox(
-            textFieldInteraction = textFieldInteraction,
-            enabled = isEnabled,
-            isError = isError,
-            readOnly = true,
-            value = textFieldText,
-            title = stringResource(id = R.string.select_gsi_info)
-        )
+        if (isInstalling) {
+            Text(text = installationText)
+            Spacer(modifier = Modifier.padding(6.dp))
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                progress = installationProgressBar
+            )
+        } else {
+            FileSelectionBox(
+                textFieldInteraction = textFieldInteraction,
+                enabled = isEnabled,
+                isError = isError,
+                readOnly = true,
+                value = textFieldText,
+                title = stringResource(id = R.string.select_gsi_info)
+            )
+        }
         Spacer(modifier = Modifier.padding(2.dp))
         Row {
             Spacer(modifier = Modifier.weight(1F))
-            if (isInstallable) {
+            if (isInstallable && !isInstalling) {
                 ActionButton(
                     text = btnClearTitle,
                     onClick = onClickClear,
@@ -57,7 +72,7 @@ fun InstallationCard(
                 Spacer(modifier = Modifier.padding(end = 6.dp))
             }
             ActionButton(
-                text = btnInstallTitle,
+                text = if (isInstalling) stringResource(id = R.string.cancel) else btnInstallTitle,
                 onClick = onClickInstall,
                 isEnabled = isInstallable
             )

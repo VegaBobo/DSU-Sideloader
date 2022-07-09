@@ -1,8 +1,5 @@
 package vegabobo.dsusideloader.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -14,11 +11,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.Destinations
+import vegabobo.dsusideloader.ui.Dialog
 import vegabobo.dsusideloader.ui.cards.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.dialogs.ConfirmInstallationDialog
-import vegabobo.dsusideloader.ui.snackbar.InstallationSnackBar
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 import vegabobo.dsusideloader.viewmodel.HomeViewModel
 
@@ -38,6 +35,16 @@ fun Home(
             onClickCancel = { homeViewModel.onCancelInstallationDialog() }
         )
 
+    if (uiState.showCancelDialog) {
+        Dialog(
+            title = "Cancel",
+            text = "Are you sure?",
+            confirmText = "Yes",
+            cancelText = "No",
+            onClickConfirm = { homeViewModel.onClickCancelInstallationButton() },
+            onClickCancel = { homeViewModel.onDismissCancelDialog() })
+    }
+
     ApplicationScreen(
         modifier = Modifier.padding(start = 18.dp, end = 18.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -49,31 +56,12 @@ fun Home(
             ) {
                 navController.navigate(Destinations.Settings)
             }
-        },
-        outsideContent = {
-            AnimatedVisibility(
-                visible = uiState.isInstalling,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                InstallationSnackBar(
-                    paddingValues = it,
-                    text = uiState.installationText,
-                    onClickButton = { },
-                    //showProgressIndicator = !homeViewModel.installationProgress.isFinished(),
-                    showProgressIndicator = false,
-                    textButton = if (!uiState.isInstalling)
-                        stringResource(id = R.string.close) else stringResource(id = R.string.cancel)
-                )
-            }
         }) {
         if (uiState.showUnsupportedCard) {
-            UnsupportedCard(onClickButton = { homeViewModel.finishAppAction() })
+            UnsupportedCard { homeViewModel.finishAppAction() }
         } else {
             if (uiState.showSetupStorageCard)
-                AttentionCard(onClick = {
-                    homeViewModel.onSetupStorageAction()
-                })
+                AttentionCard { homeViewModel.onSetupStorageAction() }
             if (uiState.showLowStorageCard)
                 StorageWarningCard {
                     homeViewModel.showNoAvailStorageCard(false)
@@ -81,13 +69,16 @@ fun Home(
         }
         if (homeViewModel.isDeviceCompatible()) {
             InstallationCard(
-                onClickInstall = { homeViewModel.onClickInstallButton() },
+                onClickInstall = { homeViewModel.onClickInstallOrCancelButton(uiState.isInstalling) },
                 onClickClear = { homeViewModel.onClickClearButton() },
                 onClickTextField = { homeViewModel.onSelectFileAction() },
                 textFieldText = uiState.installationFieldText,
                 isError = false,
                 isInstallable = uiState.isInstallable,
-                isEnabled = uiState.isInstallationFieldEnabled
+                isEnabled = uiState.isInstallationFieldEnabled,
+                installationText = uiState.installationText,
+                installationProgressBar = uiState.installationProgress,
+                isInstalling = uiState.isInstalling
             )
             UserdataCard(
                 value = uiState.userdataFieldText,
