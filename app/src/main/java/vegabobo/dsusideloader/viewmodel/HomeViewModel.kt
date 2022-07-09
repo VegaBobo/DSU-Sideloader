@@ -128,6 +128,24 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    // Cancel dialog
+
+    fun onClickCancelInstallationButton() {
+        if (installationJob.isActive)
+            installationJob.cancel()
+        _uiState.update {
+            it.copy(
+                isInstalling = false,
+                isInstallable = true,
+                showCancelDialog = false
+            )
+        }
+    }
+
+    fun onDismissCancelDialog() {
+        _uiState.update { it.copy(showCancelDialog = false) }
+    }
+
     // File selection (installation card)
 
     fun onSelectFileAction() {
@@ -217,22 +235,6 @@ class HomeViewModel : ViewModel() {
 
     fun updateProgress(progress: Float) {
         _uiState.update { it.copy(installationProgress = progress) }
-    }
-
-    fun onClickCancelInstallationButton() {
-        if (installationJob.isActive)
-            installationJob.cancel()
-        _uiState.update {
-            it.copy(
-                isInstalling = false,
-                isInstallable = true,
-                showCancelDialog = false
-            )
-        }
-    }
-
-    fun onDismissCancelDialog() {
-        _uiState.update { it.copy(showCancelDialog = false) }
     }
 
 }

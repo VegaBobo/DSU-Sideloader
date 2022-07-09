@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.ui
+package vegabobo.dsusideloader.ui.components
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable

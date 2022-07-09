@@ -10,13 +10,12 @@ import vegabobo.dsusideloader.viewmodel.HomeViewModel
 import java.io.InputStream
 import java.io.OutputStream
 
-
 class FileOperation(
     private val context: Context,
     private val inputFile: Uri,
-    private val outputFile: String,
+    outputFile: String,
     private val homeViewModel: HomeViewModel,
-    private val workspaceFolder: DocumentFile = WorkspaceUtils.getWorkspaceFolder(context),
+    workspaceFolder: DocumentFile = WorkspaceUtils.getWorkspaceFolder(context),
 ) {
 
     object Constants {
@@ -36,9 +35,11 @@ class FileOperation(
         onReadedBuffer: (Long) -> Unit
     ) {
         val buffer = ByteArray(8 * 1024)
-        var n = 0
+        var n: Int
         var readed: Long = 0
-        while (-1 != inputStr.read(buffer).also { n = it } && !homeViewModel.installationJob.isCancelled) {
+        while (-1 != inputStr.read(buffer)
+                .also { n = it } && !homeViewModel.installationJob.isCancelled
+        ) {
             readed += buffer.size
             onReadedBuffer(readed)
             outputStr.write(buffer, 0, n)
@@ -67,7 +68,7 @@ class FileOperation(
         copy(archiveInputStream, outputStream) {
             updateProgress(inputFileSize, archiveInputStream.compressedCount)
         }
-        return finalFile.uri;
+        return finalFile.uri
     }
 
     private fun updateProgress(fileSize: Long, readed: Long) {

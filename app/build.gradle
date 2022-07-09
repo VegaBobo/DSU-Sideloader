@@ -44,6 +44,16 @@ android {
         }
     }
 }
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        allWarningsAsErrors = false
+        freeCompilerArgs += [
+                "-Xopt-in=kotlin.RequiresOptIn",
+        ]
+    }
+}
+
 dependencies {
     implementation 'org.tukaani:xz:1.9'
     implementation 'com.github.topjohnwu.libsu:core:5.0.1'

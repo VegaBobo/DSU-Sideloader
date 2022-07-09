@@ -89,4 +89,8 @@
     <string name="dsu_info">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor viverra lorem sollicitudin rhoncus.</string>
     <string name="placeholder">placeholder</string>
     <string name="other">Other</string>
+    <string name="continue_anyway">Continue anyway</string>
+    <string name="cancel_description">Progress done till now will be gone, are you sure?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
 </resources>

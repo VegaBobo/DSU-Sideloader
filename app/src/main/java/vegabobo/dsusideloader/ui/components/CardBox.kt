@@ -27,6 +27,7 @@ fun CardBox(
             .clip(RoundedCornerShape(10.dp))
             .background(cardColor)
             .padding(all = 10.dp)
+            .padding(end = 4.dp, start = 4.dp)
             .fillMaxWidth()
     ) {
         Column {
@@ -37,7 +38,7 @@ fun CardBox(
                     Switch(checked = isToggleEnabled, onCheckedChange = onCheckedChange)
                 }
             else
-                CardTitle(cardTitle = cardTitle)
+                CardTitle(cardTitle = cardTitle, modifier = Modifier.padding(top = 2.dp, bottom = 2.dp))
             content(this)
         }
     }

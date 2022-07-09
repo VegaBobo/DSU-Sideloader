@@ -6,21 +6,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
 fun TopBar(
-    title: String,
-    icon: ImageVector? = null,
-    contentDescription: String? = "Unknown",
     scrollBehavior: TopAppBarScrollBehavior? = null,
+    barTitle: String,
+    icon: ImageVector? = null,
+    iconContentDescription: String? = "Unknown",
     onClickIcon: () -> Unit = {},
 ) {
     LargeTopAppBar(
         colors = TopAppBarDefaults.largeTopAppBarColors(scrolledContainerColor = MaterialTheme.colorScheme.background),
-        title = { Text(title) },
+        title = { Text(barTitle) },
         actions = {
             if (icon != null) {
                 IconButton(onClickIcon) {
                     Icon(
                         imageVector = icon,
-                        contentDescription = contentDescription
+                        contentDescription = iconContentDescription
                     )
                 }
             }

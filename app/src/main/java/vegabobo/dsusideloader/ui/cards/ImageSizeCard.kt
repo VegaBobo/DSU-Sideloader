@@ -9,28 +9,26 @@ import vegabobo.dsusideloader.ui.components.FileSelectionBox
 
 @Composable
 fun ImageSizeCard(
-    cardTitle: String = stringResource(id = R.string.image_size),
-    textFieldTitle: String = stringResource(id = R.string.image_size_custom),
     addToggle: Boolean = true,
     isToggleEnabled: Boolean = false,
     isError: Boolean = false,
-    value: String,
+    textFieldValue: String,
     onValueChange: (String) -> Unit,
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
     CardBox(
-        cardTitle = cardTitle,
+        cardTitle = stringResource(id = R.string.image_size),
         addToggle = addToggle,
         isToggleEnabled = isToggleEnabled,
         onCheckedChange = onCheckedChange
     ) {
         AnimatedVisibility(visible = isToggleEnabled) {
             FileSelectionBox(
-                enabled = true,
+                isEnabled = true,
                 isError = isError,
-                numberOnly = true,
-                value = value,
-                title = textFieldTitle,
+                isNumberOnly = true,
+                textFieldValue = textFieldValue,
+                textFieldTitle = stringResource(id = R.string.image_size_custom),
                 onValueChange = onValueChange
             )
         }

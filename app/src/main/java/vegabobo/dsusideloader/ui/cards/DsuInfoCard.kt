@@ -6,9 +6,9 @@ import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.CardWithText
 
 @Composable
-fun DsuInfoCard(
-    cardTitle: String = stringResource(id = R.string.what_dsu),
-    text: String = stringResource(id = R.string.dsu_info),
-) {
-    CardWithText(cardTitle = cardTitle, text = text)
+fun DsuInfoCard() {
+    CardWithText(
+        cardTitle = stringResource(id = R.string.what_dsu),
+        text = stringResource(id = R.string.dsu_info)
+    )
 }

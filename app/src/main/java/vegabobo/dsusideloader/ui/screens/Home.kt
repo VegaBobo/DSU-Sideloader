@@ -4,17 +4,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.Destinations
-import vegabobo.dsusideloader.ui.Dialog
 import vegabobo.dsusideloader.ui.cards.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
+import vegabobo.dsusideloader.ui.dialogs.CancelDialog
 import vegabobo.dsusideloader.ui.dialogs.ConfirmInstallationDialog
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 import vegabobo.dsusideloader.viewmodel.HomeViewModel
@@ -36,13 +37,10 @@ fun Home(
         )
 
     if (uiState.showCancelDialog) {
-        Dialog(
-            title = "Cancel",
-            text = "Are you sure?",
-            confirmText = "Yes",
-            cancelText = "No",
+        CancelDialog(
             onClickConfirm = { homeViewModel.onClickCancelInstallationButton() },
-            onClickCancel = { homeViewModel.onDismissCancelDialog() })
+            onClickCancel = { homeViewModel.onDismissCancelDialog() },
+        )
     }
 
     ApplicationScreen(
@@ -50,18 +48,17 @@ fun Home(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         topBar = {
             TopBar(
-                title = stringResource(id = R.string.app_name),
+                barTitle = stringResource(id = R.string.app_name),
                 icon = Icons.Outlined.Settings,
                 scrollBehavior = it,
-            ) {
-                navController.navigate(Destinations.Settings)
-            }
+                onClickIcon = { navController.navigate(Destinations.Settings) }
+            )
         }) {
         if (uiState.showUnsupportedCard) {
             UnsupportedCard { homeViewModel.finishAppAction() }
         } else {
             if (uiState.showSetupStorageCard)
-                AttentionCard { homeViewModel.onSetupStorageAction() }
+                NoAvailStorageCard { homeViewModel.onSetupStorageAction() }
             if (uiState.showLowStorageCard)
                 StorageWarningCard {
                     homeViewModel.showNoAvailStorageCard(false)
@@ -87,7 +84,7 @@ fun Home(
                 onValueChange = { homeViewModel.updateUserdataSize(it) },
             )
             ImageSizeCard(
-                value = uiState.imageSizeFieldText,
+                textFieldValue = uiState.imageSizeFieldText,
                 isToggleEnabled = uiState.isCustomImageSizeSelected,
                 onCheckedChange = { homeViewModel.onCheckImageSizeCard() },
                 onValueChange = { homeViewModel.updateImageSize(it) }
