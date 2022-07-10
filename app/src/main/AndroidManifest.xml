@@ -4,6 +4,7 @@
     package="vegabobo.dsusideloader">
 
     <application
+        android:name=".DSUSideloaderApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -37,10 +38,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
-        <activity
-            android:name=".SplashActivity"
-            android:exported="true">
-        </activity>
     </application>
 
 </manifest>

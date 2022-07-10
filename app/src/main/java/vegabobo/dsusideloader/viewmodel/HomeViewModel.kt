@@ -1,5 +1,7 @@
 package vegabobo.dsusideloader.viewmodel
 
+import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
@@ -116,13 +118,13 @@ class HomeViewModel : ViewModel() {
         _uiState.update { it.copy(showInstallationDialog = false, isInstalling = false) }
     }
 
-    fun onConfirmInstallationAction(activity: NewMainActivity) {
+    fun onConfirmInstallationAction(appContext: Context) {
         _uiState.update { it.copy(showInstallationDialog = false, isInstalling = true) }
         if (installationJob.isCancelled)
             installationJob = Job()
         viewModelScope.launch(Dispatchers.IO + installationJob) {
             runBlocking(Dispatchers.IO) {
-                PrepareDsu(activity, gsiToBeInstalled, this@HomeViewModel).run()
+                PrepareDsu(appContext, gsiToBeInstalled, this@HomeViewModel).run()
                 onClickClearButton()
             }
         }

@@ -46,6 +46,14 @@ class OperationMode {
                 .toInt()
         }
 
+        fun getOperationModeAsString(): String {
+            return when (getOperationMode()) {
+                Constants.UNROOTED -> return "ADB"
+                Constants.ROOT_MAGISK, Constants.OTHER_ROOT_SOLUTION -> return "Root"
+                else -> ""
+            }
+        }
+
     }
 
 }

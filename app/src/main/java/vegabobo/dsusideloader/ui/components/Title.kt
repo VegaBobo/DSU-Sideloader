@@ -17,9 +17,8 @@ fun Title(title: String){
         fontWeight = FontWeight.Medium,
         color = MaterialTheme.colorScheme.secondary,
         modifier = Modifier
-            .padding(start = 16.dp)
+            .padding(start = 17.dp)
             .padding(bottom = 8.dp)
-            .padding(top = 8.dp)
-            .padding(4.dp),
+            .padding(top = 8.dp),
     )
 }

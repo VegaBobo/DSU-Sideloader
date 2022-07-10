@@ -1,23 +1,34 @@
 package vegabobo.dsusideloader
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.lifecycleScope
 import com.topjohnwu.superuser.Shell
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.checks.CompatibilityCheck
 import vegabobo.dsusideloader.ui.Navigation
 import vegabobo.dsusideloader.ui.theme.DSUHelperTheme
+import vegabobo.dsusideloader.util.DataStoreUtils
 import vegabobo.dsusideloader.util.SetupStorageAccess
 import vegabobo.dsusideloader.util.StorageUtils
 import vegabobo.dsusideloader.viewmodel.HomeViewModel
+import vegabobo.dsusideloader.viewmodel.Preference
+import vegabobo.dsusideloader.viewmodel.SettingsViewModel
+import java.util.*
+import javax.inject.Inject
 
 object ActivityAction {
     const val NONE = -1
@@ -27,6 +38,7 @@ object ActivityAction {
     const val INSTALL_GSI = 3
 }
 
+@AndroidEntryPoint
 class NewMainActivity : ComponentActivity() {
 
     companion object {
@@ -40,7 +52,11 @@ class NewMainActivity : ComponentActivity() {
         }
     }
 
+    @Inject
+    lateinit var dataStore: DataStore<Preferences>
+
     private val hVm: HomeViewModel by viewModels()
+    private val sVm: SettingsViewModel by viewModels()
 
     private lateinit var fileSelection: ActivityResultLauncher<Intent>
     private lateinit var setupStorageAccess: ActivityResultLauncher<Intent>
@@ -59,7 +75,7 @@ class NewMainActivity : ComponentActivity() {
 
         setContent {
             DSUHelperTheme {
-                Navigation(hVm)
+                Navigation(hVm, sVm)
             }
         }
 
@@ -73,7 +89,7 @@ class NewMainActivity : ComponentActivity() {
                     ActivityAction.OPEN_FILE_SELECTION ->
                         hVm.onSelectFileResult(fileSelection)
                     ActivityAction.INSTALL_GSI ->
-                        hVm.onConfirmInstallationAction(this@NewMainActivity)
+                        hVm.onConfirmInstallationAction(applicationContext)
                 }
                 hVm.activityAction.value = ActivityAction.NONE
             }

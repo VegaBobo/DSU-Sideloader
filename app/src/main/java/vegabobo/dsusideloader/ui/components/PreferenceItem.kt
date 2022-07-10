@@ -7,6 +7,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -17,30 +19,35 @@ fun PreferenceItem(
     title: String,
     description: String = "",
     icon: ImageVector? = null,
-    onClick: () -> Unit,
-    onCheckSwitch: ((Boolean) -> Unit)? = null
+    onClick: (Boolean) -> Unit = {},
+    isChecked: Boolean = false,
+    showToggle: Boolean = false
 ) {
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = { onClick(isChecked) })
             .padding(
-                start = 24.dp,
-                top = 16.dp,
-                bottom = 16.dp,
-                end = 16.dp
+                start = 17.dp,
+                end = 17.dp,
+                bottom = 12.dp,
+                top = 12.dp
             )
     ) {
         if (icon != null) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                modifier = Modifier.padding(end = 16.dp),
+                modifier = Modifier.padding(end = 22.dp),
             )
         }
-        Row {
-            Column(modifier = Modifier.weight(1f).align(Alignment.CenterVertically)) {
+        Row(modifier = Modifier.weight(0.5F)) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+            ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleLarge,
@@ -53,13 +60,13 @@ fun PreferenceItem(
                     )
                 }
             }
-            if (onCheckSwitch != null) {
-                Switch(
-                    checked = false,
-                    onCheckedChange = onCheckSwitch,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
+        }
+        if (showToggle) {
+            Switch(
+                checked = isChecked,
+                onCheckedChange = { onClick(isChecked) },
+                modifier = Modifier.padding(start = 8.dp)
+            )
         }
     }
 }
