@@ -17,7 +17,8 @@ fun CardBox(
     modifier: Modifier = Modifier,
     cardTitle: String,
     addToggle: Boolean = false,
-    isToggleEnabled: Boolean = false,
+    isToggleChecked: Boolean = false,
+    isToggleEnabled: Boolean = true,
     cardColor: Color = MaterialTheme.colorScheme.inverseOnSurface,
     onCheckedChange: ((Boolean) -> Unit) = {},
     content: @Composable (ColumnScope) -> Unit,
@@ -35,10 +36,10 @@ fun CardBox(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     CardTitle(cardTitle = cardTitle)
                     Spacer(modifier = Modifier.weight(1F))
-                    Switch(checked = isToggleEnabled, onCheckedChange = onCheckedChange)
+                    Switch(checked = isToggleChecked, onCheckedChange = onCheckedChange, enabled = isToggleEnabled)
                 }
             else
-                CardTitle(cardTitle = cardTitle, modifier = Modifier.padding(top = 2.dp, bottom = 2.dp))
+                CardTitle(cardTitle = cardTitle, modifier = Modifier.padding(top = 9.5.dp, bottom = 9.5.dp))
             content(this)
         }
     }

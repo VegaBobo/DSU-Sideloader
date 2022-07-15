@@ -18,7 +18,7 @@ fun TopBar(
 ) {
     LargeTopAppBar(
         colors = TopAppBarDefaults.largeTopAppBarColors(scrolledContainerColor = MaterialTheme.colorScheme.background),
-        title = { Text(barTitle) },
+        title = { Text(text = barTitle, style = MaterialTheme.typography.headlineMedium) },
         navigationIcon = {
             if(showBackButton)
                 IconButton(onClickBackButton) {

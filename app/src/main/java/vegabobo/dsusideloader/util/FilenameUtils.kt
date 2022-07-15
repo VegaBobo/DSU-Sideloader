@@ -18,6 +18,10 @@ class FilenameUtils {
             return newText
         }
 
+        fun getDigits(input: String): String {
+            return appendToString(input, "")
+        }
+
         fun getFilePath(uri: Uri, addQuotes: Boolean): String {
             val input = uri.path.toString()
             val safStorage = input.split("/document/")[1].replace("/tree/", "")

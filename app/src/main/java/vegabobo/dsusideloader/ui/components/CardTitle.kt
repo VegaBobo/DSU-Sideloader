@@ -12,6 +12,6 @@ fun CardTitle(modifier: Modifier = Modifier, cardTitle: String) {
         modifier = modifier,
         text = cardTitle,
         fontSize = 20.sp,
-        style = MaterialTheme.typography.titleLarge
+        style = MaterialTheme.typography.headlineMedium
     )
 }

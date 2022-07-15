@@ -11,6 +11,7 @@ import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
 fun FileSelectionBox(
+    modifier: Modifier = Modifier,
     isReadOnly: Boolean = false,
     isNumberOnly: Boolean = false,
     isEnabled: Boolean,
@@ -21,16 +22,17 @@ fun FileSelectionBox(
     onValueChange: (String) -> Unit = {}
 ) {
     OutlinedTextField(
+        modifier = modifier
+            .fillMaxWidth(),
         value = textFieldValue,
         placeholder = { Text(text = "") },
         onValueChange = onValueChange,
         enabled = isEnabled,
         isError = isError,
+        singleLine = true,
         readOnly = isReadOnly,
         keyboardOptions = if (isNumberOnly) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions(),
         interactionSource = textFieldInteraction!!,
-        modifier = Modifier
-            .fillMaxWidth(),
         label = {
             Text(text = textFieldTitle)
         })

@@ -1,12 +1,15 @@
 package vegabobo.dsusideloader.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -14,6 +17,7 @@ import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.Destinations
 import vegabobo.dsusideloader.ui.cards.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
+import vegabobo.dsusideloader.ui.components.Dialog
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.dialogs.CancelDialog
 import vegabobo.dsusideloader.ui.dialogs.ConfirmInstallationDialog
@@ -43,6 +47,17 @@ fun Home(
         )
     }
 
+    if (uiState.showImageSizeDialog) {
+        Dialog(
+            title = stringResource(id = R.string.custom_image_size),
+            text = stringResource(id = R.string.custom_image_size_warning),
+            confirmText = stringResource(id = R.string.set_anyway),
+            cancelText = stringResource(id = R.string.cancel),
+            onClickConfirm = { homeViewModel.onClickConfirmImageSizeDialog() },
+            onClickCancel = { homeViewModel.onClickCancelImageSizeDialog() }
+        )
+    }
+
     ApplicationScreen(
         modifier = Modifier.padding(start = 18.dp, end = 18.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -65,6 +80,11 @@ fun Home(
                 }
         }
         if (homeViewModel.isDeviceCompatible()) {
+            val config = LocalConfiguration.current
+            if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                Row {
+                }
+            }
             InstallationCard(
                 onClickInstall = { homeViewModel.onClickInstallOrCancelButton(uiState.isInstalling) },
                 onClickClear = { homeViewModel.onClickClearButton() },
@@ -79,17 +99,24 @@ fun Home(
             )
             UserdataCard(
                 value = uiState.userdataFieldText,
-                isToggleEnabled = uiState.isCustomUserdataSelected,
+                isError = uiState.isCustomUserdataError,
+                isToggleChecked = uiState.isCustomUserdataSelected,
+                isEnabled = !uiState.isInstalling,
+                maximumAllowedAlloc = uiState.maximumAllowedAlloc,
                 onCheckedChange = { homeViewModel.onCheckUserdataCard() },
                 onValueChange = { homeViewModel.updateUserdataSize(it) },
             )
             ImageSizeCard(
                 textFieldValue = uiState.imageSizeFieldText,
-                isToggleEnabled = uiState.isCustomImageSizeSelected,
+                isEnabled = !uiState.isInstalling,
+                isToggleChecked = uiState.isCustomImageSizeSelected,
                 onCheckedChange = { homeViewModel.onCheckImageSizeCard() },
                 onValueChange = { homeViewModel.updateImageSize(it) }
             )
-            DsuInfoCard()
+            DsuInfoCard(
+                onClickViewDocs = { homeViewModel.onClickViewDocs() },
+                onClickLearnMore = { homeViewModel.onClickLearnMore() },
+            )
         }
     }
 

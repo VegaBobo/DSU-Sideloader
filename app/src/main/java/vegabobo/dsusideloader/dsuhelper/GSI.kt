@@ -3,6 +3,7 @@ package vegabobo.dsusideloader.dsuhelper
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
+import vegabobo.dsusideloader.util.FilenameUtils
 
 class GSI(
     var absolutePath: String = "",
@@ -32,12 +33,12 @@ class GSI(
 
     fun setFileSize(size: String) {
         if(size.isNotEmpty())
-            this.fileSize = size.toLong()
+            this.fileSize = FilenameUtils.getDigits(size).toLong()
     }
 
     fun setUserdataSize(size: String) {
         if(size.isNotEmpty())
-            this.userdataSize = size.toInt()
+            this.userdataSize = FilenameUtils.getDigits(size).toInt()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

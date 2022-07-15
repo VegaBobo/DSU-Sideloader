@@ -36,7 +36,7 @@ fun Settings(
         Title(title = stringResource(id = R.string.installation))
         PreferenceItem(
             title = stringResource(id = R.string.debug_installation),
-            icon = Icons.Outlined.BugReport,
+//            icon = Icons.Outlined.BugReport,
             description = stringResource(
                 id = R.string.debug_installation_text
             ),
@@ -47,14 +47,14 @@ fun Settings(
         PreferenceItem(
             title = "Unmount sdcard",
             description = "Avoid allocation on sdcard by temporary unmounting it",
-            icon = Icons.Outlined.SdCard,
+//            icon = Icons.Outlined.SdCard,
             showToggle = true,
             isChecked = uiState.umountSd,
             onClick = { settingsViewModel.toggleUmountSd(!it) },
         )
         PreferenceItem(
             title = stringResource(id = R.string.keep_screen_on),
-            icon = Icons.Outlined.Smartphone,
+//            icon = Icons.Outlined.Smartphone,
             showToggle = true,
             isChecked = uiState.keepScreenOn,
             onClick = { settingsViewModel.toggleKeepScreenOn(!it) },
@@ -62,13 +62,13 @@ fun Settings(
         Title(title = stringResource(id = R.string.other))
         PreferenceItem(
             title = stringResource(id = R.string.op_mode),
-            icon = Icons.Outlined.Build,
+//            icon = Icons.Outlined.Build,
             description = uiState.operationMode
         )
         PreferenceItem(
             title = stringResource(id = R.string.about),
             description = "Credits and more..",
-            icon = Icons.Outlined.Info,
+//            icon = Icons.Outlined.Info,
             onClick = {}
         )
     }

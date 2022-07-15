@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,6 +22,7 @@ import vegabobo.dsusideloader.dsuhelper.GSI
 import vegabobo.dsusideloader.dsuhelper.PrepareDsu
 import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.SPUtils
+import vegabobo.dsusideloader.util.StorageUtils
 
 data class HomeUiState(
 
@@ -31,10 +33,13 @@ data class HomeUiState(
 
     // Userdata card
     val isCustomUserdataSelected: Boolean = false,
+    val isCustomUserdataError: Boolean = false,
     val userdataFieldText: String = "",
+    val maximumAllowedAlloc: Int = 0,
 
     // ImageSize card
     val isCustomImageSizeSelected: Boolean = false,
+    val showImageSizeDialog: Boolean = false,
     val imageSizeFieldText: String = "",
 
     // Warning cards
@@ -63,6 +68,9 @@ class HomeViewModel : ViewModel() {
 
     var gsiToBeInstalled = GSI()
 
+    // Maximum allowed userdata size
+    var maxUserdata = StorageUtils.maximumAllowedAllocation()
+
     // Installation card
 
     fun onClickInstallOrCancelButton(isInstalling: Boolean) {
@@ -89,18 +97,51 @@ class HomeViewModel : ViewModel() {
     // Userdata card
 
     fun onCheckUserdataCard() {
-        _uiState.update { it.copy(isCustomUserdataSelected = it.isCustomUserdataSelected.not()) }
+        _uiState.update {
+            it.copy(isCustomUserdataSelected = it.isCustomUserdataSelected.not())
+        }
     }
 
     fun updateUserdataSize(input: String) {
-        val inputWithSuffix = FilenameUtils.appendToString(input, "GB")
-        _uiState.update { it.copy(userdataFieldText = inputWithSuffix) }
+        val selectedSize = FilenameUtils.getDigits(input)
+        var sizeWithSuffix = FilenameUtils.appendToString(input, "GB")
+
+        if (selectedSize.isNotEmpty() && selectedSize.toInt() > maxUserdata) {
+            sizeWithSuffix = "${maxUserdata}GB"
+            _uiState.update {
+                it.copy(
+                    isCustomUserdataError = true,
+                    maximumAllowedAlloc = maxUserdata
+                )
+            }
+
+            viewModelScope.launch(Dispatchers.IO) {
+                Thread.sleep(5000)
+                _uiState.update { it.copy(isCustomUserdataError = false) }
+            }
+
+        }
+
+        _uiState.update { it.copy(userdataFieldText = sizeWithSuffix) }
+
     }
 
     // Imagesize card
 
     fun onCheckImageSizeCard() {
-        _uiState.update { it.copy(isCustomImageSizeSelected = it.isCustomImageSizeSelected.not()) }
+        if (uiState.value.isCustomImageSizeSelected)
+            _uiState.update {
+                it.copy(
+                    isCustomImageSizeSelected = it.isCustomImageSizeSelected.not()
+                )
+            }
+        else
+            _uiState.update {
+                it.copy(
+                    isCustomImageSizeSelected = it.isCustomImageSizeSelected.not(),
+                    showImageSizeDialog = true
+                )
+            }
     }
 
     fun updateImageSize(input: String) {
@@ -237,6 +278,24 @@ class HomeViewModel : ViewModel() {
 
     fun updateProgress(progress: Float) {
         _uiState.update { it.copy(installationProgress = progress) }
+    }
+
+    // Image size dialog
+
+    fun onClickCancelImageSizeDialog() {
+        _uiState.update { it.copy(showImageSizeDialog = false, isCustomImageSizeSelected = false) }
+    }
+
+    fun onClickConfirmImageSizeDialog() {
+        _uiState.update { it.copy(showImageSizeDialog = false) }
+    }
+
+    fun onClickViewDocs() {
+        // https://source.android.com/devices/tech/ota/dynamic-system-updates
+    }
+
+    fun onClickLearnMore() {
+        // https://developer.android.com/topic/dsu
     }
 
 }

@@ -86,11 +86,18 @@
     <string name="image_size">Image size</string>
     <string name="image_size_custom">Size in bytes</string>
     <string name="what_dsu">What is DSU?</string>
-    <string name="dsu_info">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor viverra lorem sollicitudin rhoncus.</string>
+    <string name="dsu_info">DSU (Dynamic System Updates), is a feature introduced in Android 10, allowing developers to test Android system images, without touching device partitions, with Android 11, DSU can also replace multiple partitions.</string>
     <string name="placeholder">placeholder</string>
     <string name="other">Other</string>
     <string name="continue_anyway">Continue anyway</string>
     <string name="cancel_description">Progress done till now will be gone, are you sure?</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
+    <string name="allowed_userdata_allocation">Maximum available for allocation: %1$sGB</string>
+    <string name="view_docs">View docs</string>
+    <string name="learn_more">Learn more</string>
+    <string name="custom_image_size">Custom image size</string>
+    <string name="custom_image_size_warning">DSU Sideloader will set this parameter for you automatically, setting image size manually is strongly inadvisable.</string>
+    <string name="set_anyway">Set anyway</string>
+    <string name="option_strongly_inadvisable">This option is strongly inadvisable!</string>
 </resources>

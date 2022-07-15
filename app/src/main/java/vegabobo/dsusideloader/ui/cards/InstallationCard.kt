@@ -18,6 +18,7 @@ import vegabobo.dsusideloader.ui.components.FileSelectionBox
 
 @Composable
 fun InstallationCard(
+    modifier: Modifier = Modifier,
     isError: Boolean = false,
     isEnabled: Boolean = true,
     isInstallable: Boolean = false,
@@ -35,7 +36,7 @@ fun InstallationCard(
     if (textFieldInteraction.collectIsPressedAsState().value)
         onClickTextField()
 
-    CardBox(cardTitle = stringResource(R.string.installation), addToggle = false) {
+    CardBox(cardTitle = stringResource(R.string.installation), addToggle = false, modifier = modifier) {
         Spacer(modifier = Modifier.padding(top = 2.dp))
         if (isInstalling) {
             Text(text = installationText)
