@@ -1,10 +1,9 @@
-package vegabobo.dsusideloader.ui.screens
+package vegabobo.dsusideloader.ui.screens.settings
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
@@ -12,12 +11,11 @@ import vegabobo.dsusideloader.ui.components.PreferenceItem
 import vegabobo.dsusideloader.ui.components.Title
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
-import vegabobo.dsusideloader.viewmodel.SettingsViewModel
 
 @Composable
 fun Settings(
     navController: NavController,
-    settingsViewModel: SettingsViewModel
+    settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
     ApplicationScreen(
         topBar = {

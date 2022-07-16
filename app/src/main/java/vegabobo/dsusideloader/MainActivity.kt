@@ -1,58 +1,50 @@
 package vegabobo.dsusideloader
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.core.view.WindowCompat
+import com.topjohnwu.superuser.Shell
+import dagger.hilt.android.AndroidEntryPoint
+import vegabobo.dsusideloader.ui.Navigation
+import vegabobo.dsusideloader.ui.screens.home.HomeViewModel
+import vegabobo.dsusideloader.ui.theme.DSUHelperTheme
 
+object ActivityAction {
+    const val FINISH_APP = 1
+}
 
-class MainActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
 
-    private var fragment1: Fragment = HomeFragment()
-    private var fragment2: Fragment = PreferencesFragment()
+    companion object {
+        init {
+            Shell.enableVerboseLogging = BuildConfig.DEBUG
+            Shell.setDefaultBuilder(
+                Shell.Builder.create()
+                    .setFlags(Shell.FLAG_REDIRECT_STDERR)
+                    .setTimeout(10)
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        Shell.getShell {}
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bar)
-
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_container_view, fragment2, "fragment2").hide(fragment2)
-                .add(R.id.fragment_container_view, fragment1, "fragment1")
-                .commit()
-        } else {
-            fragment2 = supportFragmentManager.findFragmentByTag("fragment2") as Fragment
-            fragment1 = supportFragmentManager.findFragmentByTag("fragment1") as Fragment
-            when (bottomNav.selectedItemId) {
-                R.id.tab_home -> {
-                    supportFragmentManager.beginTransaction().show(fragment1)
-                }
-                R.id.tab_config -> {
-                    supportFragmentManager.beginTransaction().show(fragment2)
-                }
+        val activityRequest: (Int) -> Unit = {
+            when (it) {
+                ActivityAction.FINISH_APP -> this.finishAffinity()
             }
         }
 
-
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.tab_home -> {
-                    supportFragmentManager.beginTransaction()
-                        .show(fragment1).hide(fragment2)
-                        .commit()
-                }
-                R.id.tab_config -> {
-                    supportFragmentManager.beginTransaction()
-                        .show(fragment2).hide(fragment1)
-                        .commit()
-                }
+        setContent {
+            DSUHelperTheme {
+                Navigation(activityRequest)
             }
-            true
         }
-
     }
-
-
 }

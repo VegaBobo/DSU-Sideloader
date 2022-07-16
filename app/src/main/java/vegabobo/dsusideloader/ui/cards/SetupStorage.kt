@@ -11,7 +11,7 @@ import vegabobo.dsusideloader.ui.components.ActionButton
 import vegabobo.dsusideloader.ui.components.CardWithText
 
 @Composable
-fun NoAvailStorageCard(
+fun SetupStorage(
     onClick: () -> Unit
 ) {
     CardWithText(

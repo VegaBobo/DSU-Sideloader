@@ -1,11 +1,12 @@
-package vegabobo.dsusideloader
+package vegabobo.dsusideloader.old
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import vegabobo.dsusideloader.checks.OperationMode
+import vegabobo.dsusideloader.R
+import vegabobo.dsusideloader.util.OperationMode
 
 
 class PreferencesFragment : PreferenceFragmentCompat() {

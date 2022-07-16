@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.modules
+package vegabobo.dsusideloader.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -15,13 +15,14 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import vegabobo.dsusideloader.preparation.StorageManager
 import javax.inject.Singleton
 
 private const val USER_PREFERENCES = "user_preferences"
 
 @InstallIn(SingletonComponent::class)
 @Module
-object DataStoreModule {
+object DataModules {
 
     @Singleton
     @Provides
@@ -34,4 +35,11 @@ object DataStoreModule {
             produceFile = { appContext.preferencesDataStoreFile(USER_PREFERENCES) }
         )
     }
+
+    @Singleton
+    @Provides
+    fun provideStorageAccess(@ApplicationContext appContext: Context): StorageManager {
+        return StorageManager(appContext)
+    }
+
 }

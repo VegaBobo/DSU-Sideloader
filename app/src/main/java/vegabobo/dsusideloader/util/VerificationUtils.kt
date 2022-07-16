@@ -1,25 +1,13 @@
-package vegabobo.dsusideloader.checks
+package vegabobo.dsusideloader.util
 
 import android.util.Log
 
-class CompatibilityCheck {
+class VerificationUtils {
 
     companion object {
 
-        fun isBootloaderLocked(): Boolean {
-            return getSystemProperty("ro.boot.vbmeta.device_state")!! == "locked"
-        }
-
-        fun signOfCustomOS(): Boolean {
-            return getSystemProperty("ro.build.type")!! != "user"
-        }
-
         fun hasDynamicPartitions(): Boolean {
             return getSystemProperty("ro.boot.dynamic_partitions") == "true"
-        }
-
-        fun isUsingIncompatibleMagisk(): Boolean {
-            return OperationMode.getOperationMode() == OperationMode.Constants.MAGISK_UNSUPPORTED
         }
 
         private fun getSystemProperty(key: String?): String? {
@@ -32,8 +20,6 @@ class CompatibilityCheck {
             }
             return value
         }
-
     }
-
 
 }

@@ -3,13 +3,13 @@ package vegabobo.dsusideloader.ui.dialogs
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.dsuhelper.GSI
+import vegabobo.dsusideloader.model.TargetGSI
 import vegabobo.dsusideloader.ui.components.Dialog
 
 @Composable
 fun ConfirmInstallationDialog(
     dialogText: String = "",
-    GSI: GSI,
+    GSI: TargetGSI,
     onClickConfirm: () -> Unit,
     onClickCancel: () -> Unit,
 ) {

@@ -78,7 +78,6 @@
 
     <!-- WIP STRINGS -->
 
-    <string name="title_activity_new_main">DSU Sideloader v2</string>
     <string name="clear">Clear</string>
     <string name="userdata_size_n">Userdata size</string>
     <string name="userdata_size_gb">Size in GB</string>
@@ -100,4 +99,5 @@
     <string name="custom_image_size_warning">DSU Sideloader will set this parameter for you automatically, setting image size manually is strongly inadvisable.</string>
     <string name="set_anyway">Set anyway</string>
     <string name="option_strongly_inadvisable">This option is strongly inadvisable!</string>
+    <string name="processing">Processing…</string>
 </resources>

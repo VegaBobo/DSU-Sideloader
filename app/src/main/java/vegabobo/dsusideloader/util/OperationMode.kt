@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.checks
+package vegabobo.dsusideloader.util
 
 import com.topjohnwu.superuser.Shell
 

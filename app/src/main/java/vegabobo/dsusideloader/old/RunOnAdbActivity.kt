@@ -1,9 +1,10 @@
-package vegabobo.dsusideloader
+package vegabobo.dsusideloader.old
 
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import vegabobo.dsusideloader.R
 
 class RunOnAdbActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

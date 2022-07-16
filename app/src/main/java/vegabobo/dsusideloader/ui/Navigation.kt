@@ -6,10 +6,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import vegabobo.dsusideloader.ui.Destinations.Homepage
 import vegabobo.dsusideloader.ui.Destinations.Settings
-import vegabobo.dsusideloader.ui.screens.Home
-import vegabobo.dsusideloader.ui.screens.Settings
-import vegabobo.dsusideloader.viewmodel.HomeViewModel
-import vegabobo.dsusideloader.viewmodel.SettingsViewModel
+import vegabobo.dsusideloader.ui.screens.home.Home
+import vegabobo.dsusideloader.ui.screens.settings.Settings
 
 object Destinations {
     const val Homepage = "home"
@@ -18,12 +16,11 @@ object Destinations {
 
 @Composable
 fun Navigation(
-    homeViewModel: HomeViewModel,
-    settingsViewModel: SettingsViewModel
+    activityRequest: (Int) -> Unit
 ) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Homepage) {
-        composable(Homepage) { Home(navController, homeViewModel) }
-        composable(Settings) { Settings(navController, settingsViewModel) }
+        composable(Homepage) { Home(navController, activityRequest) }
+        composable(Settings) { Settings(navController) }
     }
 }

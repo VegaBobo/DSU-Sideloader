@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.viewmodel
+package vegabobo.dsusideloader.ui.screens.settings
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
-import vegabobo.dsusideloader.checks.OperationMode
+import vegabobo.dsusideloader.util.OperationMode
 import vegabobo.dsusideloader.util.DataStoreUtils
 import javax.inject.Inject
 
@@ -17,14 +17,8 @@ object Preference {
     const val DEBUG_INSTALLATION = "debug_installation"
     const val KEEP_SCREEN_ON = "keep_screen_on"
     const val UMOUNT_SD = "umount_sd"
+    const val SAF_PATH = ""
 }
-
-data class SettingsUiState(
-    val operationMode: String = "",
-    val debugInstallation: Boolean = false,
-    val keepScreenOn: Boolean = false,
-    val umountSd: Boolean = true,
-)
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(

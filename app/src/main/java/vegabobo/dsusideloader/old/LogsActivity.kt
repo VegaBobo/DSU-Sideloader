@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader
+package vegabobo.dsusideloader.old
 
 import android.app.Activity
 import android.content.Intent
@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.topjohnwu.superuser.CallbackList
 import com.topjohnwu.superuser.Shell
+import vegabobo.dsusideloader.R
 import java.io.IOException
 import java.io.OutputStream
 

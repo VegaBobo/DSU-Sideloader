@@ -1,33 +1,31 @@
-package vegabobo.dsusideloader.util
+package vegabobo.dsusideloader.preparation
 
-import android.content.Context
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
+import kotlinx.coroutines.CompletableJob
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
-import vegabobo.dsusideloader.viewmodel.HomeViewModel
 import java.io.InputStream
 import java.io.OutputStream
 
-class FileOperation(
-    private val context: Context,
+class UnPack(
+    private val storageManager: StorageManager,
     private val inputFile: Uri,
     outputFile: String,
-    private val homeViewModel: HomeViewModel,
-    workspaceFolder: DocumentFile = WorkspaceUtils.getWorkspaceFolder(context),
+    private val installationJob: CompletableJob,
+    private val onProgressChange: (Float) -> Unit
 ) {
 
     object Constants {
         const val WORKSPACE_FOLDER = "workspace_dsuhelper"
     }
 
-    private var finalFile: DocumentFile =
-        workspaceFolder.createFile("application/octet-stream", outputFile)!!
+    private var finalFile: DocumentFile = storageManager.createDocumentFile(outputFile)
 
-    private var outputStream = context.contentResolver.openOutputStream(finalFile.uri)!!
-    private var inputStream = context.contentResolver.openInputStream(inputFile)!!
-    private val inputFileSize = DocumentFile.fromSingleUri(context, inputFile)!!.length()
+    private var outputStream = storageManager.openOutputStream(finalFile.uri)
+    private var inputStream = storageManager.openInputStream(inputFile)
+    private val inputFileSize = storageManager.getFilesizeFromUri(inputFile)
 
     private fun copy(
         inputStr: InputStream,
@@ -38,7 +36,7 @@ class FileOperation(
         var n: Int
         var readed: Long = 0
         while (-1 != inputStr.read(buffer)
-                .also { n = it } && !homeViewModel.installationJob.isCancelled
+                .also { n = it } && !installationJob.isCancelled
         ) {
             readed += buffer.size
             onReadedBuffer(readed)
@@ -58,7 +56,7 @@ class FileOperation(
 
     fun unpack(): Uri {
         val archiveInputStream =
-            with(FilenameUtils.queryName(context.contentResolver, inputFile)) {
+            with(storageManager.getFilenameFromUri(inputFile)) {
                 when {
                     endsWith("xz") -> XZCompressorInputStream(inputStream)
                     endsWith("gz") -> GzipCompressorInputStream(inputStream)
@@ -73,7 +71,7 @@ class FileOperation(
 
     private fun updateProgress(fileSize: Long, readed: Long) {
         val percent: Float = (readed * 1f) / fileSize
-        homeViewModel.updateProgress(if (percent > 1f) 1f else percent)
+        onProgressChange(percent)
     }
 
 }
