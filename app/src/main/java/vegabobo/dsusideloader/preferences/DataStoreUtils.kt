@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.util
+package vegabobo.dsusideloader.preferences
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -62,6 +62,7 @@ class DataStoreUtils {
             }
             onFinish()
         }
+
     }
 
 

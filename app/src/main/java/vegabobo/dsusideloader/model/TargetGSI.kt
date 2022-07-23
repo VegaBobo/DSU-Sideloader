@@ -9,7 +9,8 @@ class TargetGSI(
     var name: String = "",
     var fileSize: Long = Constants.DEFAULT_FILE_SIZE,
     var userdataSize: Int = Constants.DEFAULT_USERDATA_SIZE_IN_GB,
-    var debugInstallation: Boolean = false
+    var debugInstallation: Boolean = false,
+    var umountSdCard: Boolean = false
 ) {
 
     object Constants {

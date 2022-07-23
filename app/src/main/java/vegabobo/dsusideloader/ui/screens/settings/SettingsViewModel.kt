@@ -10,15 +10,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import vegabobo.dsusideloader.util.OperationMode
-import vegabobo.dsusideloader.util.DataStoreUtils
+import vegabobo.dsusideloader.preferences.DataStoreUtils
+import vegabobo.dsusideloader.preferences.Prefs
 import javax.inject.Inject
-
-object Preference {
-    const val DEBUG_INSTALLATION = "debug_installation"
-    const val KEEP_SCREEN_ON = "keep_screen_on"
-    const val UMOUNT_SD = "umount_sd"
-    const val SAF_PATH = ""
-}
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -30,9 +24,9 @@ class SettingsViewModel @Inject constructor(
 
     init {
         // set initial values used by UI
-        val debugInstallationToggle = readPreference(Preference.DEBUG_INSTALLATION, false)
-        val keepScreenOnToggle = readPreference(Preference.KEEP_SCREEN_ON, false)
-        val umountSdToggle = readPreference(Preference.UMOUNT_SD, true)
+        val debugInstallationToggle = readPreference(Prefs.DEBUG_INSTALLATION, false)
+        val keepScreenOnToggle = readPreference(Prefs.KEEP_SCREEN_ON, false)
+        val umountSdToggle = readPreference(Prefs.UMOUNT_SD, true)
         val operationMode = OperationMode.getOperationModeAsString()
         _uiState.update {
             it.copy(
@@ -45,17 +39,17 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun toggleInstDebug(value: Boolean) {
-        updateSetting(Preference.DEBUG_INSTALLATION, value)
+        updateSetting(Prefs.DEBUG_INSTALLATION, value)
         _uiState.update { it.copy(debugInstallation = value) }
     }
 
     fun toggleKeepScreenOn(value: Boolean) {
-        updateSetting(Preference.KEEP_SCREEN_ON, value)
+        updateSetting(Prefs.KEEP_SCREEN_ON, value)
         _uiState.update { it.copy(keepScreenOn = value) }
     }
 
     fun toggleUmountSd(value: Boolean) {
-        updateSetting(Preference.UMOUNT_SD, value)
+        updateSetting(Prefs.UMOUNT_SD, value)
         _uiState.update { it.copy(umountSd = value) }
     }
 

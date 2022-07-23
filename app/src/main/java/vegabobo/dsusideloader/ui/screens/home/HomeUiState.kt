@@ -28,5 +28,8 @@ data class HomeUiState(
     val isInstalling: Boolean = false,
     val installationStep: Int = -1,
     val installationProgress: Float = 0.0f,
-    val showCancelDialog: Boolean = false
+    val showCancelDialog: Boolean = false,
+
+    // Keep screen on
+    val keepScreenOn: Boolean = false
 )

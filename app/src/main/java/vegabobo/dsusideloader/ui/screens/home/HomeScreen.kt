@@ -32,6 +32,7 @@ import vegabobo.dsusideloader.ui.components.Dialog
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.dialogs.CancelDialog
 import vegabobo.dsusideloader.ui.dialogs.ConfirmInstallationDialog
+import vegabobo.dsusideloader.ui.util.KeepScreenOn
 import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
@@ -80,6 +81,11 @@ fun Home(
         }
     }
     // UI
+    LaunchedEffect(key1 = Unit){
+        homeViewModel.keepScreenOn()
+    }
+    if (uiState.keepScreenOn)
+        KeepScreenOn()
 
     val installationText = when (uiState.installationStep) {
         InstallationSteps.COPYING_FILE -> stringResource(R.string.gz_copy)

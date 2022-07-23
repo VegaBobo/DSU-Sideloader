@@ -15,10 +15,9 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import vegabobo.dsusideloader.preferences.Prefs
 import vegabobo.dsusideloader.preparation.StorageManager
 import javax.inject.Singleton
-
-private const val USER_PREFERENCES = "user_preferences"
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -32,7 +31,7 @@ object DataModules {
                 produceNewData = { emptyPreferences() }
             ),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.preferencesDataStoreFile(USER_PREFERENCES) }
+            produceFile = { appContext.preferencesDataStoreFile(Prefs.USER_PREFERENCES) }
         )
     }
 

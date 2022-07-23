@@ -3,7 +3,6 @@ package vegabobo.dsusideloader.ui.screens.home
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.text.Html
 import android.util.Base64
 import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -13,11 +12,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import dagger.Provides
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,12 +20,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import vegabobo.dsusideloader.installation.Deploy
 import vegabobo.dsusideloader.model.TargetGSI
+import vegabobo.dsusideloader.preferences.DataStoreUtils
+import vegabobo.dsusideloader.preferences.Prefs
 import vegabobo.dsusideloader.preparation.PrepareFile
 import vegabobo.dsusideloader.preparation.StorageManager
-import vegabobo.dsusideloader.ui.Destinations
-import vegabobo.dsusideloader.ui.screens.settings.Preference
 import vegabobo.dsusideloader.util.*
 import javax.inject.Inject
 
@@ -126,6 +121,7 @@ class HomeViewModel @Inject constructor(
         if (installationJob.isCancelled)
             installationJob = Job()
         viewModelScope.launch(Dispatchers.IO + installationJob) {
+            setupInstallationPreferences()
             PrepareFile(
                 storageAccess, gsiToBeInstalled, installationJob,
                 onProgressChange = { progress ->
@@ -140,10 +136,11 @@ class HomeViewModel @Inject constructor(
                     if (OperationMode.getOperationMode() == OperationMode.Constants.UNROOTED) {
                         val installationCmd =
                             Deploy(storageAccess, gsiReadyToInstall).getInstallationCommand()
-                        adbInstallation.value = Base64.encodeToString(installationCmd.toByteArray(), Base64.DEFAULT)
+                        adbInstallation.value =
+                            Base64.encodeToString(installationCmd.toByteArray(), Base64.DEFAULT)
                         return@PrepareFile
                     }
-                    Deploy(storageAccess, gsiReadyToInstall)
+                    Deploy(storageAccess, gsiReadyToInstall).startInstallationRooted()
                 }).invoke()
         }
     }
@@ -243,7 +240,7 @@ class HomeViewModel @Inject constructor(
 
     fun isStorageAccessAllowed() {
         viewModelScope.launch {
-            val path = DataStoreUtils.readStringPref(dataStore, Preference.SAF_PATH, "")
+            val path = DataStoreUtils.readStringPref(dataStore, Prefs.SAF_PATH, "")
             val arePermissionsGranted = storageAccess.arePermissionsGrantedToFolder(path)
             _uiState.update { it.copy(showSetupStorageCard = !arePermissionsGranted) }
         }
@@ -251,8 +248,8 @@ class HomeViewModel @Inject constructor(
 
     fun onSetupStorageSuccess(path: String) {
         viewModelScope.launch {
-            if(storageAccess.arePermissionsGrantedToFolder(path))
-                DataStoreUtils.updateStringPref(dataStore, Preference.SAF_PATH, path)
+            if (storageAccess.arePermissionsGrantedToFolder(path))
+                DataStoreUtils.updateStringPref(dataStore, Prefs.SAF_PATH, path)
         }
         _uiState.update { it.copy(showSetupStorageCard = false) }
     }
@@ -266,6 +263,22 @@ class HomeViewModel @Inject constructor(
     fun hasAvailableStorage() {
         if (!StorageUtils.hasAvailableStorage())
             _uiState.update { it.copy(showLowStorageCard = true) }
+    }
+
+    fun keepScreenOn() {
+        viewModelScope.launch {
+            val keep = DataStoreUtils.readBoolPref(dataStore, Prefs.KEEP_SCREEN_ON, false)
+            _uiState.update { it.copy(keepScreenOn = keep) }
+        }
+    }
+
+    private suspend fun setupInstallationPreferences() {
+        DataStoreUtils.readBoolPref(dataStore, Prefs.DEBUG_INSTALLATION, false) {
+            gsiToBeInstalled.debugInstallation = it
+        }
+        DataStoreUtils.readBoolPref(dataStore, Prefs.UMOUNT_SD, false) {
+            gsiToBeInstalled.umountSdCard = it
+        }
     }
 
 }

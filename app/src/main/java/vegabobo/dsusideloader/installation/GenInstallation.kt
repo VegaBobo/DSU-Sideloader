@@ -5,8 +5,7 @@ import vegabobo.dsusideloader.preparation.StorageManager
 
 class GenInstallation(
     private val GSI: TargetGSI,
-    private val storageManager: StorageManager,
-    private val skipDebugMode: Boolean,
+    private val storageManager: StorageManager
 ) {
 
     object Constants {
@@ -14,21 +13,17 @@ class GenInstallation(
         const val ASSETS_SCRIPT_FILE = "install_script.sh"
     }
 
-    fun getInstallScript(): String {
-        return String.format(
-            getShellScriptFromAssets(),
-            getDebugMode(GSI.debugInstallation),
-            genArguments(),
-            installationInfoAsString()
-        )
+    fun writeInstallScript(isRootMode: Boolean): String {
+        return storageManager.writeToFile(getShellScript(isRootMode))
     }
 
-    fun writeInstallScript(): String {
-        return storageManager.writeToFile(getShellScriptFromAssets())
-    }
-
-    private fun getShellScriptFromAssets(): String {
+    fun getShellScript(isRooted: Boolean): String {
         return storageManager.readFileFromAssets(Constants.ASSETS_SCRIPT_FILE)
+                // on rooted devices, debug mode is managed by app
+            .replace("%DEBUG_MODE", if (isRooted) "false" else GSI.debugInstallation.toString())
+            .replace("%INSTALLATION_ARGS", genArguments())
+            .replace("%INSTALLATION_INFO", installationInfoAsString())
+            .replace("%UNMOUNT_SD", GSI.umountSdCard.toString())
     }
 
     private fun genArguments(): String {
@@ -50,18 +45,12 @@ class GenInstallation(
         return "$argument $value "
     }
 
-    private fun getDebugMode(isDebugMode: Boolean): Boolean {
-        return if (skipDebugMode)
-            false
-        else
-            isDebugMode
-    }
-
     fun installationInfoAsString(): String {
         return "Installation info: " +
                 "\nAbsolute path: " + this.GSI.absolutePath +
                 "\nFile size: " + this.GSI.fileSize +
                 "\nUserdata size: " + this.GSI.userdataSize +
+                "\nUnmount: " + this.GSI.umountSdCard +
                 "\n\nLogcat:\n"
     }
 
