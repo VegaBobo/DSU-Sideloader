@@ -251,7 +251,8 @@ class HomeViewModel @Inject constructor(
 
     fun onSetupStorageSuccess(path: String) {
         viewModelScope.launch {
-            DataStoreUtils.updateStringPref(dataStore, Preference.SAF_PATH, path)
+            if(storageAccess.arePermissionsGrantedToFolder(path))
+                DataStoreUtils.updateStringPref(dataStore, Preference.SAF_PATH, path)
         }
         _uiState.update { it.copy(showSetupStorageCard = false) }
     }
