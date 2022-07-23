@@ -9,13 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.ActionButton
-import vegabobo.dsusideloader.ui.components.CardWithText
+import vegabobo.dsusideloader.ui.components.SimpleCard
 
 @Composable
 fun UnsupportedCard(
     onClickButton: () -> Unit = {}
 ) {
-    CardWithText(
+    SimpleCard(
         modifier = Modifier.fillMaxWidth(),
         cardColor = MaterialTheme.colorScheme.errorContainer,
         cardTitle = stringResource(id = R.string.unsupported),

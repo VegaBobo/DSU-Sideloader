@@ -100,4 +100,8 @@
     <string name="set_anyway">Set anyway</string>
     <string name="option_strongly_inadvisable">This option is strongly inadvisable!</string>
     <string name="processing">Processing…</string>
+    <string name="ready_to_install">Installation</string>
+    <string name="copy">Copy text</string>
+    <string name="copied">Copied</string>
+    <string name="return_to_home">Return to homescreen?</string>
 </resources>

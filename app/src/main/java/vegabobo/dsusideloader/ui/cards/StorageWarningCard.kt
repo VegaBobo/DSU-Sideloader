@@ -8,13 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.ActionButton
-import vegabobo.dsusideloader.ui.components.CardWithText
+import vegabobo.dsusideloader.ui.components.SimpleCard
 
 @Composable
 fun StorageWarningCard(
     onClick: () -> Unit
 ) {
-    CardWithText(
+    SimpleCard(
         modifier = Modifier.fillMaxWidth(),
         cardTitle = stringResource(id = R.string.storage),
         text = stringResource(id = R.string.storage_warning)

@@ -3,6 +3,7 @@ package vegabobo.dsusideloader.ui.screens.home
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -19,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.ActivityAction
 import vegabobo.dsusideloader.preparation.InstallationSteps
 import vegabobo.dsusideloader.R
@@ -68,6 +71,14 @@ fun Home(
             }
         }
 
+
+    LaunchedEffect(key1 = Unit) {
+        homeViewModel.adbInstallation.collectLatest {
+            if(it.isNotEmpty())
+                navController.navigate("${Destinations.Adb}/${homeViewModel.adbInstallation.value}")
+            homeViewModel.adbInstallation.value = ""
+        }
+    }
     // UI
 
     val installationText = when (uiState.installationStep) {
@@ -75,6 +86,7 @@ fun Home(
         InstallationSteps.DECOMPRESSING_XZ -> stringResource(R.string.extracting_gzip)
         InstallationSteps.COMPRESSING_TO_GZ -> stringResource(R.string.compressing_img_to_gzip)
         InstallationSteps.DECOMPRESSING_GZIP -> stringResource(R.string.extracting_gzip)
+        InstallationSteps.FINISHED -> stringResource(id = R.string.done)
         else -> stringResource(R.string.processing)
     }
 

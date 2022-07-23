@@ -2,7 +2,6 @@ package vegabobo.dsusideloader.preparation
 
 import android.net.Uri
 import kotlinx.coroutines.CompletableJob
-import vegabobo.dsusideloader.installation.Deploy
 import vegabobo.dsusideloader.model.TargetGSI
 import vegabobo.dsusideloader.util.FilenameUtils
 
@@ -11,7 +10,8 @@ class PrepareFile(
     private var gsi: TargetGSI,
     private val installationJob: CompletableJob,
     private val onInstallationStepChange: (Int) -> Unit,
-    private val onProgressChange: (Float) -> Unit
+    private val onProgressChange: (Float) -> Unit,
+    private val onPreparationSuccess: (TargetGSI) -> Unit,
 ) : () -> Unit {
 
     private var preparedGsiPath: String = ""
@@ -41,7 +41,8 @@ class PrepareFile(
         gsi.absolutePath = preparedGsiPath
         updateText(InstallationSteps.FINISHED)
         if (!installationJob.isCancelled)
-            Deploy(storageManager, gsi).startInstallation()
+            onPreparationSuccess(gsi)
+//
     }
 
     private fun getExtension(file: String): String {

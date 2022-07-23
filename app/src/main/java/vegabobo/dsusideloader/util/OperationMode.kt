@@ -1,5 +1,6 @@
 package vegabobo.dsusideloader.util
 
+import android.util.Log
 import com.topjohnwu.superuser.Shell
 
 class OperationMode {
@@ -27,7 +28,7 @@ class OperationMode {
 
     companion object {
         fun getOperationMode(): Int {
-            return if (Shell.cmd("whoami").exec().isSuccess) {
+            return if (Shell.cmd("whoami").exec().out[0].contains("root")) {
                 if (Shell.cmd("su --version").exec().out.toString().contains("MAGISK")) {
                     if (obtainMagiskVersion() < 23018)
                         Constants.MAGISK_UNSUPPORTED

@@ -1,5 +1,7 @@
 package vegabobo.dsusideloader.ui.components
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,7 +14,8 @@ fun ActionButton(
     onClick: () -> Unit,
     colorButton: Color? = null,
     colorText: Color? = null,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
+    content: @Composable () -> Unit = {}
 ) {
     FilledTonalButton(
         modifier = modifier,
@@ -25,5 +28,6 @@ fun ActionButton(
             text = text,
             color = colorText ?: MaterialTheme.colorScheme.surface
         )
+        content()
     }
 }

@@ -3,6 +3,9 @@ package vegabobo.dsusideloader.ui.screens.home
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.text.Html
+import android.util.Base64
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -10,6 +13,11 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import dagger.Provides
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,25 +26,26 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import vegabobo.dsusideloader.installation.Deploy
 import vegabobo.dsusideloader.model.TargetGSI
 import vegabobo.dsusideloader.preparation.PrepareFile
 import vegabobo.dsusideloader.preparation.StorageManager
+import vegabobo.dsusideloader.ui.Destinations
 import vegabobo.dsusideloader.ui.screens.settings.Preference
-import vegabobo.dsusideloader.util.DataStoreUtils
-import vegabobo.dsusideloader.util.FilenameUtils
-import vegabobo.dsusideloader.util.StorageUtils
-import vegabobo.dsusideloader.util.VerificationUtils
+import vegabobo.dsusideloader.util.*
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>,
-    private val storageAccess: StorageManager
+    private val storageAccess: StorageManager,
 ) : ViewModel() {
 
     // UI state
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    val adbInstallation = MutableStateFlow("")
 
     init {
         isDynamicPartition()
@@ -124,8 +133,18 @@ class HomeViewModel @Inject constructor(
                 },
                 onInstallationStepChange = { step ->
                     _uiState.update { it.copy(installationStep = step) }
+                },
+                onPreparationSuccess = { gsiReadyToInstall ->
+                    onClickCancelInstallationButton()
+                    onClickClearButton()
+                    if (OperationMode.getOperationMode() == OperationMode.Constants.UNROOTED) {
+                        val installationCmd =
+                            Deploy(storageAccess, gsiReadyToInstall).getInstallationCommand()
+                        adbInstallation.value = Base64.encodeToString(installationCmd.toByteArray(), Base64.DEFAULT)
+                        return@PrepareFile
+                    }
+                    Deploy(storageAccess, gsiReadyToInstall)
                 }).invoke()
-            onClickClearButton()
         }
     }
 

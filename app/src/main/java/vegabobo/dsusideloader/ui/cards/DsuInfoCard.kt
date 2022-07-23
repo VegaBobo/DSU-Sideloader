@@ -2,7 +2,6 @@ package vegabobo.dsusideloader.ui.cards
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -10,7 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.ActionButton
-import vegabobo.dsusideloader.ui.components.CardWithText
+import vegabobo.dsusideloader.ui.components.SimpleCard
 
 @Composable
 fun DsuInfoCard(
@@ -18,7 +17,7 @@ fun DsuInfoCard(
     onClickViewDocs: () -> Unit,
     onClickLearnMore: () -> Unit
 ) {
-    CardWithText(
+    SimpleCard(
         modifier = modifier,
         cardTitle = stringResource(id = R.string.what_dsu),
         text = stringResource(id = R.string.dsu_info),

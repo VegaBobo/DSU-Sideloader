@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CardBox(
     modifier: Modifier = Modifier,
-    cardTitle: String,
+    cardTitle: String = "",
     addToggle: Boolean = false,
     isToggleChecked: Boolean = false,
     isToggleEnabled: Boolean = true,
@@ -32,14 +32,23 @@ fun CardBox(
             .fillMaxWidth()
     ) {
         Column {
-            if (addToggle)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    CardTitle(cardTitle = cardTitle)
-                    Spacer(modifier = Modifier.weight(1F))
-                    Switch(checked = isToggleChecked, onCheckedChange = onCheckedChange, enabled = isToggleEnabled)
-                }
-            else
-                CardTitle(cardTitle = cardTitle, modifier = Modifier.padding(top = 9.5.dp, bottom = 9.5.dp))
+            if (cardTitle.isNotEmpty()) {
+                if (addToggle)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        CardTitle(cardTitle = cardTitle)
+                        Spacer(modifier = Modifier.weight(1F))
+                        Switch(
+                            checked = isToggleChecked,
+                            onCheckedChange = onCheckedChange,
+                            enabled = isToggleEnabled
+                        )
+                    }
+                else
+                    CardTitle(
+                        cardTitle = cardTitle,
+                        modifier = Modifier.padding(top = 9.5.dp, bottom = 9.5.dp)
+                    )
+            }
             content(this)
         }
     }
