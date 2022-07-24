@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Base64
-import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -20,15 +19,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import vegabobo.dsusideloader.installation.Deploy
 import vegabobo.dsusideloader.model.TargetGSI
 import vegabobo.dsusideloader.preferences.DataStoreUtils
 import vegabobo.dsusideloader.preferences.Prefs
 import vegabobo.dsusideloader.preparation.PrepareFile
 import vegabobo.dsusideloader.preparation.StorageManager
+import vegabobo.dsusideloader.ui.Destinations
 import vegabobo.dsusideloader.util.*
 import javax.inject.Inject
+
+data class InstallationNav(
+    val installationCmd: String = "",
+    val screenToOpen: String = ""
+)
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -40,7 +44,7 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    val adbInstallation = MutableStateFlow("")
+    val adbInstallation = MutableStateFlow(InstallationNav())
 
     init {
         isDynamicPartition()
@@ -134,13 +138,34 @@ class HomeViewModel @Inject constructor(
                     onClickCancelInstallationButton()
                     onClickClearButton()
                     if (OperationMode.getOperationMode() == OperationMode.Constants.UNROOTED) {
-                        val installationCmd =
-                            Deploy(storageAccess, gsiReadyToInstall).getInstallationCommand()
-                        adbInstallation.value =
-                            Base64.encodeToString(installationCmd.toByteArray(), Base64.DEFAULT)
+                        adbInstallation.update {
+                            val installationCmd =
+                                Deploy(storageAccess, gsiReadyToInstall).getInstallationFIle()
+                            it.copy(
+                                installationCmd = Base64.encodeToString(
+                                    installationCmd.toByteArray(),
+                                    Base64.DEFAULT
+                                ),
+                                screenToOpen = Destinations.Adb
+                            )
+                        }
                         return@PrepareFile
                     }
-                    Deploy(storageAccess, gsiReadyToInstall).startInstallationRooted()
+                    if (gsiReadyToInstall.debugInstallation) {
+                        adbInstallation.update {
+                            val installationCmd =
+                                Deploy(storageAccess, gsiReadyToInstall).getInstallationCmd()
+                            it.copy(
+                                installationCmd = Base64.encodeToString(
+                                    installationCmd.toByteArray(),
+                                    Base64.DEFAULT
+                                ),
+                                screenToOpen = Destinations.RootDiagInstallation
+                            )
+                        }
+                        return@PrepareFile
+                    }
+                    Deploy(storageAccess, gsiReadyToInstall).startInstallationRoot()
                 }).invoke()
         }
     }

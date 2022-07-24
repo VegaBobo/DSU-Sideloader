@@ -31,7 +31,7 @@ fun CardBox(
             .padding(end = 4.dp, start = 4.dp)
             .fillMaxWidth()
     ) {
-        Column {
+        Column(modifier = modifier) {
             if (cardTitle.isNotEmpty()) {
                 if (addToggle)
                     Row(verticalAlignment = Alignment.CenterVertically) {

@@ -19,8 +19,8 @@ fun Dialog(
     text: String = "",
     confirmText: String = "",
     cancelText: String = "",
-    onClickConfirm: () -> Unit,
-    onClickCancel: () -> Unit,
+    onClickConfirm: () -> Unit = {},
+    onClickCancel: () -> Unit = {},
     context: @Composable () -> Unit = {},
 ) {
     AlertDialog(

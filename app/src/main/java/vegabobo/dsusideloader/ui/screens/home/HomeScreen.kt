@@ -75,13 +75,15 @@ fun Home(
 
     LaunchedEffect(key1 = Unit) {
         homeViewModel.adbInstallation.collectLatest {
-            if(it.isNotEmpty())
-                navController.navigate("${Destinations.Adb}/${homeViewModel.adbInstallation.value}")
-            homeViewModel.adbInstallation.value = ""
+            when (it.screenToOpen) {
+                Destinations.Adb -> navController.navigate("${Destinations.Adb}/${homeViewModel.adbInstallation.value.installationCmd}")
+                Destinations.RootDiagInstallation -> navController.navigate("${Destinations.RootDiagInstallation}/${homeViewModel.adbInstallation.value.installationCmd}")
+            }
+            homeViewModel.adbInstallation.value = InstallationNav()
         }
     }
     // UI
-    LaunchedEffect(key1 = Unit){
+    LaunchedEffect(key1 = Unit) {
         homeViewModel.keepScreenOn()
     }
     if (uiState.keepScreenOn)

@@ -11,11 +11,15 @@ class Deploy(
 
     private val installationCommand = GenInstallation(gsi, storageManager)
 
-    fun startInstallationRooted() {
+    fun getInstallationCmd(): String{
+        return installationCommand.getShellScript(true)
+    }
+
+    fun startInstallationRoot() {
         Shell.cmd(installationCommand.getShellScript(true)).exec()
     }
 
-    fun getInstallationCommand(): String {
+    fun getInstallationFIle(): String {
         return installationCommand.writeInstallScript(false)
     }
 }
