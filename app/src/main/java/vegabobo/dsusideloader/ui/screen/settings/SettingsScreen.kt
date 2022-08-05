@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.ui.screens.settings
+package vegabobo.dsusideloader.ui.screen.settings
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -6,10 +6,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.components.ApplicationScreen
-import vegabobo.dsusideloader.ui.components.PreferenceItem
-import vegabobo.dsusideloader.ui.components.Title
-import vegabobo.dsusideloader.ui.components.TopBar
+import vegabobo.dsusideloader.ui.components.*
+import vegabobo.dsusideloader.util.OperationModeUtils
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
 @Composable
@@ -21,20 +19,27 @@ fun Settings(
         topBar = {
             TopBar(
                 barTitle = stringResource(id = R.string.preferences),
-                icon = null,
                 scrollBehavior = it,
                 showBackButton = true,
                 onClickBackButton = { navController.navigateUp() }
             )
         }
     ) {
-
         val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+
+        if(uiState.isShowingGrantPermWithShizuku)
+            Dialog(
+                title = stringResource(id = R.string.missing_permissions),
+                text = stringResource(id = R.string.grant_read_logs_shizuku),
+                confirmText = stringResource(id = R.string.ok),
+                cancelText = stringResource(id = R.string.cancel),
+                onClickConfirm = { settingsViewModel.shizukuGrantReadLogsPermission() },
+                onClickCancel = { settingsViewModel.onCancelShizukuGrantReadLogs() }
+            )
 
         Title(title = stringResource(id = R.string.installation))
         PreferenceItem(
             title = stringResource(id = R.string.debug_installation),
-//            icon = Icons.Outlined.BugReport,
             description = stringResource(
                 id = R.string.debug_installation_text
             ),
@@ -43,30 +48,27 @@ fun Settings(
             onClick = { settingsViewModel.toggleInstDebug(!it) },
         )
         PreferenceItem(
-            title = "Unmount sdcard",
-            description = "Avoid allocation on sdcard by temporary unmounting it",
-//            icon = Icons.Outlined.SdCard,
+            title = stringResource(id = R.string.unmount_sd),
+            description = stringResource(id = R.string.unmount_sd_text),
             showToggle = true,
             isChecked = uiState.umountSd,
             onClick = { settingsViewModel.toggleUmountSd(!it) },
         )
         PreferenceItem(
             title = stringResource(id = R.string.keep_screen_on),
-//            icon = Icons.Outlined.Smartphone,
             showToggle = true,
             isChecked = uiState.keepScreenOn,
             onClick = { settingsViewModel.toggleKeepScreenOn(!it) },
         )
+
         Title(title = stringResource(id = R.string.other))
         PreferenceItem(
             title = stringResource(id = R.string.op_mode),
-//            icon = Icons.Outlined.Build,
-            description = uiState.operationMode
+            description = OperationModeUtils.getOperationModeAsString(settingsViewModel.getOperationMode())
         )
         PreferenceItem(
             title = stringResource(id = R.string.about),
-            description = "Credits and more..",
-//            icon = Icons.Outlined.Info,
+            description = stringResource(id = R.string.about_text),
             onClick = {}
         )
     }

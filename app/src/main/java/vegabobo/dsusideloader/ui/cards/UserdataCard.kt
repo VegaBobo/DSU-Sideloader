@@ -11,44 +11,44 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vegabobo.dsusideloader.R
+import vegabobo.dsusideloader.ui.screen.home.UserDataCardState
 import vegabobo.dsusideloader.ui.components.CardBox
 import vegabobo.dsusideloader.ui.components.FileSelectionBox
 
 @Composable
 fun UserdataCard(
+    isInstalling: Boolean,
+    uiState: UserDataCardState,
     modifier: Modifier = Modifier,
-    addToggle: Boolean = true,
-    isToggleChecked: Boolean = false,
-    isEnabled: Boolean = true,
-    isError: Boolean = false,
-    value: String,
-    maximumAllowedAlloc: Int = 0,
     onValueChange: (String) -> Unit,
     onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
     CardBox(
         modifier = modifier,
         cardTitle = stringResource(id = R.string.userdata_size_ct),
-        addToggle = addToggle,
-        isToggleChecked = isToggleChecked,
-        isToggleEnabled = isEnabled,
+        addToggle = true,
+        isToggleEnabled = !isInstalling,
+        isToggleChecked = uiState.isSelected,
         onCheckedChange = onCheckedChange
     ) {
-        AnimatedVisibility(visible = isToggleChecked) {
+        AnimatedVisibility(visible = uiState.isSelected) {
             Column {
                 FileSelectionBox(
                     modifier = Modifier.padding(bottom = 4.dp),
-                    isEnabled = isEnabled,
-                    isError = isError,
+                    isEnabled = !isInstalling,
+                    isError = uiState.isError,
                     isNumberOnly = true,
-                    textFieldValue = value,
+                    textFieldValue = uiState.content,
                     textFieldTitle = stringResource(id = R.string.userdata_size_n),
                     onValueChange = onValueChange
                 )
-                AnimatedVisibility(visible = isError) {
+                AnimatedVisibility(visible = uiState.isError) {
                     Text(
                         modifier = Modifier.padding(start = 1.dp),
-                        text = stringResource(id = R.string.allowed_userdata_allocation, maximumAllowedAlloc),
+                        text = stringResource(
+                            id = R.string.allowed_userdata_allocation,
+                            uiState.maximumAllowed
+                        ),
                         color = MaterialTheme.colorScheme.error,
                         lineHeight = 14.sp,
                         fontSize = 14.sp

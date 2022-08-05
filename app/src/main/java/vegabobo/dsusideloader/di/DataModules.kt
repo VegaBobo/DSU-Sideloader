@@ -15,8 +15,9 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import vegabobo.dsusideloader.preferences.Prefs
-import vegabobo.dsusideloader.preparation.StorageManager
+import vegabobo.dsusideloader.core.InstallationSession
+import vegabobo.dsusideloader.preferences.CorePreferences
+import vegabobo.dsusideloader.core.StorageManager
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -31,14 +32,23 @@ object DataModules {
                 produceNewData = { emptyPreferences() }
             ),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.preferencesDataStoreFile(Prefs.USER_PREFERENCES) }
+            produceFile = { appContext.preferencesDataStoreFile(CorePreferences.USER_PREFERENCES) }
         )
     }
 
     @Singleton
     @Provides
-    fun provideStorageAccess(@ApplicationContext appContext: Context): StorageManager {
-        return StorageManager(appContext)
+    fun providesStorageManager(
+        @ApplicationContext appContext: Context,
+        preferences: DataStore<Preferences>
+    ): StorageManager {
+        return StorageManager(appContext, preferences)
+    }
+
+    @Singleton
+    @Provides
+    fun provideInstallationSession(): InstallationSession {
+        return InstallationSession()
     }
 
 }

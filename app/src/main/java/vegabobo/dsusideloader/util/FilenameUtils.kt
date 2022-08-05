@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 
 class FilenameUtils {
@@ -22,6 +23,7 @@ class FilenameUtils {
             return appendToString(input, "")
         }
 
+        // tries to convert SAF URI into realpath.
         fun getFilePath(uri: Uri, addQuotes: Boolean): String {
             val input = uri.path.toString()
             val safStorage = input.split("/document/")[1].replace("/tree/", "")
@@ -50,6 +52,19 @@ class FilenameUtils {
 
         fun getLengthFromFile(context: Context, uri: Uri): Long {
             return DocumentFile.fromSingleUri(context, uri)!!.length()
+        }
+
+        fun getFileExtension(input: String): String {
+            if(!input.contains(".")) return ""
+            return input.substring(input.lastIndexOf("."))
+        }
+
+        fun isFileSupported(filename: String): Boolean{
+            return when (getFileExtension(filename)){
+                ".gz", ".xz", ".zip", ".img" -> true
+                else -> false
+            }
+
         }
 
     }

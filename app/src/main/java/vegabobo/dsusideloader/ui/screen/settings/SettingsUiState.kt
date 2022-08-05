@@ -1,7 +1,7 @@
-package vegabobo.dsusideloader.ui.screens.settings
+package vegabobo.dsusideloader.ui.screen.settings
 
 data class SettingsUiState(
-    val operationMode: String = "",
+    val isShowingGrantPermWithShizuku: Boolean = false,
     val debugInstallation: Boolean = false,
     val keepScreenOn: Boolean = false,
     val umountSd: Boolean = true,

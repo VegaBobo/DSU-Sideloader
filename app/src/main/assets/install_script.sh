@@ -34,8 +34,7 @@ fi
 setprop persist.sys.fflag.override.settings_dynamic_system true
 
 # invoke DSU activity
-am start-activity -n com.android.dynsystem/com.android.dynsystem.VerificationActivity \
-  -a android.os.image.action.START_INSTALL %INSTALLATION_ARGS
+%ACTION_INSTALL
 
 if [ $umount_sd == true ]; then
   (sleep 60 && sm mount $SDCARD) &

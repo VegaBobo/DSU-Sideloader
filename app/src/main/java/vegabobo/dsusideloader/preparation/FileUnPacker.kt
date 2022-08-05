@@ -2,24 +2,21 @@ package vegabobo.dsusideloader.preparation
 
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.Job
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
+import vegabobo.dsusideloader.core.StorageManager
 import java.io.InputStream
 import java.io.OutputStream
 
-class UnPack(
+class FileUnPacker(
     private val storageManager: StorageManager,
     private val inputFile: Uri,
-    outputFile: String,
-    private val installationJob: CompletableJob,
+    private val outputFile: String,
+    private val installationJob: Job,
     private val onProgressChange: (Float) -> Unit
 ) {
-
-    object Constants {
-        const val WORKSPACE_FOLDER = "workspace_dsuhelper"
-    }
 
     private var finalFile: DocumentFile = storageManager.createDocumentFile(outputFile)
 

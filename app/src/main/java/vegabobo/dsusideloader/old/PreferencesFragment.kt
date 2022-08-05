@@ -7,6 +7,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.util.OperationMode
+import vegabobo.dsusideloader.util.OperationModeUtils
 
 
 class PreferencesFragment : PreferenceFragmentCompat() {
@@ -47,32 +48,7 @@ class PreferencesFragment : PreferenceFragmentCompat() {
     }
 
     private fun retrieveOpModeString(): String {
-        return when (OperationMode.getOperationMode()) {
-            OperationMode.Constants.UNROOTED -> {
-                OP_MODE = "ADB"
-                getString(
-                    R.string.operation_mode,
-                    "NON-ROOT"
-                ) + "\n" + getString(R.string.operation_nonroot)
-            }
-            OperationMode.Constants.ROOT_MAGISK -> {
-                OP_MODE = "ROOT"
-                getString(
-                    R.string.operation_mode,
-                    "MAGISK"
-                ) + "\n" + getString(R.string.operation_magisk)
-            }
-            OperationMode.Constants.OTHER_ROOT_SOLUTION -> {
-                OP_MODE = "ROOT"
-                getString(
-                    R.string.operation_mode,
-                    "ROOT_OTHER"
-                ) + "\n" + getString(R.string.operation_root_other)
-            }
-            else -> {
-                "Error"
-            }
-        }
+        return ""
     }
 
 }

@@ -1,38 +1,30 @@
-package vegabobo.dsusideloader.ui.screens.adb
+package vegabobo.dsusideloader.ui.screen.adb
 
-import android.util.Base64
-import android.util.Log
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ContentCopy
-import androidx.compose.material.icons.outlined.Done
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.Destinations
 import vegabobo.dsusideloader.ui.components.*
+import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
 @Composable
 fun AdbScreen(
     navController: NavController,
-    cmd: String? = "",
-    adbViewModel: AdbViewModel = viewModel()
+    adbViewModel: AdbViewModel = hiltViewModel()
 ) {
-    val decodedText = String(Base64.decode(cmd, Base64.DEFAULT))
     val uiState by adbViewModel.uiState.collectAsStateWithLifecycle()
+    val scriptPath = adbViewModel.obtainScriptPath()
 
     if (uiState.isShowingExitDialog) {
         Dialog(
@@ -61,14 +53,14 @@ fun AdbScreen(
                 barTitle = stringResource(id = R.string.ready_to_install),
                 scrollBehavior = it,
                 showBackButton = true,
-                onClickIcon = { navController.navigate(Destinations.Settings) },
+                onClickIcon = { navController.navigate(Destinations.Preferences) },
                 onClickBackButton = { adbViewModel.onBackPressed() }
             )
         },
         content = {
             Text(text = stringResource(id = R.string.adb_howto_text))
             SimpleCard(
-                text = "sh $decodedText",
+                text = "sh $scriptPath",
                 content = {
                     CopyTextButton(
                         isCopied = uiState.buttonCopyText1,
@@ -78,7 +70,7 @@ fun AdbScreen(
             )
             Text(text = stringResource(id = R.string.adb_howto_directly))
             SimpleCard(
-                text = "adb shell sh $decodedText",
+                text = "adb shell sh $scriptPath",
                 content = {
                     CopyTextButton(
                         isCopied = uiState.buttonCopyText2,

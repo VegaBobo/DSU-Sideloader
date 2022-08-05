@@ -17,10 +17,14 @@ class StorageUtils {
         }
 
         fun maximumAllowedAllocation(): Int {
+            return maximumAllowedAllocation(0.40F)
+        }
+
+        fun maximumAllowedAllocation(allocationPercentage: Float): Int {
             val statFs = StatFs(Environment.getDataDirectory().absolutePath)
             val blockSize = statFs.blockSizeLong
             val availableSize = statFs.availableBlocksLong * blockSize
-            return ((((availableSize / 1024L) / 1024L) / 1024L) * 0.40).toInt()
+            return ((((availableSize / 1024L) / 1024L) / 1024L) * allocationPercentage).toInt()
         }
 
     }

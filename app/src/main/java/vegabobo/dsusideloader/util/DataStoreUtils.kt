@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.preferences
+package vegabobo.dsusideloader.util
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -11,17 +11,17 @@ import kotlinx.coroutines.flow.map
 class DataStoreUtils {
 
     companion object {
+
         suspend fun readBoolPref(
             dataStore: DataStore<Preferences>,
             key: String,
             default: Boolean,
             onFinish: (Boolean) -> Unit = {}
-        ): Boolean {
+        ) {
             val value = dataStore.data.map {
                 it[booleanPreferencesKey(key)] ?: default
             }.first()
             onFinish(value)
-            return value
         }
 
         suspend fun readStringPref(
@@ -29,12 +29,11 @@ class DataStoreUtils {
             key: String,
             default: String,
             onFinish: (String) -> Unit = {}
-        ): String {
+        ) {
             val value = dataStore.data.map {
                 it[stringPreferencesKey(key)] ?: default
             }.first()
             onFinish(value)
-            return value
         }
 
         suspend fun updateBoolPref(
@@ -64,6 +63,5 @@ class DataStoreUtils {
         }
 
     }
-
 
 }
