@@ -1,59 +1,42 @@
-package vegabobo.dsusideloader.ui.screens.diaginstallation
+package vegabobo.dsusideloader.ui.screen.diaginstallation
 
+import android.app.Application
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.topjohnwu.superuser.CallbackList
 import com.topjohnwu.superuser.Shell
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import vegabobo.dsusideloader.core.InstallationSession
+import vegabobo.dsusideloader.core.StorageManager
+import vegabobo.dsusideloader.installation.InstallationHandler
 import java.io.IOException
+import javax.inject.Inject
 
-enum class FabAction {
-    INSTALL, SAVE_LOGS
-}
-
-enum class DiagDialog {
-    IS_NOT_SHOWING_ANY_DIALOG,
-    EXIT,
-    ERROR_EXTERNAL_SDCARD_ALLOC,
-    ERROR_NO_AVAIL_STORAGE,
-    ERROR_F2FS_WRONG_PATH,
-    ERROR_EXTENTS,
-    ERROR_SELINUX_A10
-}
-
-data class DiagUiState(
-    val installationCmd: String = "",
-    val installationLogs: String = "",
-    val fabAction: FabAction = FabAction.INSTALL,
-    val isShowingDialog: DiagDialog = DiagDialog.IS_NOT_SHOWING_ANY_DIALOG,
-    val navigateUp: Boolean = false,
-)
-
-class DiagnoseInstallationViewModel : ViewModel() {
+@HiltViewModel
+class DiagnoseInstallationViewModel @Inject constructor(
+    private val application: Application,
+    private val iSession: InstallationSession,
+    private val storageManager: StorageManager
+) : ViewModel() {
 
     val _uiState = MutableStateFlow(DiagUiState())
     val uiState: StateFlow<DiagUiState> = _uiState.asStateFlow()
     var currentLogs = ""
-    var ejectSdCard = false
 
     private var callbackList: CallbackList<String?>? = null
 
-    fun updateInstallationCmd(installationCmd: String) {
-        _uiState.update { it.copy(installationCmd = installationCmd) }
-    }
-
     fun onClickStartInstallation() {
-        logcatDiagnostic()
+        logcatDiagnosticRoot()
         _uiState.update { it.copy(fabAction = FabAction.SAVE_LOGS) }
-    }
-
-    fun onClickSaveLogs() {
-
     }
 
     fun cleanLogcatAndInstall() {
@@ -61,14 +44,12 @@ class DiagnoseInstallationViewModel : ViewModel() {
         _uiState.update {
             it.copy(installationLogs = currentLogs)
         }
-        var instCmd = uiState.value.installationCmd
         Shell.cmd("logcat -c").exec()
-        if (ejectSdCard)
-            instCmd = instCmd.replace("umount_sd=false", "umount_sd=true")
-        Shell.cmd(instCmd).exec()
+        InstallationHandler(iSession).start(application)
     }
 
-    fun logcatDiagnostic() {
+    // Diagnose via root
+    fun logcatDiagnosticRoot() {
         viewModelScope.launch(Dispatchers.IO) {
             cleanLogcatAndInstall()
             callbackList = object : CallbackList<String?>() {
@@ -149,26 +130,26 @@ class DiagnoseInstallationViewModel : ViewModel() {
 
     fun onClickEjectAndTryAgain() {
         release(true)
-        ejectSdCard = true
+        iSession.preferences.isUnmountSdCard = true
         _uiState.update {
             it.copy(
-                isShowingDialog = DiagDialog.IS_NOT_SHOWING_ANY_DIALOG,
+                isShowingDialog = DiagDialog.NONE,
                 installationLogs = currentLogs,
                 fabAction = FabAction.SAVE_LOGS
             )
         }
-        logcatDiagnostic()
+        logcatDiagnosticRoot()
     }
 
-    fun onClickCancel() {
-        _uiState.update { it.copy(isShowingDialog = DiagDialog.IS_NOT_SHOWING_ANY_DIALOG) }
+    fun dismissDialog() {
+        _uiState.update { it.copy(isShowingDialog = DiagDialog.NONE) }
     }
 
     fun onClickSetPermissiveAndTryAgain() {
-        _uiState.update { it.copy(isShowingDialog = DiagDialog.IS_NOT_SHOWING_ANY_DIALOG) }
+        _uiState.update { it.copy(isShowingDialog = DiagDialog.NONE) }
         release(true)
         Shell.cmd("setenforce 0").exec()
-        logcatDiagnostic()
+        logcatDiagnosticRoot()
     }
 
     fun onClickConfirmBack(navigateUp: Boolean) {
@@ -197,6 +178,16 @@ class DiagnoseInstallationViewModel : ViewModel() {
 
     fun onLongClickResetInstall() {
         release(true)
+    }
+
+    fun onClickSaveLogSuccess(uriToSaveLogs: Uri) {
+        if(uriToSaveLogs==Uri.EMPTY) return
+        storageManager.writeStringToUri(currentLogs, uriToSaveLogs)
+        viewModelScope.launch {
+            _uiState.update { it.copy(fabAction = FabAction.LOGS_SAVED) }
+            delay(2000)
+            _uiState.update { it.copy(fabAction = FabAction.SAVE_LOGS) }
+        }
     }
 
 }
