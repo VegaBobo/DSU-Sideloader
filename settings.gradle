@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "DSU Helper"
 include ':app'
+include ':hidden-api-stub'

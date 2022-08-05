@@ -3,6 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="vegabobo.dsusideloader">
 
+    <uses-permission android:name="android.permission.INSTALL_DYNAMIC_SYSTEM"
+        tools:ignore="ProtectedPermissions" />
+
+    <uses-permission android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
+
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:name=".DSUSideloaderApplication"
         android:allowBackup="true"
@@ -35,6 +44,14 @@
         <activity
             android:name=".old.RunOnAdbActivity"
             android:exported="false" />
+
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:enabled="true"
+            android:exported="true"
+            android:multiprocess="false"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
     </application>
 
 </manifest>

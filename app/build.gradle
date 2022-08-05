@@ -78,4 +78,10 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     implementation "com.google.dagger:hilt-android:2.42"
     kapt "com.google.dagger:hilt-compiler:2.42"
+
+    def shizuku_version = '12.1.0'
+    implementation "dev.rikka.shizuku:api:$shizuku_version"
+    implementation "dev.rikka.shizuku:provider:$shizuku_version"
+    implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:4.3'
+    compileOnly project(':hidden-api-stub')
 }
