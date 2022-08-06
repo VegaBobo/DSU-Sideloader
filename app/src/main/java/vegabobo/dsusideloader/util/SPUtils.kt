@@ -3,6 +3,7 @@ package vegabobo.dsusideloader.util
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import vegabobo.dsusideloader.BuildConfig
+import android.content.SharedPreferences
 
 class SPUtils {
 
@@ -40,44 +41,42 @@ class SPUtils {
             writeStringToSP(c, Constants.PREF_RW_PATH, path)
         }
 
-        private fun getStringFromSP(c: Context, key: String): String {
-            val prefs =
-                c.getSharedPreferences(Constants.PREFERENCE_FILE, AppCompatActivity.MODE_PRIVATE)
+        private fun getSharedPrefs(ctx: Context): SharedPreferences {
+            return ctx.getSharedPreferences(
+                Constants.PREFERENCE_FILE, 
+                AppCompatActivity.MODE_PRIVATE
+            )
+        } 
+        
+        private fun getStringFromSP(ctx: Context, key: String): String {
+            val prefs = getSharedPrefs(ctx)
             return prefs.getString(key, "")!!
         }
 
-        private fun writeStringToSP(c: Context, key: String, value: String) {
-            val editor =
-                c.getSharedPreferences(Constants.PREFERENCE_FILE, AppCompatActivity.MODE_PRIVATE)
-                    .edit()
+        private fun writeStringToSP(ctx: Context, key: String, value: String) {
+            val editor = getSharedPrefs(ctx).edit()
             editor.putString(key, value)
             editor.apply()
         }
 
-        private fun getBooleanFromSP(c: Context, key: String): Boolean {
-            val prefs =
-                c.getSharedPreferences(Constants.PREFERENCE_FILE, AppCompatActivity.MODE_PRIVATE)
+        private fun getBooleanFromSP(ctx: Context, key: String): Boolean {
+            val prefs = getSharedPrefs(ctx)
             return prefs.getBoolean(key, false)
         }
 
-        private fun writeBooleanToSP(c: Context, key: String, value: Boolean) {
-            val editor =
-                c.getSharedPreferences(Constants.PREFERENCE_FILE, AppCompatActivity.MODE_PRIVATE)
-                    .edit()
+        private fun writeBooleanToSP(ctx: Context, key: String, value: Boolean) {
+            val editor = getSharedPrefs(ctx).edit()
             editor.putBoolean(key, value)
             editor.apply()
         }
 
-        private fun getIntegerFromSP(c: Context, key: String, fallback: Int): Int {
-            val prefs =
-                c.getSharedPreferences(Constants.PREFERENCE_FILE, AppCompatActivity.MODE_PRIVATE)
+        private fun getIntegerFromSP(ctx: Context, key: String, fallback: Int): Int {
+            val prefs = getSharedPrefs(ctx)
             return prefs.getInt(key, fallback)
         }
 
-        private fun writeIntegerToSP(c: Context, key: String, value: Int) {
-            val editor =
-                c.getSharedPreferences(Constants.PREFERENCE_FILE, AppCompatActivity.MODE_PRIVATE)
-                    .edit()
+        private fun writeIntegerToSP(ctx: Context, key: String, value: Int) {
+            val editor = getSharedPrefs(ctx).edit()
             editor.putInt(key, value)
             editor.apply()
         }
