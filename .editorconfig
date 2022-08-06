@@ -1,0 +1,22 @@
+# Editor configuration, see https://editorconfig.org
+root = true
+
+[*.kt]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
+ij_kotlin_line_comment_at_first_column = false
+ij_kotlin_line_comment_add_space = true
+ij_kotlin_name_count_to_use_star_import = 2147483647
+ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
+ij_kotlin_keep_blank_lines_in_declarations = 1
+ij_kotlin_keep_blank_lines_in_code = 1
+ij_kotlin_keep_blank_lines_before_right_brace = 0
+ij_kotlin_align_multiline_parameters = false
+ij_continuation_indent_size = 4
+ij_kotlin_import_nested_classes = false
+ij_kotlin_imports_layout = *,^

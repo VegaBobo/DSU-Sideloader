@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jmailen.kotlinter'
 }
 
 android {
@@ -39,3 +40,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'com.google.android.material:material:1.6.1'
 }
+
+// remove this line to disable ktlint
+preBuild.dependsOn(lintKotlin)
+lintKotlin.dependsOn(formatKotlin)
