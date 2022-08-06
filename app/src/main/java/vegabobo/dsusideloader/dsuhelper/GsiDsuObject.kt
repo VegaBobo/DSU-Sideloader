@@ -43,5 +43,4 @@ class GsiDsuObject(
             return arrayOfNulls(size)
         }
     }
-
 }

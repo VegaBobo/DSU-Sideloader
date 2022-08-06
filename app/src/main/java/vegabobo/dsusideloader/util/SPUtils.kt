@@ -1,9 +1,9 @@
 package vegabobo.dsusideloader.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import vegabobo.dsusideloader.BuildConfig
-import android.content.SharedPreferences
 
 class SPUtils {
 
@@ -43,11 +43,11 @@ class SPUtils {
 
         private fun getSharedPrefs(ctx: Context): SharedPreferences {
             return ctx.getSharedPreferences(
-                Constants.PREFERENCE_FILE, 
+                Constants.PREFERENCE_FILE,
                 AppCompatActivity.MODE_PRIVATE
             )
-        } 
-        
+        }
+
         private fun getStringFromSP(ctx: Context, key: String): String {
             val prefs = getSharedPrefs(ctx)
             return prefs.getString(key, "")!!
@@ -80,7 +80,5 @@ class SPUtils {
             editor.putInt(key, value)
             editor.apply()
         }
-
     }
-
 }

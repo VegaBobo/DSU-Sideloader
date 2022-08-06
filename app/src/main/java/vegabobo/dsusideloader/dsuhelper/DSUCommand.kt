@@ -6,7 +6,9 @@ import vegabobo.dsusideloader.util.SPUtils
 import vegabobo.dsusideloader.util.WorkspaceFilesUtils
 
 class DSUCommand(
-    private val gsiDsuObject: GsiDsuObject, val context: Context, private val skipDebugMode: Boolean
+    private val gsiDsuObject: GsiDsuObject,
+    val context: Context,
+    private val skipDebugMode: Boolean
 ) {
 
     object Constants {
@@ -22,7 +24,10 @@ class DSUCommand(
 
     fun getInstallScript(): String {
         return String.format(
-            getShellScriptFromAssets(), getDebugMode(), genArguments(), installationInfoAsString()
+            getShellScriptFromAssets(),
+            getDebugMode(),
+            genArguments(),
+            installationInfoAsString()
         )
     }
 
@@ -46,10 +51,13 @@ class DSUCommand(
         var arguments = ""
         arguments += addArgument("-d", "${gsiDsuObject.absolutePath}")
         arguments += addArgument("--el", "KEY_USERDATA_SIZE", gsiDsuObject.getUserdataInBytes())
-        if (gsiDsuObject.fileSize != -1L)
+        if (gsiDsuObject.fileSize != -1L) {
             arguments += addArgument(
-                "--el", "KEY_SYSTEM_SIZE", gsiDsuObject.fileSize
+                "--el",
+                "KEY_SYSTEM_SIZE",
+                gsiDsuObject.fileSize
             )
+        }
         return arguments.trim()
     }
 
@@ -62,18 +70,18 @@ class DSUCommand(
     }
 
     private fun getDebugMode(): Boolean {
-        return if (skipDebugMode)
+        return if (skipDebugMode) {
             false
-        else
+        } else {
             SPUtils.isDebugModeEnabled(context)
+        }
     }
 
-    fun installationInfoAsString():String{
+    fun installationInfoAsString(): String {
         return "Installation info: " +
-        "\nAbsolute path: " + this.gsiDsuObject.absolutePath +
-        "\nFile size: " + this.gsiDsuObject.fileSize +
-        "\nUserdata size: " + this.gsiDsuObject.userdataSize +
-        "\n\nLogcat:\n"
+            "\nAbsolute path: " + this.gsiDsuObject.absolutePath +
+            "\nFile size: " + this.gsiDsuObject.fileSize +
+            "\nUserdata size: " + this.gsiDsuObject.userdataSize +
+            "\n\nLogcat:\n"
     }
-
 }

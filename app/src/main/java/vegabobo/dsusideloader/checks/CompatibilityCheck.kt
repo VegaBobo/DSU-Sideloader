@@ -32,8 +32,5 @@ class CompatibilityCheck {
             }
             return value
         }
-
     }
-
-
 }

@@ -29,7 +29,7 @@ class SetupStorageAccess(
                 if (result.resultCode == Activity.RESULT_OK) {
                     val data: Intent? = result.data
                     val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                     ctx.contentResolver.takePersistableUriPermission(
                         data?.data!!,
                         takeFlags
@@ -48,17 +48,17 @@ class SetupStorageAccess(
         for (folder in foldersUriPermissions) {
             val persistedUriString = folder.uri.toString()
             if (folderUri == persistedUriString) {
-
                 // If folder with granted permissions doesn't exists
                 // (eg. user deleted folder, or apk data restored externally from a backup)
                 // then, we should ask user to grant permissions to a folder again
-                if (!DocumentFile.fromTreeUri(ctx, folder.uri)!!.exists())
+                if (!DocumentFile.fromTreeUri(ctx, folder.uri)!!.exists()) {
                     return false
+                }
 
                 // check if uri has r/w permission
-                if (folder.isWritePermission && folder.isReadPermission)
+                if (folder.isWritePermission && folder.isReadPermission) {
                     return true
-
+                }
             } else {
                 // if we have permission in some folder we don't need to, permission to it will be revoked
                 ctx.revokeUriPermission(
@@ -86,5 +86,4 @@ class SetupStorageAccess(
                 .show()
         }
     }
-
 }

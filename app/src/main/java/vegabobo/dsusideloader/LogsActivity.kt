@@ -39,11 +39,12 @@ class LogsActivity : AppCompatActivity() {
             override fun onAddElement(s: String?) {
                 entireLogcat = entireLogcat + s + "\n"
                 if (logLines != -1 && logLines < 200) {
-                    tvLog.append("\n"+s)
+                    tvLog.append("\n" + s)
                     logLines++
                 } else {
-                    if(logLines!=-1)
+                    if (logLines != -1) {
                         tvLog.text = "Logs are too big, export to see everything.\n\n${tvLog.text}"
+                    }
                     logLines = -1
                 }
             }
@@ -68,7 +69,6 @@ class LogsActivity : AppCompatActivity() {
             intent.putExtra(Intent.EXTRA_TITLE, "logs")
             resultLauncher.launch(intent)
         }
-
     }
 
     override fun onBackPressed() {
@@ -93,5 +93,4 @@ class LogsActivity : AppCompatActivity() {
             Toast.makeText(this@LogsActivity, getString(R.string.error), Toast.LENGTH_SHORT).show()
         }
     }
-
 }

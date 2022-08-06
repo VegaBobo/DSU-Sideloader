@@ -7,7 +7,6 @@ import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import vegabobo.dsusideloader.checks.OperationMode
 
-
 class PreferencesFragment : PreferenceFragmentCompat() {
 
     private var OP_MODE = ""
@@ -33,7 +32,6 @@ class PreferencesFragment : PreferenceFragmentCompat() {
                 true
             }
         }
-
     }
 
     private fun dialogInfo(message: String) {
@@ -73,5 +71,4 @@ class PreferencesFragment : PreferenceFragmentCompat() {
             }
         }
     }
-
 }

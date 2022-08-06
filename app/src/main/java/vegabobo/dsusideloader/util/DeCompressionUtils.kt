@@ -4,10 +4,10 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
-import org.tukaani.xz.XZInputStream
 import java.io.BufferedInputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
+import org.tukaani.xz.XZInputStream
 
 class DeCompressionUtils(
     private val context: Context,
@@ -23,7 +23,6 @@ class DeCompressionUtils(
         const val GZ_TO_IMG = 3
         const val WORKSPACE_FOLDER = "workspace_dsuhelper"
     }
-
 
     fun extractXZFile(): Uri? {
         return try {
@@ -89,7 +88,5 @@ class DeCompressionUtils(
             Log.e("decompressGzip", e.stackTraceToString())
             null
         }
-
     }
-
 }
