@@ -8,11 +8,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import vegabobo.dsusideloader.BuildConfig
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.core.InstallationSession
 import vegabobo.dsusideloader.preferences.UserPreferences
-import vegabobo.dsusideloader.shizuku.SystemServiceApi
+import vegabobo.dsusideloader.privilegedservice.PrivilegedServiceProvider
 import vegabobo.dsusideloader.util.OperationMode
 import vegabobo.dsusideloader.util.OperationModeUtils
 import javax.inject.Inject
@@ -72,7 +71,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun shizukuGrantReadLogsPermission() {
-        SystemServiceApi.grantPermission(BuildConfig.APPLICATION_ID, "android.permission.READ_LOGS", 0)
+        PrivilegedServiceProvider.getService().grantPermission("android.permission.READ_LOGS")
     }
 
 }

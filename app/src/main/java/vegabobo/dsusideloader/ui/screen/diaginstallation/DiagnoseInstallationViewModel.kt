@@ -45,7 +45,7 @@ class DiagnoseInstallationViewModel @Inject constructor(
             it.copy(installationLogs = currentLogs)
         }
         Shell.cmd("logcat -c").exec()
-        InstallationHandler(iSession).start(application)
+        InstallationHandler(iSession).start()
     }
 
     // Diagnose via root

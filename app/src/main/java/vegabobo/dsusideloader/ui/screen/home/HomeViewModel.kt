@@ -158,7 +158,7 @@ class HomeViewModel @Inject constructor(
                         viewAction(HomeViewAction.NAVIGATE_TO_DIAGNOSE_SCREEN)
                         return@Preparation
                     }
-                    InstallationHandler(sessionReadyToInstall).start(application)
+                    InstallationHandler(sessionReadyToInstall).start()
                 })
         }
     }
