@@ -107,7 +107,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
     }
 
     private fun setupRootAIDL() {
-        val e = Intent(this, RootService::class.java)
+        val e = Intent(this, PrivilegedRootService::class.java)
         RootService.bind(e, PrivilegedServiceProvider.connection!!)
     }
 
