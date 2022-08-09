@@ -56,7 +56,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun toggleUmountSd(value: Boolean) {
-        updateBoolPref(UserPreferences.KEEP_SCREEN_ON, value) {
+        updateBoolPref(UserPreferences.UMOUNT_SD, value) {
             _uiState.update { it.copy(umountSd = value) }
         }
     }
