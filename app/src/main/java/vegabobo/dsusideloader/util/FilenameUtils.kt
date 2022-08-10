@@ -13,8 +13,9 @@ class FilenameUtils {
             val input = uri.path.toString()
             val safStorage = input.split("/document/")[1].replace("/tree/", "")
             val path = safStorage.split(":")[1]
-            if (path.contains("/storage/emulated"))
+            if (path.contains("/storage/emulated")) {
                 return if (addQuotes) "'file://'$path" else "file://$path"
+            }
             return if (safStorage.contains("primary")) {
                 val storagePath = "file:///storage/emulated/0/"
                 val finalPath = "$storagePath$path"
@@ -34,7 +35,5 @@ class FilenameUtils {
             returnCursor.close()
             return name
         }
-
     }
-
 }

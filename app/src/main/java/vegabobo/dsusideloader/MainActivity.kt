@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-
 class MainActivity : AppCompatActivity() {
 
     private var fragment1: Fragment = HomeFragment()
@@ -35,7 +34,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.tab_home -> {
@@ -51,8 +49,5 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-
     }
-
-
 }

@@ -26,5 +26,4 @@ class SplashActivity : Activity() {
             finish()
         }
     }
-
 }

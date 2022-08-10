@@ -11,13 +11,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import vegabobo.dsusideloader.R
 
 class SetupStorageAccess(
-    private val c: Context
+    private val ctx: Context
 ) {
 
     private lateinit var v: ActivityResultLauncher<Intent>
 
     init {
-        if (!arePermissionsGranted(SPUtils.getSafRwPath(c))) {
+        if (!arePermissionsGranted(SPUtils.getSafRwPath(ctx))) {
             setupSAFActivityResult()
             askSafStorageAccess()
         }
@@ -25,18 +25,18 @@ class SetupStorageAccess(
 
     private fun setupSAFActivityResult() {
         v =
-            (c as AppCompatActivity).registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            (ctx as AppCompatActivity).registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val data: Intent? = result.data
                     val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    c.contentResolver.takePersistableUriPermission(
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    ctx.contentResolver.takePersistableUriPermission(
                         data?.data!!,
                         takeFlags
                     )
-                    SPUtils.writeSafRwPath(c, data.data.toString())
-                }else{
-                    (c as Activity).finish()
+                    SPUtils.writeSafRwPath(ctx, data.data.toString())
+                } else {
+                    (ctx as Activity).finish()
                 }
             }
     }
@@ -44,24 +44,24 @@ class SetupStorageAccess(
     private fun arePermissionsGranted(
         folderUri: String
     ): Boolean {
-        val foldersUriPermissions = c.contentResolver.persistedUriPermissions
+        val foldersUriPermissions = ctx.contentResolver.persistedUriPermissions
         for (folder in foldersUriPermissions) {
             val persistedUriString = folder.uri.toString()
             if (folderUri == persistedUriString) {
-
                 // If folder with granted permissions doesn't exists
                 // (eg. user deleted folder, or apk data restored externally from a backup)
                 // then, we should ask user to grant permissions to a folder again
-                if (!DocumentFile.fromTreeUri(c, folder.uri)!!.exists())
+                if (!DocumentFile.fromTreeUri(ctx, folder.uri)!!.exists()) {
                     return false
+                }
 
                 // check if uri has r/w permission
-                if (folder.isWritePermission && folder.isReadPermission)
+                if (folder.isWritePermission && folder.isReadPermission) {
                     return true
-
+                }
             } else {
                 // if we have permission in some folder we don't need to, permission to it will be revoked
-                c.revokeUriPermission(
+                ctx.revokeUriPermission(
                     folder.uri,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                 )
@@ -76,15 +76,14 @@ class SetupStorageAccess(
     }
 
     private fun askSafStorageAccess() {
-        if (!arePermissionsGranted(SPUtils.getSafRwPath(c))) {
-            MaterialAlertDialogBuilder(c)
-                .setTitle(c.getString(R.string.storage))
-                .setMessage(c.getString(R.string.storage_info))
+        if (!arePermissionsGranted(SPUtils.getSafRwPath(ctx))) {
+            MaterialAlertDialogBuilder(ctx)
+                .setTitle(ctx.getString(R.string.storage))
+                .setMessage(ctx.getString(R.string.storage_info))
                 .setPositiveButton(R.string.got_it) { _, _ -> setupSafStorage() }
-                .setNegativeButton(R.string.close_app) { _, _ -> (c as Activity).finish() }
+                .setNegativeButton(R.string.close_app) { _, _ -> (ctx as Activity).finish() }
                 .setCancelable(false)
                 .show()
         }
     }
-
 }

@@ -40,5 +40,4 @@ class AboutActivity : AppCompatActivity() {
     fun btnGoogle(view: View) {
         launchUrlIntent("https://developer.android.com/")
     }
-
 }

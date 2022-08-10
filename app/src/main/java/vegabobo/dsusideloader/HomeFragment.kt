@@ -20,6 +20,7 @@ import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
+import kotlin.math.roundToInt
 import vegabobo.dsusideloader.checks.CompatibilityCheck
 import vegabobo.dsusideloader.checks.OperationMode
 import vegabobo.dsusideloader.dsuhelper.GsiDsuObject
@@ -28,7 +29,6 @@ import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.SPUtils
 import vegabobo.dsusideloader.util.SetupStorageAccess
 import vegabobo.dsusideloader.util.WorkspaceFilesUtils
-import kotlin.math.roundToInt
 
 class HomeFragment : Fragment() {
 
@@ -38,13 +38,15 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (isEnvCompatible(true))
+        if (isEnvCompatible(true)) {
             SetupStorageAccess(requireContext())
+        }
 
         // gsid refuses to start installation when < 40% free storage
         // prevent user from using app on this circumstances
-        if (!hasAvailableStorage())
+        if (!hasAvailableStorage()) {
             showNoAvaiableStorageDialog()
+        }
 
         gsiDsuObject.userdataSize = SPUtils.getUserdataSize(requireActivity())
 
@@ -59,7 +61,7 @@ class HomeFragment : Fragment() {
         val tc = requireView().findViewById<MaterialTextView>(R.id.tv_defaultuserdata)
         val txDebugBuildInfo = requireView().findViewById<MaterialTextView>(R.id.text_debugbuild)
 
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             txDebugBuildInfo.visibility = View.VISIBLE
             txDebugBuildInfo.text = getString(R.string.debug_build_info, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
         }
@@ -103,12 +105,12 @@ class HomeFragment : Fragment() {
         btnIncrease.setOnClickListener {
             gsiDsuObject.userdataSize++
             edDSsize.setText(getString(R.string.gigabyte_holder, gsiDsuObject.userdataSize))
-
         }
 
         btnDecrease.setOnClickListener {
-            if (gsiDsuObject.userdataSize >= 2)
+            if (gsiDsuObject.userdataSize >= 2) {
                 gsiDsuObject.userdataSize--
+            }
             edDSsize.setText(getString(R.string.gigabyte_holder, gsiDsuObject.userdataSize))
         }
 
@@ -150,14 +152,16 @@ class HomeFragment : Fragment() {
         }
 
         btnInstall.setOnClickListener {
-
             if (!cbGSIsize.isChecked) {
                 gsiDsuObject.fileSize = if (edGSIsize.toString().isNotEmpty()) {
                     edGSIsize.text.toString().toLong()
                 } else {
                     Toast.makeText(
                         activity,
-                        getString(R.string.invalid_gsi_size, getString(R.string.auto)),
+                        getString(
+                            R.string.invalid_gsi_size,
+                            getString(R.string.auto)
+                        ),
                         Toast.LENGTH_SHORT
                     ).show()
                     -1
@@ -165,7 +169,11 @@ class HomeFragment : Fragment() {
             }
 
             if (!cbDSsize.isChecked) {
-                gsiDsuObject.userdataSize = edDSsize.text.toString().split("GB")[0].toInt()
+                gsiDsuObject.userdataSize = edDSsize.text
+                    .toString()
+                    .split("GB")
+                    .first()
+                    .toInt()
             }
 
             beginInstall(selectedGsi, gsiDsuObject)
@@ -181,24 +189,27 @@ class HomeFragment : Fragment() {
             )
         }
 
-        if (selectedGsi != Uri.EMPTY)
+        if (selectedGsi != Uri.EMPTY) {
             btnInstall.isEnabled = true
-
+        }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-
     private fun checkDialog(title: String, text: String, finish: Boolean) {
         MaterialAlertDialogBuilder(requireActivity())
             .setTitle(title)
             .setMessage(text)
-            .setPositiveButton(if (finish) getString(R.string.close_app) else getString(R.string.got_it)) { _, _ -> if (finish) requireActivity().finish() }
+            .setPositiveButton(
+                if (finish) getString(R.string.close_app)
+                else getString(R.string.got_it)
+            ) { _, _ -> if (finish) requireActivity().finish() }
             .setCancelable(false)
             .show()
     }
@@ -208,7 +219,9 @@ class HomeFragment : Fragment() {
         val blockSize = statFs.blockSizeLong
         val totalSize = statFs.blockCountLong * blockSize
         val availableSize = statFs.availableBlocksLong * blockSize
-        return ((availableSize.toFloat() / totalSize.toFloat()) * 100).roundToInt() > 40
+        // free storage in percentage
+        val freeStorage = (availableSize.toFloat() / totalSize.toFloat()) * 100
+        return freeStorage.roundToInt() > 40
     }
 
     private fun isEnvCompatible(showDialogs: Boolean): Boolean {
@@ -277,58 +290,65 @@ class HomeFragment : Fragment() {
     }
 
     private fun beginInstall(selectedGsi: Uri, gsiDsuObject: GsiDsuObject) {
-
-        val selectedFile = FilenameUtils.queryName(requireActivity().contentResolver, selectedGsi)
+        val selectedFile = FilenameUtils.queryName(
+            requireActivity().contentResolver,
+            selectedGsi
+        )
 
         // file need to have a extension, if not, show error dialog.
         if (selectedFile.contains(".")) {
-
-            when (selectedFile.substring(selectedFile.lastIndexOf("."))) {
-                ".xz", ".gz", ".img", ".zip" -> {
-
-                    MaterialAlertDialogBuilder(requireActivity())
-                        .setTitle(R.string.info)
-                        .setMessage(getString(R.string.warning))
-                        .setPositiveButton(getString(R.string.proceed)) { _, _ ->
-
-                            MaterialAlertDialogBuilder(requireActivity())
-                                .setTitle(getString(R.string.installation))
-                                .setMessage(
-                                    getString(
-                                        R.string.installation_details,
-                                        selectedFile,
-                                        gsiDsuObject.userdataSize.toString(),
-                                        if (gsiDsuObject.fileSize == -1L) getString(R.string.auto) else gsiDsuObject.fileSize
-                                    )
-                                )
-                                .setPositiveButton(getString(R.string.proceed)) { _, _ ->
-                                    WorkspaceFilesUtils.cleanWorkspaceFolder(
-                                        requireActivity(),
-                                        true
-                                    )
-                                    Thread(
-                                        PrepareDsu(
-                                            requireActivity(),
-                                            selectedGsi,
-                                            gsiDsuObject
-                                        )
-                                    ).start()
-                                }
-                                .setNegativeButton(getString(R.string.cancel), null)
-                                .setCancelable(true)
-                                .show()
-
-                        }
-                        .setNegativeButton(getString(R.string.cancel), null)
-                        .show()
+            when (selectedFile.substringAfterLast(".")) {
+                "xz", "gz", "img", "zip" -> {
+                    beginInstallDialog(selectedFile, selectedGsi, gsiDsuObject)
                 }
-                else -> {
-                    showUnsupportedDialog()
-                }
+                else -> showUnsupportedDialog()
             }
         } else {
             showUnsupportedDialog()
         }
+    }
+
+    private fun beginInstallDialog(
+        selectedFile: String,
+        selectedGsi: Uri,
+        gsiDsuObject: GsiDsuObject
+    ) {
+        MaterialAlertDialogBuilder(requireActivity())
+            .setTitle(R.string.info)
+            .setMessage(getString(R.string.warning))
+            .setPositiveButton(getString(R.string.proceed)) { _, _ ->
+
+                MaterialAlertDialogBuilder(requireActivity())
+                    .setTitle(getString(R.string.installation))
+                    .setMessage(
+                        getString(
+                            R.string.installation_details,
+                            selectedFile,
+                            gsiDsuObject.userdataSize.toString(),
+                            if (gsiDsuObject.fileSize == -1L) {
+                                getString(R.string.auto)
+                            } else gsiDsuObject.fileSize
+                        )
+                    )
+                    .setPositiveButton(getString(R.string.proceed)) { _, _ ->
+                        WorkspaceFilesUtils.cleanWorkspaceFolder(
+                            requireActivity(),
+                            true
+                        )
+                        Thread(
+                            PrepareDsu(
+                                requireActivity(),
+                                selectedGsi,
+                                gsiDsuObject
+                            )
+                        ).start()
+                    }
+                    .setNegativeButton(getString(R.string.cancel), null)
+                    .setCancelable(true)
+                    .show()
+            }
+            .setNegativeButton(getString(R.string.cancel), null)
+            .show()
     }
 
     private fun showUnsupportedDialog() {
@@ -344,9 +364,10 @@ class HomeFragment : Fragment() {
         MaterialAlertDialogBuilder(requireActivity())
             .setTitle(R.string.error)
             .setMessage(getString(R.string.storage_warning))
-            .setPositiveButton(getString(R.string.close_app)) { _, _ -> requireActivity().finish() }
+            .setPositiveButton(getString(R.string.close_app)) { _, _ ->
+                requireActivity().finish()
+            }
             .setCancelable(false)
             .show()
     }
-
 }

@@ -22,17 +22,17 @@ class OperationMode {
 
         // untested on other root solution, warn not tested
         const val OTHER_ROOT_SOLUTION = 100
-
     }
 
     companion object {
         fun getOperationMode(): Int {
             return if (Shell.cmd("whoami").exec().isSuccess) {
-                if (Shell.cmd("su --version").exec().out.toString().contains("MAGISK")) {
-                    if (obtainMagiskVersion() < 23018)
+                if ("MAGISK" in Shell.cmd("su --version").exec().out.toString()) {
+                    if (obtainMagiskVersion() < 23018) {
                         Constants.MAGISK_UNSUPPORTED
-                    else
+                    } else {
                         Constants.ROOT_MAGISK
+                    }
                 } else {
                     Constants.OTHER_ROOT_SOLUTION
                 }
@@ -42,10 +42,11 @@ class OperationMode {
         }
 
         fun obtainMagiskVersion(): Int {
-            return Shell.cmd("su -V").exec().out.toString().replace("[", "").replace("]", "")
+            return Shell.cmd("su -V").exec().out
+                .toString()
+                .replace("[", "")
+                .replace("]", "")
                 .toInt()
         }
-
     }
-
 }

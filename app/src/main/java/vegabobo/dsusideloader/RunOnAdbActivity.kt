@@ -17,7 +17,6 @@ class RunOnAdbActivity : AppCompatActivity() {
 
         tvAdbCommandFull.text = value
         tvAdbCommandQuick.text = value!!.replace("adb shell ", "")
-
     }
 
     override fun onBackPressed() {
@@ -28,5 +27,4 @@ class RunOnAdbActivity : AppCompatActivity() {
             .setNegativeButton(R.string.cancel, null)
             .show()
     }
-
 }
