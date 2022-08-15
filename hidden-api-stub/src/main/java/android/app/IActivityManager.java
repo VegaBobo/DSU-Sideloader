@@ -13,6 +13,8 @@ public interface IActivityManager extends IInterface {
                                        IBinder resultTo, String resultWho, int requestCode, int flags,
                                        ProfilerInfo profilerInfo, Bundle options, int userId);
 
+    void forceStopPackage(String packageName, int userId);
+
     abstract class Stub extends Binder implements IActivityManager {
 
         public static IActivityManager asInterface(IBinder obj) {
