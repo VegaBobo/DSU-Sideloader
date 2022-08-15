@@ -108,14 +108,14 @@
     <string name="unmount_sd">Unmount SD</string>
     <string name="unmount_sd_text">Temporary unmount sd when installing</string>
     <string name="allocation_error_title">Allocation error</string>
-    <string name="allocation_error_description">GSI daemon is trying to allocate in external SD, but it fails for some reason (likely due sepolicy denials)\\nTo fix that, you can install DSU Sideloader Magisk\'s module, or temporary eject sd to avoid this (you can set this option permanently in preferences).</string>
+    <string name="allocation_error_description">GSI daemon is trying to allocate in external SD, but it fails for some reason (likely due sepolicy denials)\nTo fix that, you can install DSU Sideloader Magisk\'s module, or temporary eject sd to avoid this (you can set this option permanently in preferences).</string>
     <string name="allocation_error_action">Eject SD and retry</string>
     <string name="storage_error_title">Storage error</string>
-    <string name="storage_error_description">Android requires, at least 40% of free storage to proceed installation, free up some space or decrease userdata size, and try again.</string>
+    <string name="storage_error_description">Android requires, at least 40% of free storage to proceed installation, free up some space and try again.</string>
     <string name="filesystem_error_title">Filesystem features not found</string>
-    <string name="filesystem_error_description">Your kernel may be registering f2fs in different path, that one expected from GSI daemon \\nTo fix that, you can try to install DSU Sideloader Magisk\'s module, or change kernel.</string>
+    <string name="filesystem_error_description">Your kernel may be registering f2fs in different path, that one expected from GSI daemon \nTo fix that, you can try to install DSU Sideloader Magisk\'s module, or change kernel.</string>
     <string name="selinux_error_title">SELinux error</string>
-    <string name="selinux_error_description">Looks like SELinux is blocking GSI daemon to work due denials, this error is common devices running Android 10\\n To fix that, you can try to install DSU Sideloader Magisk\'s module, or set SELinux to permissive.\\n** Changing to permissive will weakens your device security.</string>
+    <string name="selinux_error_description">Looks like SELinux is blocking GSI daemon to work due denials, this error is common devices running Android 10\n To fix that, you can try to install DSU Sideloader Magisk\'s module, or set SELinux to permissive.\n** Changing to permissive will weakens your device security.</string>
     <string name="selinux_error_action">Retry with permissive</string>
     <string name="extents_error_title">Extents error</string>
     <string name="extents_error_description">On Android 10 devices, images/filesystem needs to have more than 512 extents.\n To fix that, you can try to install DSU Sideloader Magisk\'s module.</string>
@@ -125,4 +125,21 @@
     <string name="selected_file_not_supported">Selected file is not supported</string>
     <string name="missing_permissions">Missing permissions</string>
     <string name="grant_read_logs_shizuku">READ_LOGS permission is required, use Shizuku to allow it?\nAfter granting permission, application needs to be reopened.</string>
+    <string name="discard_gsi">A GSI is already installed, discard to continue?</string>
+    <string name="discarding">Discarding…</string>
+
+    <string name="installation_prompt">Installation prompt invoked, waiting user confirmation to proceed..</string>
+    <string name="waiting_too_long">Dismissed installation prompt? waiting for too long? try pressing "try again", it will invoke installation prompt one more time.</string>
+    <string name="try_again">Try again</string>
+
+    <string name="reboot_dsu">Reboot into DSU</string>
+    <string name="discard_dsu">Discard DSU</string>
+
+    <string name="installing">Processing %1$s partition…</string>
+    <string name="view_logs">View logs</string>
+    <string name="mreturn">Return</string>
+    <string name="done_text">Image installed successfully, check your notifications to boot into dynamic system</string>
+    <string name="installation_canceled">Installation canceled</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="installation_logs">Installation logs</string>
 </resources>

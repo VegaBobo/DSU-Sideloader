@@ -27,26 +27,7 @@ fun Settings(
     ) {
         val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
-        if(uiState.isShowingGrantPermWithShizuku)
-            Dialog(
-                title = stringResource(id = R.string.missing_permissions),
-                text = stringResource(id = R.string.grant_read_logs_shizuku),
-                confirmText = stringResource(id = R.string.ok),
-                cancelText = stringResource(id = R.string.cancel),
-                onClickConfirm = { settingsViewModel.shizukuGrantReadLogsPermission() },
-                onClickCancel = { settingsViewModel.onCancelShizukuGrantReadLogs() }
-            )
-
         Title(title = stringResource(id = R.string.installation))
-        PreferenceItem(
-            title = stringResource(id = R.string.debug_installation),
-            description = stringResource(
-                id = R.string.debug_installation_text
-            ),
-            showToggle = true,
-            isChecked = uiState.debugInstallation,
-            onClick = { settingsViewModel.toggleInstDebug(!it) },
-        )
         PreferenceItem(
             title = stringResource(id = R.string.unmount_sd),
             description = stringResource(id = R.string.unmount_sd_text),

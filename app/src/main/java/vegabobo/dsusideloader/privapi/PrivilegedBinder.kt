@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.privilegedservice
+package vegabobo.dsusideloader.privapi
 
 import android.app.Service
 import android.content.Intent

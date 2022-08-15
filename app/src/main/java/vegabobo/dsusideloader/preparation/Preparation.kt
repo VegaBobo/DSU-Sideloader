@@ -1,100 +1,153 @@
 package vegabobo.dsusideloader.preparation
 
 import android.net.Uri
+import kotlinx.coroutines.Job
 import vegabobo.dsusideloader.core.StorageManager
-import vegabobo.dsusideloader.core.InstallationSession
-import vegabobo.dsusideloader.model.GSI
-import vegabobo.dsusideloader.util.FilenameUtils
+import vegabobo.dsusideloader.model.DSUConstants
+import vegabobo.dsusideloader.model.DSUInstallation
 
-data class PreparedFile(
-    val archiveUri: Uri = Uri.EMPTY,
-    val extractedFileSize: Long = GSI.GSIConstants.DEFAULT_FILE_SIZE,
-)
+interface IPreparation {
+    fun onInstallationStepChange(step: InstallationSteps)
+    fun onProgressChange(progress: Float)
+    fun onPreparationSuccess(preparedDSUInstallation: DSUInstallation)
+}
 
-class Preparation(
+abstract class Preparation(
     private val storageManager: StorageManager,
-    private val session: InstallationSession,
-    private val onInstallationStepChange: (PreparationSteps) -> Unit,
-    private val onProgressChange: (Float) -> Unit,
-    private val onPreparationSuccess: (InstallationSession) -> Unit,
-) {
+    private val userSelectedFileUri: Uri,
+    private val userSelectedImageSize: Long = DSUConstants.DEFAULT_IMAGE_SIZE,
+    private val job: Job,
+) : IPreparation {
 
     init {
+        prepareForDSU()
+    }
+
+    private fun prepareRooted() {
+        val source: DSUInstallation = when (getExtension(userSelectedFileUri)) {
+            "img" -> {
+                DSUInstallation.SingleSystemImage(
+                    userSelectedFileUri, getFileSize(userSelectedFileUri)
+                )
+            }
+            "xz", "gz", "gzip" -> {
+                val result = extractFile(userSelectedFileUri)
+                DSUInstallation.SingleSystemImage(result.first, result.second)
+            }
+            "zip" -> {
+                DSUInstallation.DsuPackage(userSelectedFileUri)
+            }
+            else -> {
+                throw Exception("Unsupported filetype")
+            }
+        }
+        onPreparationSuccess(source)
+    }
+
+    private fun prepareForDSU() {
         storageManager.cleanWorkspaceFolder(true)
-        val targetFile = session.gsi.uri
-        val preparedFile =
-            when (session.getTargetFileExtension()) {
-                ".xz" -> prepareXz(targetFile)
-                ".img" -> prepareImage(targetFile)
-                ".gz" -> prepareGz(targetFile)
-                ".zip" -> prepareZip(targetFile)
-                else -> PreparedFile()
+        val fileExtension = getExtension(userSelectedFileUri)
+        val preparedFilePair =
+            when (fileExtension) {
+                "xz" -> prepareXz(userSelectedFileUri)
+                "img" -> prepareImage(userSelectedFileUri)
+                "gz" -> prepareGz(userSelectedFileUri)
+                "zip" -> prepareZip(userSelectedFileUri)
+                else -> throw Exception("Unsupported filetype")
             }
 
-        if (preparedFile.extractedFileSize != GSI.GSIConstants.DEFAULT_FILE_SIZE)
-            session.gsi.fileSize = preparedFile.extractedFileSize
+        val source: DSUInstallation
 
-        session.gsi.uri = preparedFile.archiveUri
-        session.gsi.absolutePath = FilenameUtils.getFilePath(preparedFile.archiveUri, true)
-        updateInstallationStep(PreparationSteps.FINISHED)
+        val preparedUri = preparedFilePair.first
+        val preparedFileSize = preparedFilePair.second
 
-        if (!session.job.isCancelled)
-            onPreparationSuccess(session)
+        source = if (fileExtension == "zip")
+            DSUInstallation.DsuPackage(preparedUri)
+        else
+            DSUInstallation.SingleSystemImage(preparedUri, preparedFileSize)
+
+        updateInstallationStep(InstallationSteps.WAITING_USER_CONFIRMATION)
+
+        if (!job.isCancelled)
+            onPreparationSuccess(source)
     }
 
-    private fun prepareZip(inputZipFile: Uri): PreparedFile {
+    private fun prepareZip(inputZipFile: Uri): Pair<Uri, Long> {
         val uri = getSafeUri(inputZipFile)
-        return PreparedFile(uri)
+        return Pair(uri, -1)
     }
 
-    private fun prepareXz(inputXzFile: Uri): PreparedFile {
-        val outputFile = "${session.getTargetFilename()}.img"
-        updateInstallationStep(PreparationSteps.DECOMPRESSING_XZ)
-        val extractedFileUri =
-            FileUnPacker(
-                storageManager,
-                inputXzFile,
-                outputFile,
-                session.job,
-                onProgressChange
-            ).unpack()
-        return prepareImage(extractedFileUri)
+    private fun prepareXz(inputXzFile: Uri): Pair<Uri, Long> {
+        val outputFile = "${getFileName(inputXzFile)}.img"
+        updateInstallationStep(InstallationSteps.DECOMPRESSING_XZ)
+        return FileUnPacker(
+            storageManager,
+            inputXzFile,
+            outputFile,
+            job,
+            this::onProgressChange
+        ).unpack()
     }
 
-    private fun prepareImage(inputImageFile: Uri): PreparedFile {
-        val outputFile = "${session.selectedFilename}.gz"
-        updateInstallationStep(PreparationSteps.COMPRESSING_TO_GZ)
-        val finalGzFile =
-            FileUnPacker(
-                storageManager,
-                inputImageFile,
-                outputFile,
-                session.job,
-                onProgressChange
-            ).pack()
-        val imageFileSize = storageManager.getFilesizeFromUri(inputImageFile)
-        return PreparedFile(finalGzFile, imageFileSize)
+    private fun prepareImage(inputImageFile: Uri): Pair<Uri, Long> {
+        val outputFile = "${getFileName(inputImageFile)}.gz"
+        updateInstallationStep(InstallationSteps.COMPRESSING_TO_GZ)
+        val pair = FileUnPacker(
+            storageManager,
+            inputImageFile,
+            outputFile,
+            job,
+            this::onProgressChange
+        ).pack()
+        return Pair(pair.first, getFileSize(inputImageFile))
     }
 
-    private fun prepareGz(inputGzFile: Uri): PreparedFile {
+    private fun prepareGz(inputGzFile: Uri): Pair<Uri, Long> {
         val uri = getSafeUri(inputGzFile)
-        if (session.isCustomFileSize())
-            return PreparedFile(uri)
-        val outputFile = "$uri.img"
-        updateInstallationStep(PreparationSteps.DECOMPRESSING_GZIP)
-        val imgFile =
-            FileUnPacker(storageManager, uri, outputFile, session.job, onProgressChange).unpack()
-        val imageFileSize = storageManager.getFilesizeFromUri(imgFile)
-        return PreparedFile(inputGzFile, imageFileSize)
+        if (userSelectedImageSize != DSUConstants.DEFAULT_IMAGE_SIZE)
+            return Pair(uri, -1)
+        val outputFile = "${getFileName(uri)}.img"
+        updateInstallationStep(InstallationSteps.DECOMPRESSING_GZIP)
+        val pair =
+            FileUnPacker(storageManager, uri, outputFile, job, this::onProgressChange).unpack()
+        return Pair(inputGzFile, pair.second)
     }
 
-    private fun updateInstallationStep(value: PreparationSteps) {
+    private fun extractFile(uri: Uri): Pair<Uri, Long> {
+        return extractFile(uri, "system")
+    }
+
+    private fun extractFile(uri: Uri, partitionName: String): Pair<Uri, Long> {
+        updateInstallationStep(InstallationSteps.EXTRACTING_FILE)
+        return FileUnPacker(
+            storageManager,
+            uri,
+            "${partitionName}.img",
+            job,
+            this::onProgressChange
+        ).unpack()
+    }
+
+    private fun updateInstallationStep(value: InstallationSteps) {
         onInstallationStepChange(value)
     }
 
     private fun getSafeUri(uri: Uri): Uri {
-        updateInstallationStep(PreparationSteps.COPYING_FILE)
+        updateInstallationStep(InstallationSteps.COPYING_FILE)
         return storageManager.getUriSafe(uri)
     }
 
+    private fun getFileName(uri: Uri): String {
+        return storageManager.getFilenameFromUri(uri)
+            .substringBeforeLast(".")
+    }
+
+    private fun getExtension(uri: Uri): String {
+        return storageManager.getFilenameFromUri(uri)
+            .substringAfterLast(".", "")
+    }
+
+    private fun getFileSize(uri: Uri): Long {
+        return storageManager.getFilesizeFromUri(uri)
+    }
 }

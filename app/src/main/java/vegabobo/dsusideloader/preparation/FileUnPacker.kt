@@ -44,26 +44,28 @@ class FileUnPacker(
         outputStr.close()
     }
 
-    fun pack(): Uri {
+    fun pack(): Pair<Uri, Long> {
         copy(inputStream, GzipCompressorOutputStream(outputStream)) {
             updateProgress(inputFileSize, it)
         }
-        return finalFile.uri
+        val fileLength = storageManager.getFilesizeFromUri(finalFile.uri)
+        return Pair(finalFile.uri, fileLength)
     }
 
-    fun unpack(): Uri {
+    fun unpack(): Pair<Uri, Long> {
         val archiveInputStream =
             with(storageManager.getFilenameFromUri(inputFile)) {
                 when {
                     endsWith("xz") -> XZCompressorInputStream(inputStream)
                     endsWith("gz") -> GzipCompressorInputStream(inputStream)
-                    else -> return Uri.EMPTY
+                    else -> throw Exception("File type not supported")
                 }
             }
         copy(archiveInputStream, outputStream) {
             updateProgress(inputFileSize, archiveInputStream.compressedCount)
         }
-        return finalFile.uri
+        val fileLength = storageManager.getFilesizeFromUri(finalFile.uri)
+        return Pair(finalFile.uri, fileLength)
     }
 
     private fun updateProgress(fileSize: Long, readed: Long) {

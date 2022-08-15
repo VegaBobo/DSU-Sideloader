@@ -33,7 +33,6 @@ fun Home(
 ) {
 
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-    val gsiDsu = homeViewModel.installationSession.gsi
 
     if (uiState.shouldKeepScreenOn)
         KeepScreenOn()
@@ -43,8 +42,8 @@ fun Home(
             when (it) {
                 HomeViewAction.NAVIGATE_TO_ADB_SCREEN ->
                     navController.navigate(Destinations.ADBInstallation)
-                HomeViewAction.NAVIGATE_TO_DIAGNOSE_SCREEN ->
-                    navController.navigate(Destinations.DiagnoseInstallation)
+                HomeViewAction.NAVIGATE_TO_LOGCAT_SCREEN ->
+                    navController.navigate(Destinations.Logcat)
                 else -> {}
             }
             homeViewModel.resetViewAction()
@@ -54,8 +53,9 @@ fun Home(
     when (uiState.dialogDisplay) {
         DialogDisplay.CONFIRM_INSTALLATION ->
             ConfirmInstallationDialog(
-                GSI = gsiDsu,
                 filename = homeViewModel.obtainSelectedFilename(),
+                userdata = homeViewModel.session.userSelection.getUserDataSizeAsGB(),
+                fileSize = homeViewModel.session.userSelection.userSelectedImageSize,
                 onClickConfirm = { homeViewModel.onConfirmInstallationDialog() },
                 onClickCancel = { homeViewModel.onCancelInstallationDialog() }
             )
@@ -97,9 +97,16 @@ fun Home(
                 InstallationCard(
                     isInstalling = uiState.isInstalling,
                     uiState = uiState.installationCard,
-                    onClickInstall = { homeViewModel.onClickInstallOrCancelButton() },
+                    onClickInstall = { homeViewModel.onClickInstall() },
+                    onClickUnmountSdCardAndRetry = { homeViewModel.onClickUnmountSdCardAndRetry() },
+                    onClickSetSeLinuxPermissive = { homeViewModel.onClickSetSeLinuxPermissive() },
+                    onClickRetryInstallation = { homeViewModel.onClickRetryInstallation() },
                     onClickClear = { homeViewModel.resetInstallationCard() },
                     onSelectFileSuccess = { homeViewModel.onFileSelectionResult(it) },
+                    onClickCancelInstallation = { homeViewModel.onClickCancel() },
+                    onClickDiscardInstalledGsi = { homeViewModel.onClickDiscardGsi() },
+                    onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
+                    onClickViewLogs = { homeViewModel.onClickViewLogs() }
                 )
                 UserdataCard(
                     isInstalling = uiState.isInstalling,

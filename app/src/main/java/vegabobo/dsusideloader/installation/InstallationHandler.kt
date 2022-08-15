@@ -3,23 +3,53 @@ package vegabobo.dsusideloader.installation
 import android.content.Intent
 import android.os.storage.VolumeInfo
 import kotlinx.coroutines.*
-import vegabobo.dsusideloader.core.InstallationSession
-import vegabobo.dsusideloader.model.GSI
-import vegabobo.dsusideloader.privilegedservice.PrivilegedServiceProvider
+import vegabobo.dsusideloader.model.Session
+import vegabobo.dsusideloader.core.StorageManager
+import vegabobo.dsusideloader.privapi.PrivilegedProvider
+import vegabobo.dsusideloader.util.OperationMode
 
 class InstallationHandler(
-    private val installationSession: InstallationSession
-) {
+    private val session: Session,
+    private val storageManager: StorageManager,
+    private val onRootlessAdbScriptGenerated: (String) -> Unit = {},
+) : () -> Unit {
 
-    fun start() {
-        if (installationSession.preferences.isUnmountSdCard)
+    override fun invoke() {
+        if (session.operationMode == OperationMode.UNROOTED) {
+            generateInstallationScript()
+            return
+        }
+
+        if (session.preferences.isUnmountSdCard)
             unmountSdTemporary()
 
-        startActionInstall()
+        forwardInstallationToDSU()
     }
 
-    // When running as system/shizuku mode
-    fun startActionInstall() {
+    /**
+     * Generate shell script with installation
+     * Used only for installing over adb commands
+     */
+    private fun generateInstallationScript() {
+        val installationScriptPath = GenerateInstallationScript(
+            storageManager,
+            session.getInstallationParameters(),
+            session.preferences,
+        ).writeToFile()
+        onRootlessAdbScriptGenerated(installationScriptPath)
+    }
+
+    /**
+     * Install images via DSU app
+     * Supported modes are: Shizuku, root and system
+     */
+    private fun forwardInstallationToDSU() {
+        val userdataSize = session.userSelection.userSelectedUserdata
+        val fileUri = session.dsuInstallation.uri
+        val length = session.dsuInstallation.fileLength
+
+        PrivilegedProvider.getService().forceStopPackage("com.android.dynsystem")
+
         val dynIntent = Intent()
         dynIntent.setClassName(
             "com.android.dynsystem",
@@ -27,28 +57,27 @@ class InstallationHandler(
         )
         dynIntent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
         dynIntent.action = "android.os.image.action.START_INSTALL"
-        dynIntent.data = installationSession.gsi.uri
-        dynIntent.putExtra("KEY_USERDATA_SIZE", installationSession.gsi.userdataSize)
-        if (installationSession.gsi.fileSize != GSI.GSIConstants.DEFAULT_FILE_SIZE)
-            dynIntent.putExtra("KEY_SYSTEM_SIZE", installationSession.gsi.fileSize)
+        dynIntent.data = fileUri
+        dynIntent.putExtra("KEY_USERDATA_SIZE", userdataSize)
+        dynIntent.putExtra("KEY_SYSTEM_SIZE", length)
 
-        PrivilegedServiceProvider.getService().startActivity(dynIntent)
+        PrivilegedProvider.getService().startActivity(dynIntent)
     }
 
     private fun unmountSdTemporary() {
         val volumes: List<VolumeInfo> =
-            PrivilegedServiceProvider.getService().volumes as List<VolumeInfo>
+            PrivilegedProvider.getService().volumes as List<VolumeInfo>
         val volumesUnmount: ArrayList<String> = ArrayList()
         for (volume in volumes)
             if (volume.id.contains("public")) {
-                PrivilegedServiceProvider.getService().unmount(volume.id)
+                PrivilegedProvider.getService().unmount(volume.id)
                 volumesUnmount.add(volume.id)
             }
         val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         scope.launch {
             delay(30 * 1000)
             for (volume in volumesUnmount)
-                PrivilegedServiceProvider.getService().mount(volume)
+                PrivilegedProvider.getService().mount(volume)
         }
     }
 

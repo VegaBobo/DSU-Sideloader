@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import vegabobo.dsusideloader.core.InstallationSession
+import vegabobo.dsusideloader.model.Session
 import javax.inject.Inject
 
 data class AdbUiState(
@@ -24,7 +24,7 @@ enum class TargetButton {
 
 @HiltViewModel
 class AdbViewModel @Inject constructor(
-    private val installationSession: InstallationSession
+    private val session: Session
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdbUiState())
@@ -32,7 +32,7 @@ class AdbViewModel @Inject constructor(
 
     val navigateBack = MutableStateFlow(false)
 
-    fun obtainScriptPath(): String = installationSession.installationScriptFilePath
+    fun obtainScriptPath(): String = session.installationScript
 
     fun onClickCopyCommand(targetButton: TargetButton) {
         when (targetButton) {

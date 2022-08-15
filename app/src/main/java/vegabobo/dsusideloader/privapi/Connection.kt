@@ -1,30 +1,11 @@
-package vegabobo.dsusideloader.privilegedservice
+package vegabobo.dsusideloader.privapi
 
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.os.IBinder
 import vegabobo.dsusideloader.IPrivilegedService
 
-object PrivilegedServiceProvider {
-
-    var connection: AIDLConnection? = null
-
-    fun getService(): IPrivilegedService {
-        return this.connection!!.SERVICE!!
-    }
-
-    fun set(connection: AIDLConnection) {
-        if (this.connection == null)
-            this.connection = connection
-    }
-
-    init {
-        set(AIDLConnection())
-    }
-
-}
-
-class AIDLConnection : ServiceConnection {
+class Connection : ServiceConnection {
 
     var SERVICE: IPrivilegedService? = null
     fun set(service: IPrivilegedService?) {

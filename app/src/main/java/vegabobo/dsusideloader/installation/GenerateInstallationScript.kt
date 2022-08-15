@@ -1,7 +1,6 @@
 package vegabobo.dsusideloader.installation
 
-import vegabobo.dsusideloader.core.InstallationPreferences
-import vegabobo.dsusideloader.model.GSI
+import vegabobo.dsusideloader.model.InstallationPreferences
 import vegabobo.dsusideloader.core.StorageManager
 
 object InstallationScript {
@@ -11,8 +10,8 @@ object InstallationScript {
 
 class GenerateInstallationScript(
     private val storageManager: StorageManager,
-    private val instPrefs: InstallationPreferences,
-    val gsi: GSI,
+    private val parameters: Triple<Long, String, Long>,
+    private val instPrefs: InstallationPreferences = InstallationPreferences(),
 ) {
 
     fun writeToFile(): String {
@@ -21,20 +20,8 @@ class GenerateInstallationScript(
 
     private fun getShellScript(): String {
         return storageManager.readFileFromAssets(InstallationScript.ASSETS_SCRIPT_FILE)
-            .replace("%DEBUG_MODE", instPrefs.isDebugInstallation.toString())
-            .replace("%ACTION_INSTALL", InstallationCmdline(gsi).getCmd())
-            .replace("%INSTALLATION_INFO", installationInfoAsString())
+            .replace("%ACTION_INSTALL", InstallationCmdline(parameters).getCmd())
             .replace("%UNMOUNT_SD", instPrefs.isUnmountSdCard.toString())
-    }
-
-    private fun installationInfoAsString(): String {
-        return "Installation info: " +
-                "\n" +
-                "\nAbsolute path: " + gsi.absolutePath +
-                "\nFile size: " + gsi.fileSize +
-                "\nUserdata size: " + gsi.userdataSize +
-                "\nUnmount SD: " + instPrefs.isUnmountSdCard +
-                "\n\nLogcat:\n\n"
     }
 
 }

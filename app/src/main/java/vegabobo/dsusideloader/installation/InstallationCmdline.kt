@@ -1,9 +1,9 @@
 package vegabobo.dsusideloader.installation
 
-import vegabobo.dsusideloader.model.GSI
+import vegabobo.dsusideloader.model.DSUConstants
 
 class InstallationCmdline(
-    val gsi: GSI
+    private val parameters: Triple<Long, String, Long>
 ) {
 
     fun getCmd(): String {
@@ -14,15 +14,15 @@ class InstallationCmdline(
     }
 
     private fun genInstallationArguments(): String {
-        val gsiFileAbsolutePath = gsi.absolutePath
-        val userdataSize = gsi.userdataSize
-        val imageFileSize = gsi.fileSize
+        val userdataSize = parameters.first
+        val gsiFileAbsolutePath = parameters.second
+        val imageFileSize = parameters.third
 
         var arguments = ""
 
         arguments += addArgument("-d", gsiFileAbsolutePath)
         arguments += addArgument("--el", "KEY_USERDATA_SIZE", userdataSize)
-        if (imageFileSize != -1L)
+        if (imageFileSize != DSUConstants.DEFAULT_IMAGE_SIZE)
             arguments += addArgument("--el", "KEY_SYSTEM_SIZE", imageFileSize)
 
         return arguments.trim()

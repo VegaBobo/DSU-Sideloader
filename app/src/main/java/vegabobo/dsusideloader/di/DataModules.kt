@@ -15,7 +15,7 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import vegabobo.dsusideloader.core.InstallationSession
+import vegabobo.dsusideloader.model.Session
 import vegabobo.dsusideloader.preferences.CorePreferences
 import vegabobo.dsusideloader.core.StorageManager
 import javax.inject.Singleton
@@ -47,8 +47,8 @@ object DataModules {
 
     @Singleton
     @Provides
-    fun provideInstallationSession(): InstallationSession {
-        return InstallationSession()
+    fun provideSession(): Session {
+        return Session()
     }
 
 }

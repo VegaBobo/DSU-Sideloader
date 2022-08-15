@@ -1,6 +1,5 @@
 package vegabobo.dsusideloader
 
-import android.app.Application
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -16,8 +15,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.Shizuku
 import rikka.shizuku.ShizukuProvider
-import vegabobo.dsusideloader.core.InstallationSession
-import vegabobo.dsusideloader.privilegedservice.*
+import vegabobo.dsusideloader.model.Session
+import vegabobo.dsusideloader.privapi.PrivilegedProvider
+import vegabobo.dsusideloader.privapi.PrivilegedRootService
+import vegabobo.dsusideloader.privapi.PrivilegedService
+import vegabobo.dsusideloader.privapi.PrivilegedSystemService
 import vegabobo.dsusideloader.ui.screen.Navigation
 import vegabobo.dsusideloader.ui.theme.DSUHelperTheme
 import vegabobo.dsusideloader.util.OperationMode
@@ -32,7 +34,7 @@ object ActivityAction {
 class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListener {
 
     @Inject
-    lateinit var installationSession: InstallationSession
+    lateinit var installationSession: Session
 
     //
     // Shizuku
@@ -72,9 +74,8 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
             askShizukuPermission()
             return@OnBinderReceivedListener
         }
+        Shizuku.bindUserService(userServiceArgs, PrivilegedProvider.connection!!)
         setupOperationMode(true)
-
-        Shizuku.bindUserService(userServiceArgs, PrivilegedServiceProvider.connection!!)
     }
 
     fun askShizukuPermission() {
@@ -108,7 +109,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
 
     private fun setupRootAIDL() {
         val e = Intent(this, PrivilegedRootService::class.java)
-        RootService.bind(e, PrivilegedServiceProvider.connection!!)
+        RootService.bind(e, PrivilegedProvider.connection!!)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,7 +127,6 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
                 Navigation(activityRequest)
             }
         }
-
         if (Shell.getShell().isRoot)
             setupRootAIDL()
 
@@ -136,8 +136,8 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
         }
 
         if (installationSession.operationMode == OperationMode.SYSTEM) {
-            val service = Intent(this, SystemService::class.java)
-            bindService(service, PrivilegedServiceProvider.connection!!, Context.BIND_AUTO_CREATE)
+            val service = Intent(this, PrivilegedSystemService::class.java)
+            bindService(service, PrivilegedProvider.connection!!, Context.BIND_AUTO_CREATE)
         }
 
     }
@@ -149,13 +149,17 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
 
     override fun onDestroy() {
         removeShizukuListeners()
-        if (PrivilegedServiceProvider.connection != null)
+        if (PrivilegedProvider.connection != null)
             when (installationSession.operationMode) {
-                OperationMode.ROOT -> RootService.unbind(PrivilegedServiceProvider.connection!!)
-                OperationMode.SYSTEM -> unbindService(PrivilegedServiceProvider.connection!!)
+                OperationMode.ROOT -> RootService.unbind(PrivilegedProvider.connection!!)
+                OperationMode.SYSTEM -> unbindService(PrivilegedProvider.connection!!)
                 OperationMode.SHIZUKU -> {
-                    PrivilegedServiceProvider.getService().exit()
-                    Shizuku.unbindUserService(userServiceArgs, PrivilegedServiceProvider.connection!!, true)
+                    PrivilegedProvider.getService().exit()
+                    Shizuku.unbindUserService(
+                        userServiceArgs,
+                        PrivilegedProvider.connection!!,
+                        true
+                    )
                 }
                 else -> {}
             }

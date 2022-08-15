@@ -94,7 +94,7 @@ class StorageManager(
         }
     }
 
-    fun copyFileToSafFolder(inputFile: Uri): Uri {
+    private fun copyFileToSafFolder(inputFile: Uri): Uri {
         val clone: DocumentFile = createDocumentFile(getFilenameFromUri(inputFile))
         IOUtils.copy(openInputStream(inputFile), openOutputStream(clone.uri))
         return clone.uri
@@ -146,7 +146,7 @@ class StorageManager(
         return uri
     }
 
-    fun isPathWrong(uri: Uri): Boolean {
+    private fun isPathWrong(uri: Uri): Boolean {
         return uri.path.toString().contains("msf:")
     }
 

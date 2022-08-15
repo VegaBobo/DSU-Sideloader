@@ -1,13 +1,16 @@
 package vegabobo.dsusideloader.ui.screen.home
 
-import vegabobo.dsusideloader.preparation.PreparationSteps
+import vegabobo.dsusideloader.preparation.InstallationSteps
 
 data class InstallationCardState(
     val isTextFieldEnabled: Boolean = true,
     val isInstallable: Boolean = false,
+    val isShowingProgressBar: Boolean = false,
     val isError: Boolean = false,
+    val isIndeterminate: Boolean = false,
     val content: String = "",
-    val installationStep: PreparationSteps = PreparationSteps.NONE,
+    val installationStep: InstallationSteps = InstallationSteps.NONE,
+    val workingPartition: String = "",
     val installationProgress: Float = 0.0f,
 )
 
@@ -40,7 +43,7 @@ enum class DialogDisplay {
 enum class HomeViewAction {
     NONE,
     NAVIGATE_TO_ADB_SCREEN,
-    NAVIGATE_TO_DIAGNOSE_SCREEN
+    NAVIGATE_TO_LOGCAT_SCREEN
 }
 
 data class HomeUiState(
@@ -50,6 +53,7 @@ data class HomeUiState(
     val additionalCard: AdditionalCard = AdditionalCard.NONE,
     val dialogDisplay: DialogDisplay = DialogDisplay.NONE,
     val isInstalling: Boolean = false,
+    val isLogging: Boolean = false,
     val canInstall: Boolean = false,
     val shouldKeepScreenOn: Boolean = false,
 )

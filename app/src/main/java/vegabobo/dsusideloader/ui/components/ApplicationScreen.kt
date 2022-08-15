@@ -16,17 +16,20 @@ fun ApplicationScreen(
     modifier: Modifier = Modifier,
     verticalArrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(0.dp),
     columnContent: Boolean = true,
+    enableScrollBehavior: Boolean = true,
     topBar: @Composable (TopAppBarScrollBehavior) -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     outsideContent: @Composable (PaddingValues) -> Unit = {},
     content: @Composable () -> Unit = {},
 ) {
-
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         decayAnimationSpec,
         rememberTopAppBarScrollState()
     )
+
+    val scrollBehaviorModifier =
+        if (enableScrollBehavior) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier
 
     val insets = WindowInsets
         .systemBars
@@ -37,8 +40,7 @@ fun ApplicationScreen(
         modifier = Modifier.padding(insets)
     ) {
         Scaffold(
-            modifier = Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
+            modifier = scrollBehaviorModifier
                 .fillMaxSize(),
             topBar = { topBar(scrollBehavior) },
             bottomBar = { bottomBar() },
