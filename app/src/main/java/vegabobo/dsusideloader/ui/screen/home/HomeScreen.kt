@@ -15,13 +15,14 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.ActivityAction
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.ui.cards.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.dialogs.CancelDialog
 import vegabobo.dsusideloader.ui.dialogs.ConfirmInstallationDialog
+import vegabobo.dsusideloader.ui.dialogs.DiscardDSUDialog
 import vegabobo.dsusideloader.ui.dialogs.ImageSizeWarningDialog
+import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.ui.util.KeepScreenOn
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
@@ -57,7 +58,7 @@ fun Home(
                 userdata = homeViewModel.session.userSelection.getUserDataSizeAsGB(),
                 fileSize = homeViewModel.session.userSelection.userSelectedImageSize,
                 onClickConfirm = { homeViewModel.onConfirmInstallationDialog() },
-                onClickCancel = { homeViewModel.onCancelInstallationDialog() }
+                onClickCancel = { homeViewModel.dismissDialog() }
             )
         DialogDisplay.CANCEL_INSTALLATION ->
             CancelDialog(
@@ -68,6 +69,11 @@ fun Home(
             ImageSizeWarningDialog(
                 onClickConfirm = { homeViewModel.dismissDialog() },
                 onClickCancel = { homeViewModel.onCheckImageSizeCard() }
+            )
+        DialogDisplay.DISCARD_DSU ->
+            DiscardDSUDialog(
+                onClickConfirm = { homeViewModel.onClickDiscardGsi() },
+                onClickCancel = { homeViewModel.dismissDialog() }
             )
         else -> {}
     }
@@ -93,9 +99,9 @@ fun Home(
                     StorageWarningCard { homeViewModel.overrideUnavaiableStorage() }
                 else -> {}
             }
+
             if (uiState.canInstall) {
                 InstallationCard(
-                    isInstalling = uiState.isInstalling,
                     uiState = uiState.installationCard,
                     onClickInstall = { homeViewModel.onClickInstall() },
                     onClickUnmountSdCardAndRetry = { homeViewModel.onClickUnmountSdCardAndRetry() },
@@ -104,18 +110,19 @@ fun Home(
                     onClickClear = { homeViewModel.resetInstallationCard() },
                     onSelectFileSuccess = { homeViewModel.onFileSelectionResult(it) },
                     onClickCancelInstallation = { homeViewModel.onClickCancel() },
-                    onClickDiscardInstalledGsi = { homeViewModel.onClickDiscardGsi() },
+                    onClickDiscardInstalledGsiAndInstall = { homeViewModel.onClickDiscardGsiAndStartInstallation() },
+                    onClickDiscardDsu = { homeViewModel.showDiscardDialog() },
                     onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
                     onClickViewLogs = { homeViewModel.onClickViewLogs() }
                 )
                 UserdataCard(
-                    isInstalling = uiState.isInstalling,
+                    isEnabled = uiState.isInstalling(),
                     uiState = uiState.userDataCard,
                     onCheckedChange = { homeViewModel.onCheckUserdataCard() },
                     onValueChange = { homeViewModel.updateUserdataSize(it) },
                 )
                 ImageSizeCard(
-                    isInstalling = uiState.isInstalling,
+                    isEnabled = uiState.isInstalling(),
                     uiState = uiState.imageSizeCard,
                     onCheckedChange = { homeViewModel.onCheckImageSizeCard() },
                     onValueChange = { homeViewModel.updateImageSize(it) }

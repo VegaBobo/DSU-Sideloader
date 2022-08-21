@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.privapi
+package vegabobo.dsusideloader.service
 
 import android.app.IActivityManager
 import android.content.Intent
@@ -44,11 +44,6 @@ class PrivilegedService : IPrivilegedService.Stub() {
     private fun requiresActivityManager() {
         if (ACTIVITY_MANAGER == null)
             ACTIVITY_MANAGER = IActivityManager.Stub.asInterface(getBinder("activity"))
-    }
-
-    fun getActivityManager(): IActivityManager {
-        requiresActivityManager()
-        return this.ACTIVITY_MANAGER!!
     }
 
     override fun startActivity(intent: Intent?) {

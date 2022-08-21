@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.installation
+package vegabobo.dsusideloader.installer.adb
 
 import vegabobo.dsusideloader.model.DSUConstants
 

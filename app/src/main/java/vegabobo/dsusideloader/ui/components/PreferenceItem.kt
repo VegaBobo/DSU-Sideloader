@@ -20,14 +20,15 @@ fun PreferenceItem(
     icon: ImageVector? = null,
     onClick: (Boolean) -> Unit = {},
     isChecked: Boolean = false,
-    showToggle: Boolean = false
+    showToggle: Boolean = false,
+    isEnabled: Boolean = true
 ) {
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = { onClick(isChecked) })
+            .clickable(onClick = { onClick(isChecked) }, enabled = isEnabled)
             .padding(
                 start = 17.dp,
                 end = 17.dp,
@@ -64,6 +65,7 @@ fun PreferenceItem(
         if (showToggle) {
             Switch(
                 checked = isChecked,
+                enabled = isEnabled,
                 onCheckedChange = { onClick(isChecked) },
                 modifier = Modifier.padding(start = 8.dp)
             )

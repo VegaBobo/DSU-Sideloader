@@ -1,15 +1,15 @@
 package vegabobo.dsusideloader.ui.screen.home
 
-import vegabobo.dsusideloader.preparation.InstallationSteps
+import vegabobo.dsusideloader.preparation.InstallationStep
 
 data class InstallationCardState(
     val isTextFieldEnabled: Boolean = true,
     val isInstallable: Boolean = false,
-    val isShowingProgressBar: Boolean = false,
     val isError: Boolean = false,
     val isIndeterminate: Boolean = false,
     val content: String = "",
-    val installationStep: InstallationSteps = InstallationSteps.NONE,
+    val installationStep: InstallationStep = InstallationStep.NOT_INSTALLING,
+    val errorContent: String = "",
     val workingPartition: String = "",
     val installationProgress: Float = 0.0f,
 )
@@ -37,7 +37,8 @@ enum class DialogDisplay {
     NONE,
     IMAGESIZE_WARNING,
     CONFIRM_INSTALLATION,
-    CANCEL_INSTALLATION
+    CANCEL_INSTALLATION,
+    DISCARD_DSU
 }
 
 enum class HomeViewAction {
@@ -52,8 +53,11 @@ data class HomeUiState(
     val imageSizeCard: ImageSizeCardState = ImageSizeCardState(),
     val additionalCard: AdditionalCard = AdditionalCard.NONE,
     val dialogDisplay: DialogDisplay = DialogDisplay.NONE,
-    val isInstalling: Boolean = false,
     val isLogging: Boolean = false,
     val canInstall: Boolean = false,
     val shouldKeepScreenOn: Boolean = false,
-)
+) {
+    fun isInstalling(): Boolean {
+        return installationCard.installationStep != InstallationStep.NOT_INSTALLING
+    }
+}

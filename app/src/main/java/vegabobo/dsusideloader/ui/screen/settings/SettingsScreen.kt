@@ -7,7 +7,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.*
-import vegabobo.dsusideloader.util.OperationModeUtils
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
 @Composable
@@ -27,7 +26,27 @@ fun Settings(
     ) {
         val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
+        if(uiState.isShowingBuiltinInstallerDialog)
+            Dialog(
+                title = stringResource(id = R.string.use_builin_installer),
+                text = stringResource(id = R.string.testing_feature),
+                confirmText = stringResource(id = R.string.got_it),
+                cancelText = stringResource(id = R.string.cancel),
+                onClickCancel = { settingsViewModel.toggleBuiltinInstaller(false) },
+                onClickConfirm = { settingsViewModel.updateInstallerDialogState(false) }
+            )
+
         Title(title = stringResource(id = R.string.installation))
+        PreferenceItem(
+            title = stringResource(id = R.string.use_builin_installer),
+            description =
+            if (uiState.isRoot) stringResource(id = R.string.use_builin_installer_desc)
+            else stringResource(R.string.requires_root),
+            showToggle = true,
+            isEnabled = uiState.isRoot,
+            isChecked = uiState.useBuiltinInstaller,
+            onClick = { settingsViewModel.toggleBuiltinInstaller(!it) },
+        )
         PreferenceItem(
             title = stringResource(id = R.string.unmount_sd),
             description = stringResource(id = R.string.unmount_sd_text),
@@ -45,7 +64,7 @@ fun Settings(
         Title(title = stringResource(id = R.string.other))
         PreferenceItem(
             title = stringResource(id = R.string.op_mode),
-            description = OperationModeUtils.getOperationModeAsString(settingsViewModel.getOperationMode())
+            description = settingsViewModel.checkOperationMode()
         )
         PreferenceItem(
             title = stringResource(id = R.string.about),

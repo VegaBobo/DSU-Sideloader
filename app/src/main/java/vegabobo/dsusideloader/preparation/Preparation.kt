@@ -1,29 +1,36 @@
 package vegabobo.dsusideloader.preparation
 
 import android.net.Uri
+import android.util.Log
 import kotlinx.coroutines.Job
 import vegabobo.dsusideloader.core.StorageManager
 import vegabobo.dsusideloader.model.DSUConstants
 import vegabobo.dsusideloader.model.DSUInstallation
+import vegabobo.dsusideloader.model.Session
+import vegabobo.dsusideloader.service.PrivilegedProvider
 
-interface IPreparation {
-    fun onInstallationStepChange(step: InstallationSteps)
-    fun onProgressChange(progress: Float)
-    fun onPreparationSuccess(preparedDSUInstallation: DSUInstallation)
-}
-
-abstract class Preparation(
+class Preparation(
     private val storageManager: StorageManager,
-    private val userSelectedFileUri: Uri,
-    private val userSelectedImageSize: Long = DSUConstants.DEFAULT_IMAGE_SIZE,
+    private val session: Session,
     private val job: Job,
-) : IPreparation {
+    private val onStepUpdate: (step: InstallationStep) -> Unit,
+    private val onPreparationProgressUpdate: (progress: Float) -> Unit,
+    private val onCanceled: () -> Unit,
+    private val onPreparationFinished: (preparedDSU: DSUInstallation) -> Unit
+) : () -> Unit {
 
-    init {
-        prepareForDSU()
+    val userSelectedImageSize = session.userSelection.userSelectedImageSize
+    val userSelectedFileUri = session.userSelection.selectedFileUri
+
+    override fun invoke() {
+        if (session.preferences.useBuiltinInstaller && PrivilegedProvider.isRoot())
+            prepareRooted()
+        else
+            prepareForDSU()
     }
 
     private fun prepareRooted() {
+        Log.i("AA", "??")
         val source: DSUInstallation = when (getExtension(userSelectedFileUri)) {
             "img" -> {
                 DSUInstallation.SingleSystemImage(
@@ -41,7 +48,7 @@ abstract class Preparation(
                 throw Exception("Unsupported filetype")
             }
         }
-        onPreparationSuccess(source)
+        onPreparationFinished(source)
     }
 
     private fun prepareForDSU() {
@@ -66,10 +73,12 @@ abstract class Preparation(
         else
             DSUInstallation.SingleSystemImage(preparedUri, preparedFileSize)
 
-        updateInstallationStep(InstallationSteps.WAITING_USER_CONFIRMATION)
+        onStepUpdate(InstallationStep.WAITING_USER_CONFIRMATION)
 
         if (!job.isCancelled)
-            onPreparationSuccess(source)
+            onPreparationFinished(source)
+        else
+            onCanceled()
     }
 
     private fun prepareZip(inputZipFile: Uri): Pair<Uri, Long> {
@@ -79,25 +88,25 @@ abstract class Preparation(
 
     private fun prepareXz(inputXzFile: Uri): Pair<Uri, Long> {
         val outputFile = "${getFileName(inputXzFile)}.img"
-        updateInstallationStep(InstallationSteps.DECOMPRESSING_XZ)
+        onStepUpdate(InstallationStep.DECOMPRESSING_XZ)
         return FileUnPacker(
             storageManager,
             inputXzFile,
             outputFile,
             job,
-            this::onProgressChange
+            onPreparationProgressUpdate
         ).unpack()
     }
 
     private fun prepareImage(inputImageFile: Uri): Pair<Uri, Long> {
         val outputFile = "${getFileName(inputImageFile)}.gz"
-        updateInstallationStep(InstallationSteps.COMPRESSING_TO_GZ)
+        onStepUpdate(InstallationStep.COMPRESSING_TO_GZ)
         val pair = FileUnPacker(
             storageManager,
             inputImageFile,
             outputFile,
             job,
-            this::onProgressChange
+            onPreparationProgressUpdate
         ).pack()
         return Pair(pair.first, getFileSize(inputImageFile))
     }
@@ -107,9 +116,9 @@ abstract class Preparation(
         if (userSelectedImageSize != DSUConstants.DEFAULT_IMAGE_SIZE)
             return Pair(uri, -1)
         val outputFile = "${getFileName(uri)}.img"
-        updateInstallationStep(InstallationSteps.DECOMPRESSING_GZIP)
+        onStepUpdate(InstallationStep.DECOMPRESSING_GZIP)
         val pair =
-            FileUnPacker(storageManager, uri, outputFile, job, this::onProgressChange).unpack()
+            FileUnPacker(storageManager, uri, outputFile, job, onPreparationProgressUpdate).unpack()
         return Pair(inputGzFile, pair.second)
     }
 
@@ -118,22 +127,18 @@ abstract class Preparation(
     }
 
     private fun extractFile(uri: Uri, partitionName: String): Pair<Uri, Long> {
-        updateInstallationStep(InstallationSteps.EXTRACTING_FILE)
+        onStepUpdate(InstallationStep.EXTRACTING_FILE)
         return FileUnPacker(
             storageManager,
             uri,
             "${partitionName}.img",
             job,
-            this::onProgressChange
+            onPreparationProgressUpdate
         ).unpack()
     }
 
-    private fun updateInstallationStep(value: InstallationSteps) {
-        onInstallationStepChange(value)
-    }
-
     private fun getSafeUri(uri: Uri): Uri {
-        updateInstallationStep(InstallationSteps.COPYING_FILE)
+        onStepUpdate(InstallationStep.COPYING_FILE)
         return storageManager.getUriSafe(uri)
     }
 

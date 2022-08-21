@@ -1,48 +1,25 @@
-package vegabobo.dsusideloader.installation
+package vegabobo.dsusideloader.installer.privileged
 
 import android.content.Intent
 import android.os.storage.VolumeInfo
 import kotlinx.coroutines.*
 import vegabobo.dsusideloader.model.Session
-import vegabobo.dsusideloader.core.StorageManager
-import vegabobo.dsusideloader.privapi.PrivilegedProvider
-import vegabobo.dsusideloader.util.OperationMode
+import vegabobo.dsusideloader.service.PrivilegedProvider
 
-class InstallationHandler(
-    private val session: Session,
-    private val storageManager: StorageManager,
-    private val onRootlessAdbScriptGenerated: (String) -> Unit = {},
-) : () -> Unit {
+/**
+ * Install images via DSU app
+ * Supported modes are: Shizuku (as shell or root), root and system
+ */
+open class DsuInstallationHandler(
+    private val session: Session
+) {
 
-    override fun invoke() {
-        if (session.operationMode == OperationMode.UNROOTED) {
-            generateInstallationScript()
-            return
-        }
-
+    fun startInstallation() {
         if (session.preferences.isUnmountSdCard)
             unmountSdTemporary()
-
         forwardInstallationToDSU()
     }
 
-    /**
-     * Generate shell script with installation
-     * Used only for installing over adb commands
-     */
-    private fun generateInstallationScript() {
-        val installationScriptPath = GenerateInstallationScript(
-            storageManager,
-            session.getInstallationParameters(),
-            session.preferences,
-        ).writeToFile()
-        onRootlessAdbScriptGenerated(installationScriptPath)
-    }
-
-    /**
-     * Install images via DSU app
-     * Supported modes are: Shizuku, root and system
-     */
     private fun forwardInstallationToDSU() {
         val userdataSize = session.userSelection.userSelectedUserdata
         val fileUri = session.dsuInstallation.uri

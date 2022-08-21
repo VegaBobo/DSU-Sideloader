@@ -1,13 +1,13 @@
 package vegabobo.dsusideloader.model
 
 import android.net.Uri
-import vegabobo.dsusideloader.logging.LogcatDiagnostic
+import vegabobo.dsusideloader.installer.privileged.LogcatDiagnostic
 import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.OperationMode
-import kotlin.math.abs
 
 data class InstallationPreferences(
     var isUnmountSdCard: Boolean = false,
+    var useBuiltinInstaller: Boolean = false,
 )
 
 class UserSelection(

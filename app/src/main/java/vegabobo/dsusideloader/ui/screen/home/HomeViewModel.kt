@@ -3,6 +3,7 @@ package vegabobo.dsusideloader.ui.screen.home
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewModelScope
@@ -16,18 +17,23 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import vegabobo.dsusideloader.model.Session
+import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.core.StorageManager
-import vegabobo.dsusideloader.installation.InstallationHandler
+import vegabobo.dsusideloader.installer.adb.AdbInstallationHandler
+import vegabobo.dsusideloader.installer.privileged.DsuInstallationHandler
+import vegabobo.dsusideloader.installer.privileged.LogcatDiagnostic
+import vegabobo.dsusideloader.installer.root.RootedInstallationHandler
+import vegabobo.dsusideloader.model.DSUInstallation
+import vegabobo.dsusideloader.model.Session
 import vegabobo.dsusideloader.preferences.CorePreferences
 import vegabobo.dsusideloader.preferences.UserPreferences
+import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.preparation.Preparation
-import vegabobo.dsusideloader.core.BaseViewModel
-import vegabobo.dsusideloader.logging.LogcatDiagnostic
-import vegabobo.dsusideloader.model.DSUInstallation
-import vegabobo.dsusideloader.preparation.InstallationSteps
-import vegabobo.dsusideloader.privapi.PrivilegedProvider
-import vegabobo.dsusideloader.util.*
+import vegabobo.dsusideloader.service.PrivilegedProvider
+import vegabobo.dsusideloader.util.FilenameUtils
+import vegabobo.dsusideloader.util.OperationMode
+import vegabobo.dsusideloader.util.StorageUtils
+import vegabobo.dsusideloader.util.VerificationUtils
 import javax.inject.Inject
 
 @HiltViewModel
@@ -69,6 +75,20 @@ class HomeViewModel @Inject constructor(
             else
                 _uiState.update { it.copy(canInstall = true) }
         }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            if (PrivilegedProvider.isRoot() &&
+                PrivilegedProvider.getService().isInstalled
+            ) {
+                updateInstallationCard {
+                    it.copy(
+                        installationStep = InstallationStep.DSU_ALREADY_INSTALLED,
+                        isInstallable = true
+                    )
+                }
+            }
+        }
+
     }
 
     private fun setupUserPreferences() {
@@ -125,7 +145,7 @@ class HomeViewModel @Inject constructor(
     fun obtainSelectedFilename(): String = session.userSelection.selectedFileName
 
     fun onClickCancel() {
-        if (uiState.value.isInstalling) {
+        if (uiState.value.isInstalling()) {
             updateDialogState(DialogDisplay.CANCEL_INSTALLATION)
             return
         }
@@ -138,74 +158,102 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onConfirmInstallationDialog() {
-        _uiState.update { it.copy(dialogDisplay = DialogDisplay.NONE, isInstalling = true) }
+        _uiState.update { it.copy(dialogDisplay = DialogDisplay.NONE) }
         installationJob = Job()
         viewModelScope.launch(Dispatchers.IO + installationJob) {
-            readBoolPref(UserPreferences.UMOUNT_SD) {
-                session.preferences.isUnmountSdCard = it
-            }
-            updateInstallationCard { it.copy(isShowingProgressBar = true) }
-            object : Preparation(
-                storageAccess,
-                session.userSelection.selectedFileUri,
-                session.userSelection.userSelectedImageSize,
-                installationJob,
-            ) {
-                override fun onInstallationStepChange(step: InstallationSteps) {
-                    if (step == InstallationSteps.WAITING_USER_CONFIRMATION)
-                        updateInstallationCard { it.copy(isShowingProgressBar = false) }
-                    updateInstallationCard { it.copy(installationStep = step) }
-                }
-
-                override fun onProgressChange(progress: Float) {
-                    updateInstallationCard { it.copy(installationProgress = progress) }
-                }
-
-                override fun onPreparationSuccess(preparedDSUInstallation: DSUInstallation) {
-                    session.dsuInstallation = preparedDSUInstallation
-                    startInstallation()
-                    if (session.operationMode != OperationMode.UNROOTED)
-                        startLogging()
-                }
-            }
+            session.preferences.isUnmountSdCard = readBoolPrefBlocking(UserPreferences.UMOUNT_SD)
+            session.preferences.useBuiltinInstaller =
+                readBoolPrefBlocking(UserPreferences.USE_BUILTIN_INSTALLER)
+            Preparation(
+                storageManager = storageAccess,
+                session = session,
+                job = installationJob,
+                onStepUpdate = this@HomeViewModel::onStepUpdate,
+                onPreparationProgressUpdate = this@HomeViewModel::onPreparationProgressUpdate,
+                onCanceled = this@HomeViewModel::onClickCancelInstallationButton,
+                onPreparationFinished = this@HomeViewModel::onPrepared
+            ).invoke()
         }
     }
 
-    fun startInstallation() = InstallationHandler(
-        session,
-        storageAccess,
-        this@HomeViewModel::onRootlessAdbScriptGenerated
-    ).invoke()
+    private fun onPrepared(dsuInstallation: DSUInstallation) {
+        session.dsuInstallation = dsuInstallation
+        startInstallation()
+    }
 
-    fun onRootlessAdbScriptGenerated(scriptPath: String) {
-        session.installationScript = scriptPath
-        resetInstallationCard()
-        viewAction(HomeViewAction.NAVIGATE_TO_ADB_SCREEN)
+    private fun startInstallation() {
+        updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
+        if (session.operationMode == OperationMode.UNROOTED) {
+            startRootlessInstallation()
+            return
+        }
+
+        if (session.preferences.useBuiltinInstaller && PrivilegedProvider.isRoot()) {
+            startRootInstallation()
+            return
+        }
+
+        startPrivilegedInstallation()
+    }
+
+    private fun startPrivilegedInstallation() {
+        updateInstallationCard { it.copy(installationStep = InstallationStep.WAITING_USER_CONFIRMATION) }
+        DsuInstallationHandler(session).startInstallation()
+        startLogging()
+    }
+
+    private fun startRootInstallation() {
+        RootedInstallationHandler(
+            application = application,
+            userdataSize = session.userSelection.userSelectedUserdata,
+            dsuInstallation = session.dsuInstallation,
+            installationJob = installationJob,
+            onInstallationError = this::onInstallationError,
+            onInstallationProgressUpdate = this::onInstallationProgressUpdate,
+            onCreatePartition = this::onCreatePartition,
+            onInstallationStepUpdate = this::onStepUpdate,
+            onInstallationSuccess = this::onRootInstallationSuccess
+        ).invoke()
+    }
+
+    private fun onRootInstallationSuccess() {
+        updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS) }
+    }
+
+    private fun startRootlessInstallation() {
+        AdbInstallationHandler(storageAccess, session).generate {
+            session.installationScript = it
+            resetInstallationCard()
+            viewAction(HomeViewAction.NAVIGATE_TO_ADB_SCREEN)
+        }
     }
 
     private fun startLogging() {
         _uiState.update { it.copy(isLogging = true) }
-        logger.startLogging()
-        session.logger = logger
+        session.logger = LogcatDiagnostic(
+            onInstallationError = this::onInstallationError,
+            onStepUpdate = this::onStepUpdate,
+            onInstallationProgressUpdate = this::onInstallationProgressUpdate,
+            onInstallationSuccess = this::onInstallationSuccess
+        )
+        session.logger!!.startLogging()
     }
 
-    fun onCancelInstallationDialog() {
-        _uiState.update { it.copy(isInstalling = false) }
-        dismissDialog()
+    private fun onInstallationSuccess() {
+        updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
     }
 
     fun resetInstallationCard() =
         _uiState.update {
             it.copy(
                 installationCard = InstallationCardState(),
-                isInstalling = false,
                 dialogDisplay = DialogDisplay.NONE
             )
         }
 
     fun onClickCancelInstallationButton() {
-        if (session.operationMode != OperationMode.UNROOTED && logger.isLogging) {
-            logger.destroy()
+        if (session.operationMode != OperationMode.UNROOTED && session.logger != null && session.logger!!.isLogging) {
+            session.logger!!.destroy()
             session.logger = null
             // Since stopping installation requires MANAGE_DYNAMIC_SYSTEM
             // then, we stop installation using other way, not so polite, but works :)))
@@ -218,6 +266,97 @@ class HomeViewModel @Inject constructor(
         session.dsuInstallation = DSUInstallation()
         _uiState.update { it.copy(isLogging = false) }
     }
+
+    //
+    // Installation Card actions
+    //
+
+    fun onClickRebootToDynOS() {
+        PrivilegedProvider.getService().setEnable(true, true)
+        Shell.cmd("reboot").submit()
+    }
+
+    fun onClickDiscardGsiAndStartInstallation() {
+        viewModelScope.launch(Dispatchers.IO + installationJob) {
+            PrivilegedProvider.getService().remove()
+            startRootInstallation()
+        }
+    }
+
+    fun onClickDiscardGsi() {
+        viewModelScope.launch {
+            PrivilegedProvider.getService().remove()
+        }
+        dismissDialog()
+        resetInstallationCard()
+    }
+
+    fun onClickRetryInstallation() {
+        viewModelScope.launch(Dispatchers.IO + installationJob) {
+            startInstallation()
+            startLogging()
+        }
+    }
+
+    fun onClickUnmountSdCardAndRetry() {
+        session.preferences.isUnmountSdCard = true
+        startInstallation()
+    }
+
+    fun onClickSetSeLinuxPermissive() {
+        viewModelScope.launch(Dispatchers.IO + installationJob) {
+            Shell.cmd("setenforce 0").submit()
+            startInstallation()
+            startLogging()
+        }
+    }
+
+    fun onClickViewLogs() {
+        viewAction(HomeViewAction.NAVIGATE_TO_LOGCAT_SCREEN)
+    }
+
+    fun showDiscardDialog() {
+        updateDialogState(DialogDisplay.DISCARD_DSU)
+    }
+
+    //
+    // Progress tracking
+    //
+
+    private fun onStepUpdate(step: InstallationStep) =
+        updateInstallationCard {
+            it.copy(installationStep = step)
+        }
+
+    private fun onPreparationProgressUpdate(progress: Float) =
+        updateInstallationCard {
+            it.copy(installationProgress = progress)
+        }
+
+    private fun onInstallationError(error: InstallationStep, errorContent: String) =
+        updateInstallationCard {
+            if (error == InstallationStep.ERROR_SELINUX_A10 && !PrivilegedProvider.isRoot()) {
+                it.copy(
+                    installationStep = InstallationStep.ERROR_SELINUX_A10_ROOTLESS,
+                    errorContent = errorContent
+                )
+            } else {
+                it.copy(installationStep = error, errorContent = errorContent)
+            }
+        }
+
+    private fun onInstallationProgressUpdate(progress: Float, partition: String) =
+        updateInstallationCard {
+            it.copy(workingPartition = partition, installationProgress = progress)
+        }
+
+    private fun onCreatePartition(partition: String) =
+        updateInstallationCard {
+            it.copy(
+                installationStep = InstallationStep.CREATING_PARTITION,
+                workingPartition = partition
+            )
+        }
 
     //
     // Userdata card
@@ -316,85 +455,11 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onSelectFileError() {
+    private fun onSelectFileError() {
         viewModelScope.launch {
             updateInstallationCard { it.copy(isError = true, isTextFieldEnabled = false) }
             delay(2000)
             updateInstallationCard { it.copy(isError = false, isTextFieldEnabled = true) }
-        }
-    }
-
-    fun onClickRebootToDynOS() {
-        TODO("Not yet implemented")
-    }
-
-    fun onClickDiscardGsi() {
-        TODO("Not yet implemented")
-    }
-
-    fun onClickRetryInstallation() {
-        viewModelScope.launch(Dispatchers.IO + installationJob) {
-            startInstallation()
-            startLogging()
-        }
-    }
-
-    fun onClickUnmountSdCardAndRetry() {
-        session.preferences.isUnmountSdCard = true
-        startInstallation()
-    }
-
-    fun onClickSetSeLinuxPermissive() {
-        viewModelScope.launch(Dispatchers.IO + installationJob) {
-            Shell.cmd("setenforce 0").submit()
-            startInstallation()
-            startLogging()
-        }
-    }
-
-    fun onCheckLogsCard() {
-//        updateLogsCardState { it.copy(isSelected = it.isSelected.not()) }
-    }
-
-    fun onClickViewLogs() {
-        viewAction(HomeViewAction.NAVIGATE_TO_LOGCAT_SCREEN)
-    }
-
-    val logger = object : LogcatDiagnostic() {
-        override fun onErrorDetected(error: InstallationSteps, errorLine: String) {
-            super.onErrorDetected(error, errorLine)
-
-            updateInstallationCard {
-                it.copy(
-                    isShowingProgressBar = false,
-                    installationStep = error
-                )
-            }
-
-            if (error == InstallationSteps.ERROR_SELINUX_A10 && !PrivilegedProvider.isRoot()) {
-                updateInstallationCard { it.copy(installationStep = InstallationSteps.ERROR_SELINUX_A10_ROOTLESS) }
-            }
-        }
-
-        override fun onProcessUpdate(float: Float, partition: String) {
-            updateInstallationCard {
-                it.copy(
-                    workingPartition = partition,
-                    installationStep = InstallationSteps.INSTALLING,
-                    installationProgress = float,
-                    isShowingProgressBar = true,
-                )
-            }
-        }
-
-        override fun onSuccess() {
-            super.onSuccess()
-            updateInstallationCard {
-                it.copy(
-                    installationStep = InstallationSteps.DONE,
-                    isShowingProgressBar = false
-                )
-            }
         }
     }
 

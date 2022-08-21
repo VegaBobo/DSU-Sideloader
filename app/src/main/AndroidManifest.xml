@@ -56,7 +56,7 @@
             android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
 
         <service
-            android:name="vegabobo.dsusideloader.privapi.PrivilegedSystemService"
+            android:name="vegabobo.dsusideloader.service.PrivilegedSystemService"
             android:enabled="true"
             android:exported="false" />
 

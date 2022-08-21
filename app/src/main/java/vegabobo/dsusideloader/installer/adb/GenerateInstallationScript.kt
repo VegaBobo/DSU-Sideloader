@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.installation
+package vegabobo.dsusideloader.installer.adb
 
 import vegabobo.dsusideloader.model.InstallationPreferences
 import vegabobo.dsusideloader.core.StorageManager

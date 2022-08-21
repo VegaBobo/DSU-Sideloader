@@ -17,7 +17,7 @@ import vegabobo.dsusideloader.ui.components.FileSelectionBox
 
 @Composable
 fun UserdataCard(
-    isInstalling: Boolean,
+    isEnabled: Boolean,
     uiState: UserDataCardState,
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
@@ -27,7 +27,7 @@ fun UserdataCard(
         modifier = modifier,
         cardTitle = stringResource(id = R.string.userdata_size_ct),
         addToggle = true,
-        isToggleEnabled = !isInstalling,
+        isToggleEnabled = !isEnabled,
         isToggleChecked = uiState.isSelected,
         onCheckedChange = onCheckedChange
     ) {
@@ -35,7 +35,7 @@ fun UserdataCard(
             Column {
                 FileSelectionBox(
                     modifier = Modifier.padding(bottom = 4.dp),
-                    isEnabled = !isInstalling,
+                    isEnabled = !isEnabled,
                     isError = uiState.isError,
                     isNumberOnly = true,
                     textFieldValue = uiState.content,

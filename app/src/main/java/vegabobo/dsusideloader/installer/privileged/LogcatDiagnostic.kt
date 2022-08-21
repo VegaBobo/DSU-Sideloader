@@ -1,27 +1,29 @@
-package vegabobo.dsusideloader.logging
+package vegabobo.dsusideloader.installer.privileged
 
-import vegabobo.dsusideloader.preparation.InstallationSteps
+import android.util.Log
+import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.util.CmdRunner
 
-interface ILogcatDiagnostic {
-    fun onErrorDetected(error: InstallationSteps, errorLine: String)
-    fun onProcessUpdate(float: Float, partition: String)
-    fun onSuccess()
-    fun onCancelled()
-}
-
-abstract class LogcatDiagnostic : ILogcatDiagnostic {
+class LogcatDiagnostic(
+    private val onInstallationError: (error: InstallationStep, errorInfo: String) -> Unit,
+    private val onStepUpdate: (step: InstallationStep) -> Unit,
+    private val onInstallationProgressUpdate: (progress: Float, partition: String) -> Unit,
+    private val onInstallationSuccess: () -> Unit,
+) {
 
     var logs = ""
     var isLogging = false
 
     fun startLogging() {
+        logs = ""
         isLogging = true
         CmdRunner.run("logcat -c")
         CmdRunner.runReadEachLine("logcat --format brief | grep -e gsid -e DynamicSystem | grep -v OUT") {
 
-            if (logs.isEmpty())
-                onProcessUpdate(0F, "userdata")
+            if (logs.isEmpty()) {
+                onStepUpdate(InstallationStep.INSTALLING)
+                onInstallationProgressUpdate(0F, "userdata")
+            }
 
             logs += "$it\n"
 
@@ -36,7 +38,7 @@ abstract class LogcatDiagnostic : ILogcatDiagnostic {
                 && it.contains("Permission denied")
             ) {
                 destroy()
-                onErrorDetected(InstallationSteps.ERROR_EXTERNAL_SDCARD_ALLOC, it)
+                onInstallationError(InstallationStep.ERROR_EXTERNAL_SDCARD_ALLOC, it)
             }
 
             /**
@@ -46,7 +48,7 @@ abstract class LogcatDiagnostic : ILogcatDiagnostic {
              */
             if (it.contains("is below the minimum threshold of")) {
                 destroy()
-                onErrorDetected(InstallationSteps.ERROR_NO_AVAIL_STORAGE, it)
+                onInstallationError(InstallationStep.ERROR_NO_AVAIL_STORAGE, it)
             }
 
             /**
@@ -60,7 +62,7 @@ abstract class LogcatDiagnostic : ILogcatDiagnostic {
                 && it.contains("f2fs")
             ) {
                 destroy()
-                onErrorDetected(InstallationSteps.ERROR_F2FS_WRONG_PATH, it)
+                onInstallationError(InstallationStep.ERROR_F2FS_WRONG_PATH, it)
             }
 
             /**
@@ -74,7 +76,7 @@ abstract class LogcatDiagnostic : ILogcatDiagnostic {
                 && it.contains("Permission denied")
             ) {
                 destroy()
-                onErrorDetected(InstallationSteps.ERROR_SELINUX_A10, it)
+                onInstallationError(InstallationStep.ERROR_SELINUX_A10, it)
             }
 
             /**
@@ -84,7 +86,7 @@ abstract class LogcatDiagnostic : ILogcatDiagnostic {
              */
             if (it.contains("File is too fragmented")) {
                 destroy()
-                onErrorDetected(InstallationSteps.ERROR_EXTENTS, it)
+                onInstallationError(InstallationStep.ERROR_EXTENTS, it)
             }
 
             /**
@@ -92,8 +94,10 @@ abstract class LogcatDiagnostic : ILogcatDiagnostic {
              */
             if (it.contains("NOT_STARTED")) {
                 if (it.contains("INSTALL_CANCELLED"))
-                    onErrorDetected(InstallationSteps.CANCELED, it)
-                onErrorDetected(InstallationSteps.ERROR_GENERIC_ERROR, it)
+                    onInstallationError(InstallationStep.ERROR_CANCELED, it)
+                else
+                    onInstallationError(InstallationStep.ERROR, it)
+                destroy()
             }
 
             /**
@@ -109,37 +113,25 @@ abstract class LogcatDiagnostic : ILogcatDiagnostic {
 
                 val partitionText = partitionRgx.find(it)!!.groupValues[2]
 
-                onProcessUpdate(progress, partitionText)
+                onInstallationProgressUpdate(progress, partitionText)
             }
 
             /**
              * DynamicSystemInstallationService: status: READY, cause: INSTALL_COMPLETED
              */
             if (it.contains("READY") && it.contains("INSTALL_COMPLETED")) {
-                onSuccess()
+                destroy()
+                onInstallationSuccess()
             }
 
         }
     }
 
     fun destroy() {
-        logs = ""
         if (isLogging) {
             CmdRunner.destroy()
             isLogging = false
         }
-    }
-
-    override fun onErrorDetected(error: InstallationSteps, errorLine: String) {
-        destroy()
-    }
-
-    override fun onSuccess() {
-        destroy()
-    }
-
-    override fun onCancelled() {
-        destroy()
     }
 
 }

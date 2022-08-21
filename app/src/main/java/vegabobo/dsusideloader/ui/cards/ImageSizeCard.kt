@@ -17,7 +17,7 @@ import vegabobo.dsusideloader.ui.components.FileSelectionBox
 
 @Composable
 fun ImageSizeCard(
-    isInstalling: Boolean,
+    isEnabled: Boolean,
     uiState: ImageSizeCardState,
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
@@ -27,7 +27,7 @@ fun ImageSizeCard(
         modifier = modifier,
         cardTitle = stringResource(id = R.string.image_size),
         addToggle = true,
-        isToggleEnabled = !isInstalling,
+        isToggleEnabled = !isEnabled,
         isToggleChecked = uiState.isSelected,
         onCheckedChange = onCheckedChange
     ) {
@@ -35,7 +35,7 @@ fun ImageSizeCard(
             Column {
                 FileSelectionBox(
                     modifier = Modifier.padding(bottom = 4.dp),
-                    isEnabled = !isInstalling,
+                    isEnabled = !isEnabled,
                     isError = false,
                     isNumberOnly = true,
                     textFieldValue = uiState.content,

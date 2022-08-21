@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import vegabobo.dsusideloader.util.DataStoreUtils
 
 open class BaseViewModel(
@@ -20,6 +21,18 @@ open class BaseViewModel(
                 onRead(result)
             }
         }
+    }
+
+    fun readBoolPrefBlocking(
+        key: String
+    ): Boolean {
+        var preferenceValue = false
+        runBlocking {
+            DataStoreUtils.readBoolPref(dataStore, key, false) { result ->
+                preferenceValue = result
+            }
+        }
+        return preferenceValue
     }
 
     fun readBoolPref(

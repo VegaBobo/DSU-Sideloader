@@ -16,10 +16,10 @@ import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.Shizuku
 import rikka.shizuku.ShizukuProvider
 import vegabobo.dsusideloader.model.Session
-import vegabobo.dsusideloader.privapi.PrivilegedProvider
-import vegabobo.dsusideloader.privapi.PrivilegedRootService
-import vegabobo.dsusideloader.privapi.PrivilegedService
-import vegabobo.dsusideloader.privapi.PrivilegedSystemService
+import vegabobo.dsusideloader.service.PrivilegedProvider
+import vegabobo.dsusideloader.service.PrivilegedRootService
+import vegabobo.dsusideloader.service.PrivilegedService
+import vegabobo.dsusideloader.service.PrivilegedSystemService
 import vegabobo.dsusideloader.ui.screen.Navigation
 import vegabobo.dsusideloader.ui.theme.DSUHelperTheme
 import vegabobo.dsusideloader.util.OperationMode
@@ -49,8 +49,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
         .version(BuildConfig.VERSION_CODE)
 
     private val SHIZUKU_REQUEST_CODE = 1000
-    private val REQUEST_PERMISSION_RESULT_LISTENER =
-        Shizuku.OnRequestPermissionResultListener(this::onRequestPermissionResult)
+    private val REQUEST_PERMISSION_RESULT_LISTENER = this::onRequestPermissionResult
 
     fun addShizukuListeners() {
         Shizuku.addBinderReceivedListenerSticky(BINDER_RECEIVED_LISTENER)
@@ -74,7 +73,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
             askShizukuPermission()
             return@OnBinderReceivedListener
         }
-        Shizuku.bindUserService(userServiceArgs, PrivilegedProvider.connection!!)
+        Shizuku.bindUserService(userServiceArgs, PrivilegedProvider.connection)
         setupOperationMode(true)
     }
 
@@ -109,7 +108,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
 
     private fun setupRootAIDL() {
         val e = Intent(this, PrivilegedRootService::class.java)
-        RootService.bind(e, PrivilegedProvider.connection!!)
+        RootService.bind(e, PrivilegedProvider.connection)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,7 +136,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
 
         if (installationSession.operationMode == OperationMode.SYSTEM) {
             val service = Intent(this, PrivilegedSystemService::class.java)
-            bindService(service, PrivilegedProvider.connection!!, Context.BIND_AUTO_CREATE)
+            bindService(service, PrivilegedProvider.connection, Context.BIND_AUTO_CREATE)
         }
 
     }
@@ -149,20 +148,18 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
 
     override fun onDestroy() {
         removeShizukuListeners()
-        if (PrivilegedProvider.connection != null)
-            when (installationSession.operationMode) {
-                OperationMode.ROOT -> RootService.unbind(PrivilegedProvider.connection!!)
-                OperationMode.SYSTEM -> unbindService(PrivilegedProvider.connection!!)
-                OperationMode.SHIZUKU -> {
-                    PrivilegedProvider.getService().exit()
-                    Shizuku.unbindUserService(
-                        userServiceArgs,
-                        PrivilegedProvider.connection!!,
-                        true
-                    )
-                }
-                else -> {}
+        when (installationSession.operationMode) {
+            OperationMode.ROOT -> RootService.unbind(PrivilegedProvider.connection)
+            OperationMode.SYSTEM -> unbindService(PrivilegedProvider.connection)
+            OperationMode.SHIZUKU -> {
+                Shizuku.unbindUserService(
+                    userServiceArgs,
+                    PrivilegedProvider.connection,
+                    true
+                )
             }
+            else -> {}
+        }
         super.onDestroy()
     }
 
