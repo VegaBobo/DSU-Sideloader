@@ -36,20 +36,10 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
         </activity>
-        <activity
-            android:name=".old.AboutActivity"
-            android:exported="false" />
-        <activity
-            android:name=".old.LogsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".old.RunOnAdbActivity"
-            android:exported="false" />
 
         <provider
             android:name="rikka.shizuku.ShizukuProvider"
@@ -75,6 +65,5 @@
             android:exported="false" />
 
     </application>
-
 
 </manifest>
