@@ -5,14 +5,18 @@ pluginManagement {
         mavenCentral()
     }
 }
+
+plugins {
+    id("de.fayard.refreshVersions") version "0.40.2"
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
+        maven { setUrl("https://jitpack.io") }
     }
 }
 rootProject.name = "DSU Helper"
-include ':app'
-include ':hidden-api-stub'
+include(":app", ":hidden-api-stub")
