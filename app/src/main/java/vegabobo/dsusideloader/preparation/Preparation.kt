@@ -1,7 +1,6 @@
 package vegabobo.dsusideloader.preparation
 
 import android.net.Uri
-import android.util.Log
 import kotlinx.coroutines.Job
 import vegabobo.dsusideloader.core.StorageManager
 import vegabobo.dsusideloader.model.DSUConstants
@@ -30,7 +29,6 @@ class Preparation(
     }
 
     private fun prepareRooted() {
-        Log.i("AA", "??")
         val source: DSUInstallation = when (getExtension(userSelectedFileUri)) {
             "img" -> {
                 DSUInstallation.SingleSystemImage(

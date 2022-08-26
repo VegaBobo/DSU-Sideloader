@@ -1,0 +1,7 @@
+{
+  "identifier":"dsu_sideloader_testing",
+  "versionCode": 999999999,
+  "versionName": "1.03",
+  "apkUrl": "https://github.com/VegaBobo/DSU-Sideloader/releases/download/1.03/app-debug.apk",
+  "changelogUrl": "https://github.com/VegaBobo/DSU-Sideloader/releases/tag/1.03"
+}

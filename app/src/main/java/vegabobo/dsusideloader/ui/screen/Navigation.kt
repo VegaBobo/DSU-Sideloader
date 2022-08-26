@@ -4,9 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import vegabobo.dsusideloader.ui.screen.about.AboutScreen
 import vegabobo.dsusideloader.ui.screen.adb.AdbScreen
 import vegabobo.dsusideloader.ui.screen.logcat.LogcatScreen
 import vegabobo.dsusideloader.ui.screen.home.Home
+import vegabobo.dsusideloader.ui.screen.libraries.LibrariesScreen
 import vegabobo.dsusideloader.ui.screen.settings.Settings
 
 object Destinations {
@@ -14,6 +16,8 @@ object Destinations {
     const val Preferences = "preferences"
     const val ADBInstallation = "adb_installation"
     const val Logcat = "logcat"
+    const val About = "about"
+    const val Libraries = "libraries"
 }
 
 @Composable
@@ -26,5 +30,7 @@ fun Navigation(
         composable(Destinations.Preferences) { Settings(navController) }
         composable(Destinations.Logcat) { LogcatScreen(navController) }
         composable(Destinations.ADBInstallation) { AdbScreen(navController) }
+        composable(Destinations.About) { AboutScreen(navController) }
+        composable(Destinations.Libraries) { LibrariesScreen(navController) }
     }
 }

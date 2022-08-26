@@ -16,7 +16,7 @@ fun ApplicationScreen(
     modifier: Modifier = Modifier,
     verticalArrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(0.dp),
     columnContent: Boolean = true,
-    enableScrollBehavior: Boolean = true,
+    enableDefaultScrollBehavior: Boolean = true,
     topBar: @Composable (TopAppBarScrollBehavior) -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     outsideContent: @Composable (PaddingValues) -> Unit = {},
@@ -29,7 +29,7 @@ fun ApplicationScreen(
     )
 
     val scrollBehaviorModifier =
-        if (enableScrollBehavior) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier
+        if (enableDefaultScrollBehavior) Modifier.nestedScroll(scrollBehavior.nestedScrollConnection) else Modifier
 
     val insets = WindowInsets
         .systemBars
@@ -45,11 +45,13 @@ fun ApplicationScreen(
             topBar = { topBar(scrollBehavior) },
             bottomBar = { bottomBar() },
             content = { innerPadding ->
+                val scrollModifier =
+                    if (enableDefaultScrollBehavior) Modifier.verticalScroll(rememberScrollState()) else Modifier
                 if (columnContent)
                     Column(
                         modifier = modifier
                             .padding(innerPadding)
-                            .verticalScroll(rememberScrollState()),
+                            .then(scrollModifier),
                         verticalArrangement = verticalArrangement,
                     ) {
                         content()

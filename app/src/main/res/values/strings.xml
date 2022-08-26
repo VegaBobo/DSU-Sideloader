@@ -153,4 +153,22 @@
     <string name="use_builin_installer_desc">Faster, use internal APIs to install images directly</string>
     <string name="requires_root">Requires root</string>
     <string name="testing_feature">This feature is under testing, and may be unstable, are you sure?</string>
+    <string name="check_updates">Check updates</string>
+    <string name="tap_to_check">Tap to check</string>
+    <string name="download">Download</string>
+    <string name="contributors">Contributors</string>
+    <string name="collaborators">Collaborators</string>
+    <string name="developer">Developer</string>
+    <string name="design_and_icon">Design reference, app icon</string>
+    <string name="github">Design and icon</string>
+    <string name="contribuitors">Contributions</string>
+    <string name="contribuitors_desc">People that helped this project</string>
+    <string name="translators">Translators</string>
+    <string name="translator_list"></string>
+    <string name="application">Application</string>
+    <string name="github_repo">GitHub Repository</string>
+    <string name="libraries_used">Libraries used in this app</string>
+    <string name="changelog">Changelog</string>
+    <string name="running_latest">Running latest version</string>
+    <string name="update_found">New %1$s version found</string>
 </resources>

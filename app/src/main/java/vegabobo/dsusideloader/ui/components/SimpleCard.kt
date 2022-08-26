@@ -19,6 +19,7 @@ fun SimpleCard(
     cardColor: Color = MaterialTheme.colorScheme.inverseOnSurface,
     justifyText: Boolean = false,
     textScrollable: Boolean = false,
+    addPadding: Boolean = true,
     content: @Composable () -> Unit = {},
 ) {
     CardBox(
@@ -26,14 +27,16 @@ fun SimpleCard(
         cardTitle = cardTitle,
         addToggle = addToggle,
         isToggleChecked = isToggleEnabled,
+        addPadding = addPadding,
         cardColor = cardColor,
     ) {
         val scroll = rememberScrollState(0)
-        Text(
-            text = text,
-            textAlign = if (justifyText) TextAlign.Justify else TextAlign.Start,
-            modifier = if(textScrollable) Modifier.verticalScroll(scroll) else Modifier
-        )
+        if(text.isNotEmpty())
+            Text(
+                text = text,
+                textAlign = if (justifyText) TextAlign.Justify else TextAlign.Start,
+                modifier = if(textScrollable) Modifier.verticalScroll(scroll) else Modifier
+            )
         content()
     }
 }

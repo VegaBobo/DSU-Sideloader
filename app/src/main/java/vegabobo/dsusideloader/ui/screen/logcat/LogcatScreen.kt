@@ -3,22 +3,12 @@ package vegabobo.dsusideloader.ui.screen.logcat
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
@@ -54,7 +44,7 @@ fun LogcatScreen(
     ApplicationScreen(
         modifier = Modifier.padding(start = 18.dp, end = 18.dp),
         columnContent = false,
-        enableScrollBehavior = false,
+        enableDefaultScrollBehavior = false,
         verticalArrangement = Arrangement.spacedBy(24.dp),
         topBar = {
             TopBar(

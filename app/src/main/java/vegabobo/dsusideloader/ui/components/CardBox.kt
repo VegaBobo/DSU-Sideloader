@@ -19,17 +19,25 @@ fun CardBox(
     addToggle: Boolean = false,
     isToggleChecked: Boolean = false,
     isToggleEnabled: Boolean = true,
+    addPadding: Boolean = true,
     cardColor: Color = MaterialTheme.colorScheme.inverseOnSurface,
     onCheckedChange: ((Boolean) -> Unit) = {},
     content: @Composable (ColumnScope) -> Unit,
 ) {
     Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(10.dp))
-            .background(cardColor)
-            .padding(all = 10.dp)
-            .padding(end = 4.dp, start = 4.dp)
-            .fillMaxWidth()
+        modifier = if (addPadding) {
+            Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(cardColor)
+                .padding(all = 10.dp)
+                .padding(end = 4.dp, start = 4.dp)
+                .fillMaxWidth()
+        } else {
+            Modifier
+                .clip(RoundedCornerShape(10.dp))
+                .background(cardColor)
+                .fillMaxWidth()
+        }
     ) {
         Column(modifier = modifier) {
             if (cardTitle.isNotEmpty()) {

@@ -1,12 +1,15 @@
 package vegabobo.dsusideloader.ui.screen.settings
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.*
+import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
 @Composable
@@ -26,7 +29,17 @@ fun Settings(
     ) {
         val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
-        if(uiState.isShowingBuiltinInstallerDialog)
+        LaunchedEffect(Unit) {
+            settingsViewModel.settingsViewAction.collectLatest {
+                when (it) {
+                    SettingsViewAction.NAVIGATE_TO_ABOUT -> navController.navigate(Destinations.About)
+                    else -> {}
+                }
+                settingsViewModel.resetViewAction()
+            }
+        }
+
+        if (uiState.isShowingBuiltinInstallerDialog)
             Dialog(
                 title = stringResource(id = R.string.use_builin_installer),
                 text = stringResource(id = R.string.testing_feature),
@@ -69,7 +82,7 @@ fun Settings(
         PreferenceItem(
             title = stringResource(id = R.string.about),
             description = stringResource(id = R.string.about_text),
-            onClick = {}
+            onClick = { settingsViewModel.navigateToAbout() }
         )
     }
 

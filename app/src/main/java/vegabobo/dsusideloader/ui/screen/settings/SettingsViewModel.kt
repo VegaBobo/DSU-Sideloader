@@ -1,7 +1,6 @@
 package vegabobo.dsusideloader.ui.screen.settings
 
 import android.app.Application
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewModelScope
@@ -12,12 +11,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.model.Session
 import vegabobo.dsusideloader.preferences.UserPreferences
 import vegabobo.dsusideloader.service.PrivilegedProvider
-import vegabobo.dsusideloader.util.OperationMode
 import vegabobo.dsusideloader.util.OperationModeUtils
 import javax.inject.Inject
 
@@ -30,6 +27,11 @@ class SettingsViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+
+    val settingsViewAction = MutableStateFlow(SettingsViewAction.NONE)
+
+    fun resetViewAction() = settingsViewAction.update { SettingsViewAction.NONE }
+    fun navigateToAbout() = settingsViewAction.update { SettingsViewAction.NAVIGATE_TO_ABOUT }
 
     init {
         readBoolPref(UserPreferences.KEEP_SCREEN_ON) { result ->
