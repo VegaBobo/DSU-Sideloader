@@ -3,13 +3,16 @@ package vegabobo.dsusideloader.ui.cards
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -38,10 +41,40 @@ fun UpdaterCard(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = "App icon",
-            )
+            Surface(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .padding(top = 16.dp),
+                color = MaterialTheme.colorScheme.inverseOnSurface,
+            ) {
+                Box(modifier = Modifier.size(width = 300.dp, height = 100.dp)) {
+                    if (uiState.updateStatus == UpdateStatus.CHECKING_FOR_UPDATES)
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .align(Alignment.Center)
+                        )
+                    if (uiState.isDownloading)
+                        CircularProgressIndicator(
+                            progress = uiState.progressBar,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .align(Alignment.Center)
+                        )
+                    Image(
+                        modifier = Modifier
+                            .size(
+                                if (uiState.isDownloading || uiState.updateStatus == UpdateStatus.CHECKING_FOR_UPDATES)
+                                    76.dp
+                                else 100.dp
+                            )
+                            .clip(CircleShape)
+                            .align(Alignment.Center),
+                        painter = painterResource(id = R.drawable.app_icon_mono),
+                        contentDescription = "App icon",
+                    )
+                }
+            }
             Text(
                 text = stringResource(id = R.string.app_name),
                 style = MaterialTheme.typography.headlineMedium,
@@ -90,15 +123,6 @@ fun UpdaterCard(
                     onClick = { onClickDownloadUpdate() },
                 )
             }
-        }
-        AnimatedVisibility(visible = uiState.updateStatus == UpdateStatus.CHECKING_FOR_UPDATES) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-        }
-        AnimatedVisibility(visible = uiState.isDownloading) {
-            LinearProgressIndicator(
-                progress = uiState.progressBar,
-                modifier = Modifier.fillMaxWidth()
-            )
         }
     }
 }
