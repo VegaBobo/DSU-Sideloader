@@ -70,7 +70,7 @@ fun UpdaterCard(
                             )
                             .clip(CircleShape)
                             .align(Alignment.Center),
-                        painter = painterResource(id = R.drawable.app_icon_mono),
+                        painter = painterResource(id = R.drawable.app_icon_mini),
                         contentDescription = "App icon",
                     )
                 }
