@@ -3,70 +3,41 @@ package vegabobo.dsusideloader.core
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import vegabobo.dsusideloader.util.DataStoreUtils
 
 open class BaseViewModel(
     open val dataStore: DataStore<Preferences>
 ) : ViewModel() {
 
-    fun readStringPref(
+    suspend fun readStringPref(
         key: String,
-        onRead: (String) -> Unit
-    ) {
-        viewModelScope.launch {
-            DataStoreUtils.readStringPref(dataStore, key, "") { result ->
-                onRead(result)
-            }
-        }
+    ): String {
+        return DataStoreUtils.readStringPref(dataStore, key, "")
     }
 
-    fun readBoolPrefBlocking(
+    suspend fun readBoolPref(
         key: String
     ): Boolean {
-        var preferenceValue = false
-        runBlocking {
-            DataStoreUtils.readBoolPref(dataStore, key, false) { result ->
-                preferenceValue = result
-            }
-        }
-        return preferenceValue
+        return DataStoreUtils.readBoolPref(dataStore, key, false)
     }
 
-    fun readBoolPref(
-        key: String,
-        onRead: (Boolean) -> Unit
-    ) {
-        viewModelScope.launch {
-            DataStoreUtils.readBoolPref(dataStore, key, false) { result ->
-                onRead(result)
-            }
-        }
-    }
-
-    fun updateBoolPref(
+    suspend fun updateBoolPref(
         key: String,
         value: Boolean,
-        onRead: () -> Unit
+        onRead: (Boolean) -> Unit = {}
     ) {
-        viewModelScope.launch {
-            DataStoreUtils.updateBoolPref(dataStore, key, value) {
-                onRead()
-            }
+        DataStoreUtils.updateBoolPref(dataStore, key, value) {
+            onRead(value)
         }
     }
 
-    fun updateStringPref(
+    suspend fun updateStringPref(
         key: String,
         value: String,
-        onRead: () -> Unit
+        onRead: (String) -> Unit = {}
     ) {
-        viewModelScope.launch {
-            DataStoreUtils.updateStringPref(dataStore, key, value) {
-                onRead()
-            }
+        DataStoreUtils.updateStringPref(dataStore, key, value) {
+            onRead(value)
         }
     }
 

@@ -8,14 +8,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewModelScope
 import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.core.StorageManager
 import vegabobo.dsusideloader.installer.adb.AdbInstallationHandler
@@ -91,7 +88,8 @@ class HomeViewModel @Inject constructor(
             return
         }
 
-        readStringPref(AppPrefs.SAF_PATH) { result ->
+        viewModelScope.launch {
+            val result = readStringPref(AppPrefs.SAF_PATH)
             if (!storageManager.arePermissionsGrantedToFolder(result))
                 updateAdditionalCardState(AdditionalCard.SETUP_STORAGE)
             else
@@ -114,8 +112,8 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun setupUserPreferences() {
-        readBoolPref(AppPrefs.KEEP_SCREEN_ON) { result ->
-            _uiState.update { it.copy(shouldKeepScreenOn = result) }
+        viewModelScope.launch {
+            _uiState.update { it.copy(shouldKeepScreenOn = readBoolPref(AppPrefs.KEEP_SCREEN_ON)) }
         }
     }
 
@@ -156,9 +154,9 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(dialogDisplay = DialogDisplay.NONE) }
         installationJob = Job()
         viewModelScope.launch(Dispatchers.IO + installationJob) {
-            session.preferences.isUnmountSdCard = readBoolPrefBlocking(AppPrefs.UMOUNT_SD)
+            session.preferences.isUnmountSdCard = readBoolPref(AppPrefs.UMOUNT_SD)
             session.preferences.useBuiltinInstaller =
-                readBoolPrefBlocking(AppPrefs.USE_BUILTIN_INSTALLER)
+                readBoolPref(AppPrefs.USE_BUILTIN_INSTALLER)
             Preparation(
                 storageManager = storageManager,
                 session = session,

@@ -29,19 +29,22 @@ class SettingsViewModel @Inject constructor(
 
     init {
         uiState.value.preferences.forEach { entry ->
-            readBoolPref(entry.key) {
-                togglePreference(entry.key, it)
+            viewModelScope.launch {
+                val isEnabled = readBoolPref(entry.key)
+                togglePreference(entry.key, isEnabled)
             }
         }
     }
 
     fun togglePreference(preference: String, value: Boolean) {
-        updateBoolPref(preference, value) {
-            _uiState.update {
-                val cloneMap = hashMapOf<String, Boolean>()
-                cloneMap.putAll(uiState.value.preferences)
-                cloneMap[preference] = value
-                it.copy(preferences = cloneMap)
+        viewModelScope.launch {
+            updateBoolPref(preference, value) {
+                _uiState.update {
+                    val cloneMap = hashMapOf<String, Boolean>()
+                    cloneMap.putAll(uiState.value.preferences)
+                    cloneMap[preference] = value
+                    it.copy(preferences = cloneMap)
+                }
             }
         }
     }
