@@ -20,6 +20,7 @@ import vegabobo.dsusideloader.ActivityAction
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.*
 import vegabobo.dsusideloader.ui.cards.installation.InstallationCard
+import vegabobo.dsusideloader.ui.cards.warnings.RequiresLogPermissionCard
 import vegabobo.dsusideloader.ui.cards.warnings.SetupStorage
 import vegabobo.dsusideloader.ui.cards.warnings.StorageWarningCard
 import vegabobo.dsusideloader.ui.cards.warnings.UnsupportedCard
@@ -110,6 +111,11 @@ fun Home(
                         SetupStorage { homeViewModel.takeUriPermission(it) }
                     AdditionalCard.UNAVAIABLE_STORAGE ->
                         StorageWarningCard { homeViewModel.overrideUnavaiableStorage() }
+                    AdditionalCard.MISSING_READ_LOGS_PERMISSION ->
+                        RequiresLogPermissionCard(
+                            onClickGrant =  { homeViewModel.grantReadLogs() },
+                            onClickRefuse = { homeViewModel.refuseReadLogs() }
+                        )
                     else -> {}
                 }
             }

@@ -1,6 +1,5 @@
 package vegabobo.dsusideloader.installer.privileged
 
-import android.util.Log
 import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.util.CmdRunner
 

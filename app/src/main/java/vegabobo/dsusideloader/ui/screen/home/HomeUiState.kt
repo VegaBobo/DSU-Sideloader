@@ -40,6 +40,7 @@ enum class AdditionalCard {
     SETUP_STORAGE,
     UNAVAIABLE_STORAGE,
     NO_DYNAMIC_PARTITIONS,
+    MISSING_READ_LOGS_PERMISSION,
 }
 
 enum class DialogDisplay {

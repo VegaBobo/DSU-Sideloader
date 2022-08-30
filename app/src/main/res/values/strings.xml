@@ -171,4 +171,9 @@
     <string name="changelog">Changelog</string>
     <string name="running_latest">Running latest version</string>
     <string name="update_found">New %1$s version found</string>
+
+    <string name="missing_permission">Missing permission</string>
+    <string name="requires_log_permission">DSU Sideloader requires READ_LOGS permission (allows logcat reading)\nIt will be used to obtain installation progress and diagnose errors in DSU installation.\n\n**After granting permission, application needs to be reopened</string>
+    <string name="grant">Grant</string>
+    <string name="refuse">Refuse</string>
 </resources>

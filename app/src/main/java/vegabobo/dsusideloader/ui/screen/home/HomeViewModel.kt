@@ -25,10 +25,7 @@ import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.preparation.Preparation
 import vegabobo.dsusideloader.service.PrivilegedProvider
-import vegabobo.dsusideloader.util.FilenameUtils
-import vegabobo.dsusideloader.util.OperationMode
-import vegabobo.dsusideloader.util.StorageUtils
-import vegabobo.dsusideloader.util.VerificationUtils
+import vegabobo.dsusideloader.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,6 +42,7 @@ class HomeViewModel @Inject constructor(
 
     var checkDynamicPartitions = true
     var checkUnavaiableStorage = true
+    var checkReadLogsPermission = true
     var installationJob: Job = Job()
 
     //
@@ -85,6 +83,14 @@ class HomeViewModel @Inject constructor(
 
         if (checkUnavaiableStorage && !StorageUtils.hasAvailableStorage()) {
             updateAdditionalCardState(AdditionalCard.UNAVAIABLE_STORAGE)
+            return
+        }
+
+        if (session.operationMode != OperationMode.UNROOTED
+            && !OperationModeUtils.isReadLogsPermissionGranted(application)
+            && checkReadLogsPermission
+        ) {
+            updateAdditionalCardState(AdditionalCard.MISSING_READ_LOGS_PERMISSION)
             return
         }
 
@@ -192,7 +198,10 @@ class HomeViewModel @Inject constructor(
     private fun startPrivilegedInstallation() {
         updateInstallationCard { it.copy(installationStep = InstallationStep.WAITING_USER_CONFIRMATION) }
         DsuInstallationHandler(session).startInstallation()
-        startLogging()
+        if (OperationModeUtils.isReadLogsPermissionGranted(application))
+            startLogging()
+        else
+            updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
     }
 
     private fun startRootInstallation() {
@@ -426,6 +435,22 @@ class HomeViewModel @Inject constructor(
                 isInstallable = true
             )
         }
+    }
+
+    fun grantReadLogs() {
+        val intent = Intent()
+        intent.setClassName(
+            "vegabobo.dsusideloader",
+            "vegabobo.dsusideloader.MainActivity"
+        )
+        intent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
+        PrivilegedProvider.getService().grantPermission("android.permission.READ_LOGS")
+        PrivilegedProvider.getService().startActivity(intent)
+    }
+
+    fun refuseReadLogs() {
+        checkReadLogsPermission = false
+        initialChecks()
     }
 
 }

@@ -42,9 +42,18 @@ class OperationModeUtils {
             }
         }
 
+        fun isPermissionGranted(context: Context, permission: String): Boolean {
+            return context.checkCallingOrSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+        }
+
         fun isDsuPermissionGranted(context: Context): Boolean {
             val dynPermission = "android.permission.INSTALL_DYNAMIC_SYSTEM"
-            return context.checkCallingOrSelfPermission(dynPermission) == PackageManager.PERMISSION_GRANTED
+            return isPermissionGranted(context, dynPermission)
+        }
+
+        fun isReadLogsPermissionGranted(context: Context): Boolean {
+            val dynPermission = "android.permission.READ_LOGS"
+            return isPermissionGranted(context, dynPermission)
         }
 
         fun isShizukuPermissionGranted(context: Context): Boolean {
