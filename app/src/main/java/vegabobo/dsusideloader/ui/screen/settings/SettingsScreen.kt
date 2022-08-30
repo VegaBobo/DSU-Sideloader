@@ -1,11 +1,13 @@
 package vegabobo.dsusideloader.ui.screen.settings
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
+import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.ui.components.*
 import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
@@ -15,6 +17,11 @@ fun Settings(
     navController: NavController,
     settingsViewModel: SettingsViewModel = hiltViewModel(),
 ) {
+
+    LaunchedEffect(Unit) {
+        settingsViewModel.checkIfRootIsAvail()
+    }
+
     ApplicationScreen(
         topBar = {
             TopBar(
@@ -33,7 +40,7 @@ fun Settings(
                 text = stringResource(id = R.string.testing_feature),
                 confirmText = stringResource(id = R.string.got_it),
                 cancelText = stringResource(id = R.string.cancel),
-                onClickCancel = { settingsViewModel.toggleBuiltinInstaller(false) },
+                onClickCancel = { settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, false) },
                 onClickConfirm = { settingsViewModel.updateInstallerDialogState(false) }
             )
 
@@ -45,21 +52,24 @@ fun Settings(
             else stringResource(R.string.requires_root),
             showToggle = true,
             isEnabled = uiState.isRoot,
-            isChecked = uiState.useBuiltinInstaller,
-            onClick = { settingsViewModel.toggleBuiltinInstaller(!it) },
+            isChecked = uiState.preferences[AppPrefs.USE_BUILTIN_INSTALLER]!!,
+            onClick = {
+                settingsViewModel.updateInstallerDialogState(!it)
+                settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, !it)
+            },
         )
         PreferenceItem(
             title = stringResource(id = R.string.unmount_sd),
             description = stringResource(id = R.string.unmount_sd_text),
             showToggle = true,
-            isChecked = uiState.umountSd,
-            onClick = { settingsViewModel.toggleUmountSd(!it) },
+            isChecked = uiState.preferences[AppPrefs.UMOUNT_SD]!!,
+            onClick = { settingsViewModel.togglePreference(AppPrefs.UMOUNT_SD, !it) },
         )
         PreferenceItem(
             title = stringResource(id = R.string.keep_screen_on),
             showToggle = true,
-            isChecked = uiState.keepScreenOn,
-            onClick = { settingsViewModel.toggleKeepScreenOn(!it) },
+            isChecked = uiState.preferences[AppPrefs.KEEP_SCREEN_ON]!!,
+            onClick = { settingsViewModel.togglePreference(AppPrefs.KEEP_SCREEN_ON, !it) },
         )
 
         Title(title = stringResource(id = R.string.other))

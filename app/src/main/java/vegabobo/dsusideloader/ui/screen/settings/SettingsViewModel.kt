@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.model.Session
-import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.service.PrivilegedProvider
 import vegabobo.dsusideloader.util.OperationModeUtils
 import javax.inject.Inject
@@ -29,42 +28,33 @@ class SettingsViewModel @Inject constructor(
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
     init {
-        readBoolPref(AppPrefs.KEEP_SCREEN_ON) { result ->
-            _uiState.update { it.copy(keepScreenOn = result) }
-        }
-        readBoolPref(AppPrefs.UMOUNT_SD) { result ->
-            _uiState.update { it.copy(umountSd = result) }
-        }
-        readBoolPref(AppPrefs.USE_BUILTIN_INSTALLER) { result ->
-            _uiState.update { it.copy(useBuiltinInstaller = result) }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            if (PrivilegedProvider.isRoot())
-                _uiState.update { it.copy(isRoot = true) }
+        uiState.value.preferences.forEach { entry ->
+            readBoolPref(entry.key) {
+                togglePreference(entry.key, it)
+            }
         }
     }
 
-    fun toggleBuiltinInstaller(value: Boolean) {
-        updateBoolPref(AppPrefs.USE_BUILTIN_INSTALLER, value) {
-            _uiState.update { it.copy(useBuiltinInstaller = value) }
-        }
-        updateInstallerDialogState(value)
-    }
-
-    fun toggleKeepScreenOn(value: Boolean) {
-        updateBoolPref(AppPrefs.KEEP_SCREEN_ON, value) {
-            _uiState.update { it.copy(keepScreenOn = value) }
-        }
-    }
-
-    fun toggleUmountSd(value: Boolean) {
-        updateBoolPref(AppPrefs.UMOUNT_SD, value) {
-            _uiState.update { it.copy(umountSd = value) }
+    fun togglePreference(preference: String, value: Boolean) {
+        updateBoolPref(preference, value) {
+            _uiState.update {
+                val cloneMap = hashMapOf<String, Boolean>()
+                cloneMap.putAll(uiState.value.preferences)
+                cloneMap[preference] = value
+                it.copy(preferences = cloneMap)
+            }
         }
     }
 
     fun updateInstallerDialogState(isShowing: Boolean) {
         _uiState.update { it.copy(isShowingBuiltinInstallerDialog = isShowing) }
+    }
+
+    fun checkIfRootIsAvail() {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (PrivilegedProvider.isRoot())
+                _uiState.update { it.copy(isRoot = true) }
+        }
     }
 
     fun checkOperationMode(): String {
