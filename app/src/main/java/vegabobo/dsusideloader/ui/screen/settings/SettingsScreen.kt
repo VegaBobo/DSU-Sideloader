@@ -1,12 +1,10 @@
 package vegabobo.dsusideloader.ui.screen.settings
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.*
 import vegabobo.dsusideloader.ui.screen.Destinations
@@ -15,7 +13,7 @@ import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 @Composable
 fun Settings(
     navController: NavController,
-    settingsViewModel: SettingsViewModel = hiltViewModel()
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
 ) {
     ApplicationScreen(
         topBar = {
@@ -28,16 +26,6 @@ fun Settings(
         }
     ) {
         val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
-
-        LaunchedEffect(Unit) {
-            settingsViewModel.settingsViewAction.collectLatest {
-                when (it) {
-                    SettingsViewAction.NAVIGATE_TO_ABOUT -> navController.navigate(Destinations.About)
-                    else -> {}
-                }
-                settingsViewModel.resetViewAction()
-            }
-        }
 
         if (uiState.isShowingBuiltinInstallerDialog)
             Dialog(
@@ -82,7 +70,7 @@ fun Settings(
         PreferenceItem(
             title = stringResource(id = R.string.about),
             description = stringResource(id = R.string.about_text),
-            onClick = { settingsViewModel.navigateToAbout() }
+            onClick = { navController.navigate(Destinations.About) }
         )
     }
 

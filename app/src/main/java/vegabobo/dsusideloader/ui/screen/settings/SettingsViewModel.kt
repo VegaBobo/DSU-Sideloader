@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.model.Session
-import vegabobo.dsusideloader.preferences.UserPreferences
+import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.service.PrivilegedProvider
 import vegabobo.dsusideloader.util.OperationModeUtils
 import javax.inject.Inject
@@ -28,19 +28,14 @@ class SettingsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
-    val settingsViewAction = MutableStateFlow(SettingsViewAction.NONE)
-
-    fun resetViewAction() = settingsViewAction.update { SettingsViewAction.NONE }
-    fun navigateToAbout() = settingsViewAction.update { SettingsViewAction.NAVIGATE_TO_ABOUT }
-
     init {
-        readBoolPref(UserPreferences.KEEP_SCREEN_ON) { result ->
+        readBoolPref(AppPrefs.KEEP_SCREEN_ON) { result ->
             _uiState.update { it.copy(keepScreenOn = result) }
         }
-        readBoolPref(UserPreferences.UMOUNT_SD) { result ->
+        readBoolPref(AppPrefs.UMOUNT_SD) { result ->
             _uiState.update { it.copy(umountSd = result) }
         }
-        readBoolPref(UserPreferences.USE_BUILTIN_INSTALLER) { result ->
+        readBoolPref(AppPrefs.USE_BUILTIN_INSTALLER) { result ->
             _uiState.update { it.copy(useBuiltinInstaller = result) }
         }
         viewModelScope.launch(Dispatchers.IO) {
@@ -50,20 +45,20 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun toggleBuiltinInstaller(value: Boolean) {
-        updateBoolPref(UserPreferences.USE_BUILTIN_INSTALLER, value) {
+        updateBoolPref(AppPrefs.USE_BUILTIN_INSTALLER, value) {
             _uiState.update { it.copy(useBuiltinInstaller = value) }
         }
         updateInstallerDialogState(value)
     }
 
     fun toggleKeepScreenOn(value: Boolean) {
-        updateBoolPref(UserPreferences.KEEP_SCREEN_ON, value) {
+        updateBoolPref(AppPrefs.KEEP_SCREEN_ON, value) {
             _uiState.update { it.copy(keepScreenOn = value) }
         }
     }
 
     fun toggleUmountSd(value: Boolean) {
-        updateBoolPref(UserPreferences.UMOUNT_SD, value) {
+        updateBoolPref(AppPrefs.UMOUNT_SD, value) {
             _uiState.update { it.copy(umountSd = value) }
         }
     }

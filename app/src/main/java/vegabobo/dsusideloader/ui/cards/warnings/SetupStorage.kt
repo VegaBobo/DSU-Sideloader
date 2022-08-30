@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.ui.cards
+package vegabobo.dsusideloader.ui.cards.warnings
 
 import android.content.Intent
 import android.net.Uri
@@ -9,8 +9,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.components.ActionButton
 import vegabobo.dsusideloader.ui.components.SimpleCard
+import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
 import vegabobo.dsusideloader.ui.util.LauncherAcResult
 
 @Composable
@@ -29,7 +29,7 @@ fun SetupStorage(
         text = stringResource(id = R.string.storage_info)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-            ActionButton(
+            PrimaryButton(
                 text = stringResource(id = R.string.storage),
                 onClick = { launcherSetupStorage.launch(intent) })
         }

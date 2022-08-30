@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.ui.cards.content
+package vegabobo.dsusideloader.ui.cards.installation.content
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,8 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.components.ActionButton
 import vegabobo.dsusideloader.ui.components.FileSelectionBox
+import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
+import vegabobo.dsusideloader.ui.components.buttons.SecondaryButton
 import vegabobo.dsusideloader.ui.screen.home.InstallationCardState
 
 @Composable
@@ -47,15 +48,13 @@ fun NotInstallingCardContent(
         }
         Spacer(modifier = Modifier.weight(1F))
         if (uiState.isInstallable) {
-            ActionButton(
+            SecondaryButton(
                 text = stringResource(R.string.clear),
-                onClick = onClickClear,
-                colorText = MaterialTheme.colorScheme.primary,
-                colorButton = MaterialTheme.colorScheme.surfaceVariant
+                onClick = onClickClear
             )
             Spacer(modifier = Modifier.padding(end = 6.dp))
         }
-        ActionButton(
+        PrimaryButton(
             text = stringResource(R.string.install),
             onClick = onClickInstall,
             isEnabled = uiState.isInstallable

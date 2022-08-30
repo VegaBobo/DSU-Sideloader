@@ -11,8 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.util.withContext
@@ -25,10 +25,10 @@ import vegabobo.dsusideloader.ui.components.TopBar
 @Composable
 fun LibrariesScreen(
     navController: NavController,
-    librariesViewModel: LibrariesViewModel = hiltViewModel(),
 ) {
     val libs = remember { mutableStateOf<Libs?>(null) }
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
     libs.value = Libs.Builder().withContext(context).build()
     val libraries = libs.value!!.libraries
 
@@ -55,10 +55,14 @@ fun LibrariesScreen(
                 for (license in thisLibrary.licenses) {
                     licenses += license.name
                 }
+                val urlToOpen = thisLibrary.website ?: ""
                 PreferenceItem(
                     title = name,
                     description = licenses,
-                    onClick = { librariesViewModel.openUrl(thisLibrary.website ?: "") }
+                    onClick = {
+                        if(urlToOpen.isNotEmpty())
+                            uriHandler.openUri(urlToOpen)
+                    }
                 )
             }
         }

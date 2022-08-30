@@ -1,6 +1,8 @@
 package vegabobo.dsusideloader.ui.cards
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +33,11 @@ fun ImageSizeCard(
         isToggleChecked = uiState.isSelected,
         onCheckedChange = onCheckedChange
     ) {
-        AnimatedVisibility(visible = uiState.isSelected) {
+        AnimatedVisibility(
+            visible = uiState.isSelected,
+            enter = expandVertically(),
+            exit = shrinkVertically()
+        ) {
             Column {
                 FileSelectionBox(
                     modifier = Modifier.padding(bottom = 4.dp),

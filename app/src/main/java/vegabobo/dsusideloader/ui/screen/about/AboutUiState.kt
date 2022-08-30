@@ -1,10 +1,5 @@
 package vegabobo.dsusideloader.ui.screen.about
 
-enum class AboutViewAction {
-    NO_ACTION,
-    NAVIGATE_TO_LIBRARIES
-}
-
 enum class UpdateStatus {
     NOT_CHECKED,
     CHECKING_FOR_UPDATES,

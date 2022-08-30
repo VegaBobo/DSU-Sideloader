@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
+import vegabobo.dsusideloader.ui.components.buttons.SecondaryButton
 
 @Composable
 fun Dialog(
@@ -27,15 +29,11 @@ fun Dialog(
         onDismissRequest = onClickCancel,
         confirmButton = {
             if (confirmText.isNotEmpty())
-                ActionButton(text = confirmText, onClick = onClickConfirm)
+                PrimaryButton(text = confirmText, onClick = onClickConfirm)
         },
         dismissButton = {
             if (cancelText.isNotEmpty())
-                ActionButton(
-                    text = cancelText, onClick = onClickCancel,
-                    colorText = MaterialTheme.colorScheme.primary,
-                    colorButton = MaterialTheme.colorScheme.surfaceVariant
-                )
+                SecondaryButton(text = cancelText, onClick = onClickCancel)
         },
         text = {
             Column {

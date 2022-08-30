@@ -22,7 +22,7 @@ class PrivilegedService : IPrivilegedService.Stub() {
     }
 
     override fun destroy() {
-        exitProcess(0);
+        exitProcess(0)
     }
 
     private fun getBinder(service: String): IBinder {
@@ -128,10 +128,6 @@ class PrivilegedService : IPrivilegedService.Stub() {
      */
 
     private var DYNAMIC_SYSTEM: IDynamicSystemService? = null
-
-    fun get(): IDynamicSystemService {
-        return DYNAMIC_SYSTEM!!
-    }
 
     private fun requiresDynamicSystem() {
         if (DYNAMIC_SYSTEM == null)

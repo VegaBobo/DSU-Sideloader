@@ -38,14 +38,7 @@ class LogcatViewModel @Inject constructor(
         }
     }
 
-    fun onClickConfirmBack(navigateUp: Boolean) {
-        _uiState.update {
-            it.copy(navigateUp = navigateUp)
-        }
-    }
-
     fun onClickSaveLogSuccess(uriToSaveLogs: Uri) {
-        if (uriToSaveLogs == Uri.EMPTY) return
         storageManager.writeStringToUri(session.logger!!.logs, uriToSaveLogs)
     }
 

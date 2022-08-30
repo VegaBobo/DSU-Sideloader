@@ -5,16 +5,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.components.*
+import vegabobo.dsusideloader.ui.cards.ContentCopyableCard
+import vegabobo.dsusideloader.ui.components.ApplicationScreen
+import vegabobo.dsusideloader.ui.components.Dialog
+import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
@@ -26,24 +27,18 @@ fun AdbScreen(
     val uiState by adbViewModel.uiState.collectAsStateWithLifecycle()
     val scriptPath = adbViewModel.obtainScriptPath()
 
-    if (uiState.isShowingExitDialog) {
+    val startInstallationCommand = "sh $scriptPath"
+    val startInstallationCommandAdb = "adb shell $startInstallationCommand"
+
+    if (uiState.isShowingExitDialog)
         Dialog(
             title = stringResource(id = R.string.installation),
             text = stringResource(id = R.string.return_to_home),
             confirmText = stringResource(id = R.string.yes),
             cancelText = stringResource(id = R.string.no),
-            onClickConfirm = { adbViewModel.onClickConfirmClose() },
+            onClickConfirm = { navController.navigateUp() },
             onClickCancel = { adbViewModel.onClickCancelDialog() }
         )
-    }
-
-    LaunchedEffect(key1 = Unit) {
-        adbViewModel.navigateBack.collectLatest {
-            if (adbViewModel.navigateBack.value) {
-                navController.navigateUp()
-            }
-        }
-    }
 
     ApplicationScreen(
         modifier = Modifier.padding(start = 18.dp, end = 18.dp),
@@ -59,28 +54,13 @@ fun AdbScreen(
         },
         content = {
             Text(text = stringResource(id = R.string.adb_howto_text))
-            SimpleCard(
-                text = "sh $scriptPath",
-                content = {
-                    CopyTextButton(
-                        isCopied = uiState.buttonCopyText1,
-                        onClickCopy = { adbViewModel.onClickCopyCommand(TargetButton.BTN_COPY_1) }
-                    )
-                }
-            )
+            ContentCopyableCard(text = startInstallationCommand)
             Text(text = stringResource(id = R.string.adb_howto_directly))
-            SimpleCard(
-                text = "adb shell sh $scriptPath",
-                content = {
-                    CopyTextButton(
-                        isCopied = uiState.buttonCopyText2,
-                        onClickCopy = { adbViewModel.onClickCopyCommand(TargetButton.BTN_COPY_2) }
-                    )
-                }
-            )
+            ContentCopyableCard(text = startInstallationCommandAdb)
             Text(text = stringResource(id = R.string.adb_howto_done))
         }
     )
+
     BackHandler {
         if (!uiState.isShowingExitDialog)
             adbViewModel.onBackPressed()

@@ -33,10 +33,6 @@ class OperationModeUtils {
             return OperationMode.UNROOTED
         }
 
-        fun getOperationMode(context: Context): OperationMode {
-            return getOperationMode(context, false)
-        }
-
         fun getOperationModeAsString(operationMode: OperationMode): String {
             return when (operationMode) {
                 OperationMode.SYSTEM -> "System"
@@ -44,11 +40,6 @@ class OperationModeUtils {
                 OperationMode.UNROOTED -> "ADB"
                 OperationMode.SHIZUKU -> "Shizuku"
             }
-        }
-
-        fun isReadLogsPermissionGranted(context: Context): Boolean {
-            val readLogsPerm = "android.permission.READ_LOGS"
-            return context.checkCallingOrSelfPermission(readLogsPerm) == PackageManager.PERMISSION_GRANTED
         }
 
         fun isDsuPermissionGranted(context: Context): Boolean {

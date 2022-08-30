@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.ui.cards.content
+package vegabobo.dsusideloader.ui.cards.installation.content
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
@@ -6,12 +6,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import vegabobo.dsusideloader.ui.components.ActionButton
+import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
+import vegabobo.dsusideloader.ui.components.buttons.SecondaryButton
 
 @Composable
 fun ProgressableCardContent(
@@ -26,40 +26,30 @@ fun ProgressableCardContent(
 ) {
     Text(text = text)
     AnimatedVisibility(visible = showProgressBar) {
+        val progressBarModifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp, bottom = 5.dp)
         if (isIndeterminate)
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp, bottom = 5.dp),
-            )
+            LinearProgressIndicator(modifier = progressBarModifier)
         else
             LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp, bottom = 5.dp),
+                modifier = progressBarModifier,
                 progress = progress
             )
     }
-
     Spacer(modifier = Modifier.padding(top = 4.dp))
-
     Row {
         Spacer(modifier = Modifier.weight(1F))
-
         if (onClickSecondButton != null)
-            ActionButton(
+            SecondaryButton(
                 text = textSecondButton,
-                onClick = onClickSecondButton,
-                colorText = MaterialTheme.colorScheme.primary,
-                colorButton = MaterialTheme.colorScheme.surfaceVariant
+                onClick = onClickSecondButton
             )
-
         if (onClickFirstButton != null && onClickSecondButton != null) {
             Spacer(modifier = Modifier.padding(end = 6.dp))
         }
-
         if (onClickFirstButton != null)
-            ActionButton(
+            PrimaryButton(
                 text = textFirstButton,
                 onClick = onClickFirstButton,
             )

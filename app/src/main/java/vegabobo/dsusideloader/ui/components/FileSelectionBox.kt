@@ -18,7 +18,7 @@ fun FileSelectionBox(
     isError: Boolean,
     textFieldTitle: String,
     textFieldValue: String,
-    textFieldInteraction: MutableInteractionSource? = MutableInteractionSource(),
+    textFieldInteraction: MutableInteractionSource = MutableInteractionSource(),
     onValueChange: (String) -> Unit = {}
 ) {
     OutlinedTextField(
@@ -32,7 +32,7 @@ fun FileSelectionBox(
         singleLine = true,
         readOnly = isReadOnly,
         keyboardOptions = if (isNumberOnly) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions(),
-        interactionSource = textFieldInteraction!!,
+        interactionSource = textFieldInteraction,
         label = {
             Text(text = textFieldTitle)
         })

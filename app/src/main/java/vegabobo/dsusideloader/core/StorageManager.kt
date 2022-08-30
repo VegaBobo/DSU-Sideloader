@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.apache.commons.compress.utils.IOUtils
-import vegabobo.dsusideloader.preferences.CorePreferences
+import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.util.DataStoreUtils
 import vegabobo.dsusideloader.util.FilenameUtils
 import java.io.InputStream
@@ -32,7 +32,7 @@ class StorageManager(
     init {
         val coroutineScope = CoroutineScope(Dispatchers.IO)
         coroutineScope.launch {
-            DataStoreUtils.readStringPref(preferences, CorePreferences.SAF_PATH, "") {
+            DataStoreUtils.readStringPref(preferences, AppPrefs.SAF_PATH, "") {
                 arePermissionsGrantedToFolder(it)
             }
         }

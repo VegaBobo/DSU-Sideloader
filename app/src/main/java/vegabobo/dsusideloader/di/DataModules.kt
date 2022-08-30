@@ -16,8 +16,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import vegabobo.dsusideloader.model.Session
-import vegabobo.dsusideloader.preferences.CorePreferences
 import vegabobo.dsusideloader.core.StorageManager
+import vegabobo.dsusideloader.preferences.AppPrefs
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -32,7 +32,7 @@ object DataModules {
                 produceNewData = { emptyPreferences() }
             ),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-            produceFile = { appContext.preferencesDataStoreFile(CorePreferences.USER_PREFERENCES) }
+            produceFile = { appContext.preferencesDataStoreFile(AppPrefs.USER_PREFERENCES) }
         )
     }
 

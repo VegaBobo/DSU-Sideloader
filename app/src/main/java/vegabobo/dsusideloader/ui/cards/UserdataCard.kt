@@ -1,6 +1,6 @@
 package vegabobo.dsusideloader.ui.cards
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -31,14 +31,18 @@ fun UserdataCard(
         isToggleChecked = uiState.isSelected,
         onCheckedChange = onCheckedChange
     ) {
-        AnimatedVisibility(visible = uiState.isSelected) {
+        AnimatedVisibility(
+            visible = uiState.isSelected,
+            enter = expandVertically(),
+            exit = shrinkVertically()
+        ) {
             Column {
                 FileSelectionBox(
                     modifier = Modifier.padding(bottom = 4.dp),
                     isEnabled = !isEnabled,
                     isError = uiState.isError,
                     isNumberOnly = true,
-                    textFieldValue = uiState.content,
+                    textFieldValue = uiState.getAllowedValue(),
                     textFieldTitle = stringResource(id = R.string.userdata_size_n),
                     onValueChange = onValueChange
                 )

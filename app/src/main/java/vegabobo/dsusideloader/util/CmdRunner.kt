@@ -32,7 +32,7 @@ object CmdRunner {
         }
     }
 
-    fun runCommand(cmd: String, onReceive: (String) -> Unit) {
+    private fun runCommand(cmd: String, onReceive: (String) -> Unit) {
         CoroutineScope(Job()).launch {
             withContext(Dispatchers.IO) {
                 process = ProcessBuilder("/bin/sh", "-c", cmd).start()
@@ -48,7 +48,7 @@ object CmdRunner {
         }
     }
 
-    fun runCommand(cmd: String): String {
+    private fun runCommand(cmd: String): String {
         var output = ""
         runCommand(cmd) {
             output += "$it\n"

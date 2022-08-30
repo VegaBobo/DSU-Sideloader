@@ -3,7 +3,6 @@ package vegabobo.dsusideloader.ui.screen.home
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewModelScope
@@ -25,8 +24,7 @@ import vegabobo.dsusideloader.installer.privileged.LogcatDiagnostic
 import vegabobo.dsusideloader.installer.root.RootedInstallationHandler
 import vegabobo.dsusideloader.model.DSUInstallation
 import vegabobo.dsusideloader.model.Session
-import vegabobo.dsusideloader.preferences.CorePreferences
-import vegabobo.dsusideloader.preferences.UserPreferences
+import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.preparation.Preparation
 import vegabobo.dsusideloader.service.PrivilegedProvider
@@ -40,7 +38,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     val application: Application,
     override val dataStore: DataStore<Preferences>,
-    val storageAccess: StorageManager,
+    private val storageManager: StorageManager,
     var session: Session,
 ) : BaseViewModel(dataStore) {
 
@@ -51,6 +49,30 @@ class HomeViewModel @Inject constructor(
     var checkDynamicPartitions = true
     var checkUnavaiableStorage = true
     var installationJob: Job = Job()
+
+    //
+    // Helper methods used for controlling UI State
+    //
+
+    private fun updateAdditionalCardState(additionalCard: AdditionalCard) =
+        _uiState.update { it.copy(additionalCard = additionalCard) }
+
+    private fun updateUserdataCard(update: (UserDataCardState) -> UserDataCardState) =
+        _uiState.update { it.copy(userDataCard = update(it.userDataCard.copy())) }
+
+    private fun updateInstallationCard(update: (InstallationCardState) -> InstallationCardState) =
+        _uiState.update { it.copy(installationCard = update(it.installationCard.copy())) }
+
+    private fun updateImageSizeCard(update: (ImageSizeCardState) -> ImageSizeCardState) =
+        _uiState.update { it.copy(imageSizeCard = update(it.imageSizeCard.copy())) }
+
+    private fun updateDialogState(dialogDisplay: DialogDisplay) =
+        _uiState.update { it.copy(dialogDisplay = dialogDisplay) }
+
+    private fun viewAction(action: HomeViewAction) = homeViewAction.update { action }
+
+    fun dismissDialog() = updateDialogState(DialogDisplay.NONE)
+    fun resetViewAction() = viewAction(HomeViewAction.NONE)
 
     //
     // Home startup and checks
@@ -69,8 +91,8 @@ class HomeViewModel @Inject constructor(
             return
         }
 
-        readStringPref(CorePreferences.SAF_PATH) { result ->
-            if (!storageAccess.arePermissionsGrantedToFolder(result))
+        readStringPref(AppPrefs.SAF_PATH) { result ->
+            if (!storageManager.arePermissionsGrantedToFolder(result))
                 updateAdditionalCardState(AdditionalCard.SETUP_STORAGE)
             else
                 _uiState.update { it.copy(canInstall = true) }
@@ -92,7 +114,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun setupUserPreferences() {
-        readBoolPref(UserPreferences.KEEP_SCREEN_ON) { result ->
+        readBoolPref(AppPrefs.KEEP_SCREEN_ON) { result ->
             _uiState.update { it.copy(shouldKeepScreenOn = result) }
         }
     }
@@ -113,32 +135,6 @@ class HomeViewModel @Inject constructor(
     }
 
     //
-    // Helper methods used for controlling UI State
-    //
-
-    private fun updateAdditionalCardState(additionalCard: AdditionalCard) =
-        _uiState.update { it.copy(additionalCard = additionalCard) }
-
-    private fun updateUserdataCard(update: (UserDataCardState) -> UserDataCardState) =
-        _uiState.update { it.copy(userDataCard = update(it.userDataCard.copy())) }
-
-    private fun updateInstallationCard(update: (InstallationCardState) -> InstallationCardState) =
-        _uiState.update { it.copy(installationCard = update(it.installationCard.copy())) }
-
-    private fun updateImageSizeCard(update: (ImageSizeCardState) -> ImageSizeCardState) =
-        _uiState.update { it.copy(imageSizeCard = update(it.imageSizeCard.copy())) }
-
-    private fun updateDialogState(dialogDisplay: DialogDisplay) =
-        _uiState.update { it.copy(dialogDisplay = dialogDisplay) }
-
-    private fun viewAction(action: HomeViewAction) {
-        homeViewAction.value = action
-    }
-
-    fun dismissDialog() = updateDialogState(DialogDisplay.NONE)
-    fun resetViewAction() = viewAction(HomeViewAction.NONE)
-
-    //
     // Installation
     //
 
@@ -147,7 +143,6 @@ class HomeViewModel @Inject constructor(
     fun onClickCancel() {
         if (uiState.value.isInstalling()) {
             updateDialogState(DialogDisplay.CANCEL_INSTALLATION)
-            return
         }
     }
 
@@ -161,22 +156,22 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(dialogDisplay = DialogDisplay.NONE) }
         installationJob = Job()
         viewModelScope.launch(Dispatchers.IO + installationJob) {
-            session.preferences.isUnmountSdCard = readBoolPrefBlocking(UserPreferences.UMOUNT_SD)
+            session.preferences.isUnmountSdCard = readBoolPrefBlocking(AppPrefs.UMOUNT_SD)
             session.preferences.useBuiltinInstaller =
-                readBoolPrefBlocking(UserPreferences.USE_BUILTIN_INSTALLER)
+                readBoolPrefBlocking(AppPrefs.USE_BUILTIN_INSTALLER)
             Preparation(
-                storageManager = storageAccess,
+                storageManager = storageManager,
                 session = session,
                 job = installationJob,
                 onStepUpdate = this@HomeViewModel::onStepUpdate,
                 onPreparationProgressUpdate = this@HomeViewModel::onPreparationProgressUpdate,
                 onCanceled = this@HomeViewModel::onClickCancelInstallationButton,
-                onPreparationFinished = this@HomeViewModel::onPrepared
+                onPreparationFinished = this@HomeViewModel::onPreparationFinished
             ).invoke()
         }
     }
 
-    private fun onPrepared(dsuInstallation: DSUInstallation) {
+    private fun onPreparationFinished(dsuInstallation: DSUInstallation) {
         session.dsuInstallation = dsuInstallation
         startInstallation()
     }
@@ -221,7 +216,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun startRootlessInstallation() {
-        AdbInstallationHandler(storageAccess, session).generate {
+        AdbInstallationHandler(storageManager, session).generate {
             session.installationScript = it
             resetInstallationCard()
             viewAction(HomeViewAction.NAVIGATE_TO_ADB_SCREEN)
@@ -309,10 +304,6 @@ class HomeViewModel @Inject constructor(
             startInstallation()
             startLogging()
         }
-    }
-
-    fun onClickViewLogs() {
-        viewAction(HomeViewAction.NAVIGATE_TO_LOGCAT_SCREEN)
     }
 
     fun showDiscardDialog() {
@@ -404,45 +395,29 @@ class HomeViewModel @Inject constructor(
     }
 
     //
-    //  About DSU Card
-    //
-
-    private fun launchUrl(url: String) {
-        val i = Intent(Intent.ACTION_VIEW)
-        i.flags += Intent.FLAG_ACTIVITY_NEW_TASK
-        i.data = Uri.parse(url)
-        application.startActivity(i)
-    }
-
-    fun onClickViewDocs() =
-        launchUrl("https://source.android.com/devices/tech/ota/dynamic-system-updates")
-
-    fun onClickLearnMore() =
-        launchUrl("https://developer.android.com/topic/dsu")
-
-    //
     // File selection
     //
 
     fun takeUriPermission(uri: Uri) {
-        if (uri == Uri.EMPTY)
-            return
         application.contentResolver.takePersistableUriPermission(
             uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         )
         viewModelScope.launch {
-            if (storageAccess.arePermissionsGrantedToFolder(uri.toString()))
-                updateStringPref(CorePreferences.SAF_PATH, uri.toString()) { initialChecks() }
+            if (storageManager.arePermissionsGrantedToFolder(uri.toString()))
+                updateStringPref(AppPrefs.SAF_PATH, uri.toString()) { initialChecks() }
         }
     }
 
     fun onFileSelectionResult(uri: Uri) {
-        if (uri == Uri.EMPTY)
-            return
-
         val filename = FilenameUtils.queryName(application.contentResolver, uri)
-        if (!FilenameUtils.isFileSupported(filename))
-            return onSelectFileError()
+        if (!FilenameUtils.isFileSupported(filename)) {
+            viewModelScope.launch {
+                updateInstallationCard { it.copy(isError = true, isTextFieldEnabled = false) }
+                delay(2000)
+                updateInstallationCard { it.copy(isError = false, isTextFieldEnabled = true) }
+            }
+            return
+        }
 
         session.userSelection.selectedFileName = filename
         session.userSelection.selectedFileUri = uri
@@ -452,14 +427,6 @@ class HomeViewModel @Inject constructor(
                 isTextFieldEnabled = false,
                 isInstallable = true
             )
-        }
-    }
-
-    private fun onSelectFileError() {
-        viewModelScope.launch {
-            updateInstallationCard { it.copy(isError = true, isTextFieldEnabled = false) }
-            delay(2000)
-            updateInstallationCard { it.copy(isError = false, isTextFieldEnabled = true) }
         }
     }
 

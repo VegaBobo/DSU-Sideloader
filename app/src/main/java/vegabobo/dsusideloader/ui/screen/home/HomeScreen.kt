@@ -1,6 +1,8 @@
 package vegabobo.dsusideloader.ui.screen.home
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
@@ -8,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,6 +19,10 @@ import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.ActivityAction
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.*
+import vegabobo.dsusideloader.ui.cards.installation.InstallationCard
+import vegabobo.dsusideloader.ui.cards.warnings.SetupStorage
+import vegabobo.dsusideloader.ui.cards.warnings.StorageWarningCard
+import vegabobo.dsusideloader.ui.cards.warnings.UnsupportedCard
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.dialogs.CancelDialog
@@ -26,6 +33,11 @@ import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.ui.util.KeepScreenOn
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
+object HomeLinks {
+    const val DSU_LEARN_MORE = "https://developer.android.com/topic/dsu"
+    const val DSU_DOCS = "https://source.android.com/devices/tech/ota/dynamic-system-updates"
+}
+
 @Composable
 fun Home(
     navController: NavController,
@@ -34,6 +46,7 @@ fun Home(
 ) {
 
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val uriHandler = LocalUriHandler.current
 
     if (uiState.shouldKeepScreenOn)
         KeepScreenOn()
@@ -43,8 +56,6 @@ fun Home(
             when (it) {
                 HomeViewAction.NAVIGATE_TO_ADB_SCREEN ->
                     navController.navigate(Destinations.ADBInstallation)
-                HomeViewAction.NAVIGATE_TO_LOGCAT_SCREEN ->
-                    navController.navigate(Destinations.Logcat)
                 else -> {}
             }
             homeViewModel.resetViewAction()
@@ -57,6 +68,7 @@ fun Home(
                 filename = homeViewModel.obtainSelectedFilename(),
                 userdata = homeViewModel.session.userSelection.getUserDataSizeAsGB(),
                 fileSize = homeViewModel.session.userSelection.userSelectedImageSize,
+                isCustomImageSize = homeViewModel.session.userSelection.isCustomImageSize(),
                 onClickConfirm = { homeViewModel.onConfirmInstallationDialog() },
                 onClickCancel = { homeViewModel.dismissDialog() }
             )
@@ -90,14 +102,16 @@ fun Home(
             )
         },
         content = {
-            when (uiState.additionalCard) {
-                AdditionalCard.NO_DYNAMIC_PARTITIONS ->
-                    UnsupportedCard { activityRequest(ActivityAction.FINISH_APP) }
-                AdditionalCard.SETUP_STORAGE ->
-                    SetupStorage { homeViewModel.takeUriPermission(it) }
-                AdditionalCard.UNAVAIABLE_STORAGE ->
-                    StorageWarningCard { homeViewModel.overrideUnavaiableStorage() }
-                else -> {}
+            Box(modifier = Modifier.animateContentSize()) {
+                when (uiState.additionalCard) {
+                    AdditionalCard.NO_DYNAMIC_PARTITIONS ->
+                        UnsupportedCard { activityRequest(ActivityAction.FINISH_APP) }
+                    AdditionalCard.SETUP_STORAGE ->
+                        SetupStorage { homeViewModel.takeUriPermission(it) }
+                    AdditionalCard.UNAVAIABLE_STORAGE ->
+                        StorageWarningCard { homeViewModel.overrideUnavaiableStorage() }
+                    else -> {}
+                }
             }
 
             if (uiState.canInstall) {
@@ -113,7 +127,7 @@ fun Home(
                     onClickDiscardInstalledGsiAndInstall = { homeViewModel.onClickDiscardGsiAndStartInstallation() },
                     onClickDiscardDsu = { homeViewModel.showDiscardDialog() },
                     onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
-                    onClickViewLogs = { homeViewModel.onClickViewLogs() }
+                    onClickViewLogs = { navController.navigate(Destinations.Logcat) }
                 )
                 UserdataCard(
                     isEnabled = uiState.isInstalling(),
@@ -128,8 +142,8 @@ fun Home(
                     onValueChange = { homeViewModel.updateImageSize(it) }
                 )
                 DsuInfoCard(
-                    onClickViewDocs = { homeViewModel.onClickViewDocs() },
-                    onClickLearnMore = { homeViewModel.onClickLearnMore() },
+                    onClickViewDocs = { uriHandler.openUri(HomeLinks.DSU_DOCS) },
+                    onClickLearnMore = { uriHandler.openUri(HomeLinks.DSU_LEARN_MORE) },
                 )
             }
         })

@@ -1,20 +1,24 @@
 package vegabobo.dsusideloader.ui.screen.about
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.cards.UpdaterCard
+import vegabobo.dsusideloader.ui.cards.updater.UpdaterCard
 import vegabobo.dsusideloader.ui.components.*
 import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
+
+object AboutLinks {
+    const val CONTRIBUTORS_URL = "https://github.com/VegaBobo/DSU-Sideloader/graphs/contributors"
+    const val REPOSITORY_URL = "https://github.com/VegaBobo/DSU-Sideloader"
+}
 
 @Composable
 fun AboutScreen(
@@ -23,17 +27,7 @@ fun AboutScreen(
 ) {
 
     val uiState by aboutViewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        aboutViewModel.aboutViewAction.collectLatest {
-            when (it) {
-                AboutViewAction.NAVIGATE_TO_LIBRARIES ->
-                    navController.navigate(Destinations.Libraries)
-                else -> {}
-            }
-            aboutViewModel.resetViewAction()
-        }
-    }
+    val uriHandler = LocalUriHandler.current
 
     ApplicationScreen(
         modifier = Modifier.padding(10.dp),
@@ -50,7 +44,7 @@ fun AboutScreen(
             uiState = uiState.updaterCardState,
             onClickCheckUpdates = { aboutViewModel.onClickCheckUpdates() },
             onClickDownloadUpdate = { aboutViewModel.onClickDownloadUpdate() },
-            onClickViewChangelog = { aboutViewModel.onClickViewChangelog() }
+            onClickViewChangelog = { uriHandler.openUri(aboutViewModel.response.changelogUrl) }
         )
         Title(
             stringResource(id = R.string.application),
@@ -62,12 +56,12 @@ fun AboutScreen(
             PreferenceItem(
                 title = stringResource(id = R.string.github_repo),
                 description = stringResource(id = R.string.github_sauce),
-                onClick = { aboutViewModel.onClickViewRepository() }
+                onClick = { uriHandler.openUri(AboutLinks.REPOSITORY_URL) }
             )
             PreferenceItem(
                 title = stringResource(id = R.string.libraries),
                 description = stringResource(id = R.string.libraries_used),
-                onClick = { aboutViewModel.onClickViewLibraries() }
+                onClick = { navController.navigate(Destinations.Libraries) }
             )
         }
         Title(
@@ -95,7 +89,7 @@ fun AboutScreen(
             PreferenceItem(
                 title = stringResource(id = R.string.contributors),
                 description = stringResource(id = R.string.contribuitors_desc),
-                onClick = { aboutViewModel.onClickViewContribuitors() }
+                onClick = { uriHandler.openUri(AboutLinks.CONTRIBUTORS_URL) }
             )
         }
     }

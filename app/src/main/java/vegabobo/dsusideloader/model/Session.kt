@@ -28,7 +28,7 @@ class UserSelection(
 
     fun setImageSize(size: String) {
         if (size.isNotEmpty())
-            userSelectedImageSize = (FilenameUtils.getDigits(size).toLong()) * 1024L * 1024L * 1024L
+            userSelectedImageSize = FilenameUtils.getDigits(size).toLong()
     }
 
     fun isCustomImageSize(): Boolean {

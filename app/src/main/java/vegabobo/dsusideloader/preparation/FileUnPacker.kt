@@ -13,7 +13,7 @@ import java.io.OutputStream
 class FileUnPacker(
     private val storageManager: StorageManager,
     private val inputFile: Uri,
-    private val outputFile: String,
+    outputFile: String,
     private val installationJob: Job,
     private val onProgressChange: (Float) -> Unit
 ) {

@@ -16,7 +16,5 @@ fun LauncherAcResult(
     return rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK)
             result(it.data!!.data!!)
-        else
-            result(Uri.EMPTY)
     }
 }

@@ -3,7 +3,6 @@ package vegabobo.dsusideloader.ui.dialogs
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.model.DSUConstants
 import vegabobo.dsusideloader.ui.components.Dialog
 
 @Composable
@@ -12,17 +11,10 @@ fun ConfirmInstallationDialog(
     filename: String,
     userdata: String,
     fileSize: Long,
+    isCustomImageSize: Boolean,
     onClickConfirm: () -> Unit,
     onClickCancel: () -> Unit,
 ) {
-
-    val length = if(fileSize == DSUConstants.DEFAULT_IMAGE_SIZE) {
-        stringResource(id = R.string.auto)
-    }else{
-        "${fileSize}b"
-    }
-
-
     Dialog(
         title = stringResource(id = R.string.info),
         text =
@@ -31,7 +23,7 @@ fun ConfirmInstallationDialog(
                 id = R.string.installation_details,
                 filename,
                 userdata,
-                length
+                if (isCustomImageSize) "${fileSize}b" else stringResource(id = R.string.auto)
             )
         },
         confirmText = stringResource(id = R.string.proceed),

@@ -23,7 +23,6 @@ fun PreferenceItem(
     showToggle: Boolean = false,
     isEnabled: Boolean = true
 ) {
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier

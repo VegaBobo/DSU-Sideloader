@@ -1,6 +1,7 @@
-package vegabobo.dsusideloader.ui.cards
+package vegabobo.dsusideloader.ui.cards.updater
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -19,9 +20,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import vegabobo.dsusideloader.BuildConfig
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.components.ActionButton
 import vegabobo.dsusideloader.ui.components.PreferenceItem
 import vegabobo.dsusideloader.ui.components.SimpleCard
+import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
+import vegabobo.dsusideloader.ui.components.buttons.SecondaryButton
 import vegabobo.dsusideloader.ui.screen.about.UpdateStatus
 import vegabobo.dsusideloader.ui.screen.about.UpdaterCardState
 
@@ -32,6 +34,16 @@ fun UpdaterCard(
     onClickDownloadUpdate: () -> Unit,
     onClickViewChangelog: () -> Unit,
 ) {
+
+    fun isDownloading(): Boolean =
+        uiState.isDownloading || uiState.updateStatus == UpdateStatus.CHECKING_FOR_UPDATES
+
+    fun isCheckingForUpdates(): Boolean =
+        uiState.updateStatus == UpdateStatus.CHECKING_FOR_UPDATES
+
+    fun isUpdateFound(): Boolean =
+        uiState.updateStatus == UpdateStatus.UPDATE_FOUND
+
     SimpleCard(
         addPadding = false
     ) {
@@ -47,28 +59,22 @@ fun UpdaterCard(
                     .padding(top = 16.dp),
                 color = MaterialTheme.colorScheme.inverseOnSurface,
             ) {
-                Box(modifier = Modifier.size(width = 300.dp, height = 100.dp)) {
-                    if (uiState.updateStatus == UpdateStatus.CHECKING_FOR_UPDATES)
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(100.dp)
-                                .align(Alignment.Center)
-                        )
+                Box {
+                    val progressBarModifier = Modifier
+                        .size(100.dp)
+                        .align(Alignment.Center)
+                    if (isCheckingForUpdates())
+                        CircularProgressIndicator(modifier = progressBarModifier)
                     if (uiState.isDownloading)
                         CircularProgressIndicator(
                             progress = uiState.progressBar,
-                            modifier = Modifier
-                                .size(100.dp)
-                                .align(Alignment.Center)
+                            modifier = progressBarModifier
                         )
                     Image(
                         modifier = Modifier
-                            .size(
-                                if (uiState.isDownloading || uiState.updateStatus == UpdateStatus.CHECKING_FOR_UPDATES)
-                                    76.dp
-                                else 100.dp
-                            )
+                            .size(if (isDownloading()) 76.dp else 100.dp)
                             .clip(CircleShape)
+                            .animateContentSize()
                             .align(Alignment.Center),
                         painter = painterResource(id = R.drawable.app_icon_mini),
                         contentDescription = "App icon",
@@ -95,30 +101,28 @@ fun UpdaterCard(
             title = stringResource(id = R.string.check_updates),
             description =
             when (uiState.updateStatus) {
-                UpdateStatus.NO_UPDATE_FOUND -> stringResource(id = R.string.running_latest)
-                UpdateStatus.UPDATE_FOUND -> stringResource(
-                    R.string.update_found,
-                    uiState.updateVersion
-                )
-                else -> stringResource(id = R.string.tap_to_check)
+                UpdateStatus.NO_UPDATE_FOUND ->
+                    stringResource(id = R.string.running_latest)
+                UpdateStatus.UPDATE_FOUND ->
+                    stringResource(R.string.update_found, uiState.updateVersion)
+                else ->
+                    stringResource(id = R.string.tap_to_check)
             },
             onClick = { onClickCheckUpdates() }
         )
-        AnimatedVisibility(visible = uiState.updateStatus == UpdateStatus.UPDATE_FOUND) {
+        AnimatedVisibility(visible = isUpdateFound()) {
             Row(
                 modifier = Modifier
                     .padding(all = 12.dp)
                     .padding(end = 4.dp)
             ) {
                 Spacer(modifier = Modifier.weight(1F))
-                ActionButton(
+                SecondaryButton(
                     text = stringResource(id = R.string.changelog),
                     onClick = { onClickViewChangelog() },
-                    colorText = MaterialTheme.colorScheme.primary,
-                    colorButton = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier.padding(end = 8.dp)
                 )
-                ActionButton(
+                PrimaryButton(
                     text = stringResource(id = R.string.download),
                     onClick = { onClickDownloadUpdate() },
                 )

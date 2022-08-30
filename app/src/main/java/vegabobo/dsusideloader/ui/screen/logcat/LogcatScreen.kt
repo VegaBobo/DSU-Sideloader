@@ -1,7 +1,6 @@
 package vegabobo.dsusideloader.ui.screen.logcat
 
 import android.content.Intent
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -16,7 +15,6 @@ import vegabobo.dsusideloader.ui.cards.LogcatCard
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.fab.SaveLogsFab
-import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.ui.util.LauncherAcResult
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
@@ -27,15 +25,6 @@ fun LogcatScreen(
 ) {
 
     val uiState by diagInstViewModel.uiState.collectAsStateWithLifecycle()
-
-    if (uiState.navigateUp) {
-        diagInstViewModel.onClickConfirmBack(false)
-        navController.navigateUp()
-    }
-
-    BackHandler {
-        navController.navigateUp()
-    }
 
     val saveLogsResult = LauncherAcResult {
         diagInstViewModel.onClickSaveLogSuccess(it)
@@ -51,8 +40,7 @@ fun LogcatScreen(
                 barTitle = stringResource(id = R.string.installation_logs),
                 scrollBehavior = it,
                 showBackButton = true,
-                onClickIcon = { navController.navigate(Destinations.Preferences) },
-                onClickBackButton = { diagInstViewModel.onClickConfirmBack(true) }
+                onClickBackButton = { navController.navigateUp() }
             )
         },
         content = {
