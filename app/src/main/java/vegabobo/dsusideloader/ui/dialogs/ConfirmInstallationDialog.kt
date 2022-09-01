@@ -1,5 +1,7 @@
 package vegabobo.dsusideloader.ui.dialogs
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.InstallMobile
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import vegabobo.dsusideloader.R
@@ -17,6 +19,7 @@ fun ConfirmInstallationDialog(
 ) {
     Dialog(
         title = stringResource(id = R.string.info),
+        icon = Icons.Outlined.InstallMobile,
         text =
         dialogText.ifEmpty {
             stringResource(

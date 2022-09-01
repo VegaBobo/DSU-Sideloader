@@ -1,5 +1,7 @@
 package vegabobo.dsusideloader.ui.screen.settings
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,6 +39,7 @@ fun Settings(
         if (uiState.isShowingBuiltinInstallerDialog)
             Dialog(
                 title = stringResource(id = R.string.use_builin_installer),
+                icon = Icons.Outlined.NewReleases,
                 text = stringResource(id = R.string.testing_feature),
                 confirmText = stringResource(id = R.string.got_it),
                 cancelText = stringResource(id = R.string.cancel),

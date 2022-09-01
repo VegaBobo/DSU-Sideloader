@@ -3,6 +3,8 @@ package vegabobo.dsusideloader.ui.screen.adb
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +35,7 @@ fun AdbScreen(
     if (uiState.isShowingExitDialog)
         Dialog(
             title = stringResource(id = R.string.installation),
+            icon = Icons.Outlined.ExitToApp,
             text = stringResource(id = R.string.return_to_home),
             confirmText = stringResource(id = R.string.yes),
             cancelText = stringResource(id = R.string.no),

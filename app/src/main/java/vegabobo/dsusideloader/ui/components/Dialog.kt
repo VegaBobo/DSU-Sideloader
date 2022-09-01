@@ -1,21 +1,18 @@
 package vegabobo.dsusideloader.ui.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
-import vegabobo.dsusideloader.ui.components.buttons.SecondaryButton
 
 @Composable
 fun Dialog(
     modifier: Modifier = Modifier,
+    icon: ImageVector,
     title: String = "",
     text: String = "",
     confirmText: String = "",
@@ -26,22 +23,29 @@ fun Dialog(
 ) {
     AlertDialog(
         modifier = modifier,
+        icon = { Icon(icon, "icon") },
         onDismissRequest = onClickCancel,
         confirmButton = {
             if (confirmText.isNotEmpty())
-                PrimaryButton(text = confirmText, onClick = onClickConfirm)
+                TextButton(onClick = onClickConfirm) {
+                    Text(text = confirmText)
+                }
         },
         dismissButton = {
             if (cancelText.isNotEmpty())
-                SecondaryButton(text = cancelText, onClick = onClickCancel)
+                TextButton(onClick = onClickCancel) {
+                    Text(text = cancelText)
+                }
         },
         text = {
             Column {
                 if (title.isNotEmpty())
                     Text(
+                        modifier = Modifier.fillMaxWidth(),
                         text = title,
                         fontWeight = FontWeight.Medium,
                         style = MaterialTheme.typography.headlineSmall,
+                        textAlign = TextAlign.Center,
                     )
                 Spacer(modifier = Modifier.padding(8.dp))
                 if (text.isNotEmpty())
