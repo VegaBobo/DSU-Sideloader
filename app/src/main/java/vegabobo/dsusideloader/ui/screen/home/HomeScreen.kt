@@ -20,10 +20,7 @@ import vegabobo.dsusideloader.ActivityAction
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.*
 import vegabobo.dsusideloader.ui.cards.installation.InstallationCard
-import vegabobo.dsusideloader.ui.cards.warnings.RequiresLogPermissionCard
-import vegabobo.dsusideloader.ui.cards.warnings.SetupStorage
-import vegabobo.dsusideloader.ui.cards.warnings.StorageWarningCard
-import vegabobo.dsusideloader.ui.cards.warnings.UnsupportedCard
+import vegabobo.dsusideloader.ui.cards.warnings.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.dialogs.CancelDialog
@@ -116,6 +113,8 @@ fun Home(
                             onClickGrant =  { homeViewModel.grantReadLogs() },
                             onClickRefuse = { homeViewModel.refuseReadLogs() }
                         )
+                    AdditionalCard.GRANTING_READ_LOGS_PERMISSION ->
+                        GrantingPermissionCard()
                     else -> {}
                 }
             }

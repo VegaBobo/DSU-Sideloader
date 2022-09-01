@@ -176,4 +176,5 @@
     <string name="requires_log_permission">DSU Sideloader requires READ_LOGS permission (allows logcat reading)\nIt will be used to obtain installation progress and diagnose errors in DSU installation.\n\n**After granting permission, application needs to be reopened</string>
     <string name="grant">Grant</string>
     <string name="refuse">Refuse</string>
+    <string name="granting_permission">Waiting service to grant permission, please wait…</string>
 </resources>

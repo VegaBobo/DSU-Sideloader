@@ -86,7 +86,7 @@ class HomeViewModel @Inject constructor(
             return
         }
 
-        if (session.operationMode != OperationMode.UNROOTED
+        if (session.operationMode == OperationMode.SHIZUKU
             && !OperationModeUtils.isReadLogsPermissionGranted(application)
             && checkReadLogsPermission
         ) {
@@ -438,14 +438,17 @@ class HomeViewModel @Inject constructor(
     }
 
     fun grantReadLogs() {
+        updateAdditionalCardState(AdditionalCard.GRANTING_READ_LOGS_PERMISSION)
         val intent = Intent()
         intent.setClassName(
             "vegabobo.dsusideloader",
             "vegabobo.dsusideloader.MainActivity"
         )
         intent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
-        PrivilegedProvider.getService().grantPermission("android.permission.READ_LOGS")
-        PrivilegedProvider.getService().startActivity(intent)
+        viewModelScope.launch(Dispatchers.IO) {
+            PrivilegedProvider.getService().grantPermission("android.permission.READ_LOGS")
+            PrivilegedProvider.getService().startActivity(intent)
+        }
     }
 
     fun refuseReadLogs() {
