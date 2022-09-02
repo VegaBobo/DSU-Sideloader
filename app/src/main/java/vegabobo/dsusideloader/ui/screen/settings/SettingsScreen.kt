@@ -38,9 +38,9 @@ fun Settings(
 
         if (uiState.isShowingBuiltinInstallerDialog)
             Dialog(
-                title = stringResource(id = R.string.use_builin_installer),
+                title = stringResource(id = R.string.experimental_feature_title),
                 icon = Icons.Outlined.NewReleases,
-                text = stringResource(id = R.string.testing_feature),
+                text = stringResource(id = R.string.experimental_feature_text),
                 confirmText = stringResource(id = R.string.got_it),
                 cancelText = stringResource(id = R.string.cancel),
                 onClickCancel = { settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, false) },
@@ -49,7 +49,7 @@ fun Settings(
 
         Title(title = stringResource(id = R.string.installation))
         PreferenceItem(
-            title = stringResource(id = R.string.use_builin_installer),
+            title = stringResource(id = R.string.builtin_installer),
             description =
             if (uiState.isRoot) stringResource(id = R.string.use_builin_installer_desc)
             else stringResource(R.string.requires_root),

@@ -89,14 +89,14 @@
     <string name="placeholder">placeholder</string>
     <string name="other">Other</string>
     <string name="continue_anyway">Continue anyway</string>
-    <string name="cancel_description">Progress done till now will be gone, are you sure?</string>
+    <string name="cancel_description">All progress made will be lost, are you sure?</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="ok">Ok</string>
     <string name="allowed_userdata_allocation">Maximum available for allocation: %1$sGB</string>
     <string name="view_docs">View docs</string>
     <string name="learn_more">Learn more</string>
-    <string name="custom_image_size">Custom image size</string>
+    <string name="custom_image_size">Set image size?</string>
     <string name="custom_image_size_warning">DSU Sideloader will set this parameter for you automatically, setting image size manually is strongly inadvisable.</string>
     <string name="set_anyway">Set anyway</string>
     <string name="option_strongly_inadvisable">This option is strongly inadvisable!</string>
@@ -135,6 +135,7 @@
 
     <string name="reboot_dsu">Reboot into DSU</string>
     <string name="discard_dsu">Discard DSU</string>
+    <string name="discard_dsu_question">Discard installation?</string>
 
     <string name="installing">Processing %1$s partition…</string>
     <string name="view_logs">View logs</string>
@@ -147,12 +148,13 @@
     <string name="creating_partition">Creating %1$s partition</string>
     <string name="failed_create_partition">Failed to create %1$s partition</string>
     <string name="installation_finished">Image installed successfully</string>
-    <string name="dsu_already_installed">A DSU is already installed</string>
+    <string name="dsu_already_installed">A DSU installation is already present</string>
     <string name="dsu_already_installed_warning">All data present in installed DSU will be DELETED after discarding, are you sure?</string>
-    <string name="use_builin_installer">Built-in installer</string>
+    <string name="experimental_feature_title">Experimental feature</string>
+    <string name="experimental_feature_text">This feature is under testing, and may be unstable, are you sure?</string>
+    <string name="builtin_installer">Built-in installer</string>
     <string name="use_builin_installer_desc">Faster, use internal APIs to install images directly</string>
     <string name="requires_root">Requires root</string>
-    <string name="testing_feature">This feature is under testing, and may be unstable, are you sure?</string>
     <string name="check_updates">Check updates</string>
     <string name="tap_to_check">Tap to check</string>
     <string name="download">Download</string>
@@ -177,4 +179,11 @@
     <string name="grant">Grant</string>
     <string name="refuse">Refuse</string>
     <string name="granting_permission">Waiting service to grant permission, please wait…</string>
+
+    <string name="proceed_installation_title">Proceed installation?</string>
+    <string name="proceed_installation_text">Selected file will be installed with parameters shown below:</string>
+    <string name="selected_file_n">Selected file:</string>
+    <string name="userdata_size_nn">Userdata size:</string>
+    <string name="image_size_n">Image size:</string>
+    <string name="cancel_installation_n">Cancel installation?</string>
 </resources>

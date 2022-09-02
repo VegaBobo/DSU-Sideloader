@@ -13,7 +13,7 @@ fun DiscardDSUDialog(
     onClickCancel: () -> Unit
 ) {
     Dialog(
-        title = stringResource(id = R.string.discard),
+        title = stringResource(id = R.string.discard_dsu_question),
         icon = Icons.Outlined.DeleteForever,
         text = stringResource(id = R.string.dsu_already_installed_warning),
         confirmText = stringResource(id = R.string.yes),

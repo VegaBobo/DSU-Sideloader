@@ -66,7 +66,6 @@ fun Home(
                 filename = homeViewModel.obtainSelectedFilename(),
                 userdata = homeViewModel.session.userSelection.getUserDataSizeAsGB(),
                 fileSize = homeViewModel.session.userSelection.userSelectedImageSize,
-                isCustomImageSize = homeViewModel.session.userSelection.isCustomImageSize(),
                 onClickConfirm = { homeViewModel.onConfirmInstallationDialog() },
                 onClickCancel = { homeViewModel.dismissDialog() }
             )

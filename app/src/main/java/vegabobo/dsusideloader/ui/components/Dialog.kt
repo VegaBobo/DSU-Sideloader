@@ -19,7 +19,7 @@ fun Dialog(
     cancelText: String = "",
     onClickConfirm: () -> Unit = {},
     onClickCancel: () -> Unit = {},
-    context: @Composable () -> Unit = {},
+    content: @Composable () -> Unit = {},
 ) {
     AlertDialog(
         modifier = modifier,
@@ -52,7 +52,7 @@ fun Dialog(
                     Text(
                         text = text
                     )
-                context()
+                content()
             }
         })
 }
