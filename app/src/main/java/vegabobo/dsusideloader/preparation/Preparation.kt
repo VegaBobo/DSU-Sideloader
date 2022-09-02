@@ -85,19 +85,20 @@ class Preparation(
     }
 
     private fun prepareXz(inputXzFile: Uri): Pair<Uri, Long> {
-        val outputFile = "${getFileName(inputXzFile)}.img"
+        val outputFile = getFileName(inputXzFile)
         onStepUpdate(InstallationStep.DECOMPRESSING_XZ)
-        return FileUnPacker(
+        val imgFile = FileUnPacker(
             storageManager,
             inputXzFile,
             outputFile,
             job,
             onPreparationProgressUpdate
         ).unpack()
+        return prepareImage(imgFile.first)
     }
 
     private fun prepareImage(inputImageFile: Uri): Pair<Uri, Long> {
-        val outputFile = "${getFileName(inputImageFile)}.gz"
+        val outputFile = "${getFileName(inputImageFile)}.img.gz"
         onStepUpdate(InstallationStep.COMPRESSING_TO_GZ)
         val pair = FileUnPacker(
             storageManager,
@@ -113,7 +114,7 @@ class Preparation(
         val uri = getSafeUri(inputGzFile)
         if (userSelectedImageSize != DSUConstants.DEFAULT_IMAGE_SIZE)
             return Pair(uri, -1)
-        val outputFile = "${getFileName(uri)}.img"
+        val outputFile = getFileName(uri)
         onStepUpdate(InstallationStep.DECOMPRESSING_GZIP)
         val pair =
             FileUnPacker(storageManager, uri, outputFile, job, onPreparationProgressUpdate).unpack()
