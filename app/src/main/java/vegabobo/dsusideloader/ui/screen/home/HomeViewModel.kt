@@ -360,9 +360,7 @@ class HomeViewModel @Inject constructor(
     //
 
     fun onCheckUserdataCard() {
-        if (uiState.value.userDataCard.isSelected)
-            updateUserdataCard { it.copy(content = "") }
-        updateUserdataCard { it.copy(isSelected = it.isSelected.not()) }
+        updateUserdataCard { it.copy(isSelected = it.isSelected.not(), content = "") }
     }
 
     fun updateUserdataSize(input: String) {
@@ -371,11 +369,19 @@ class HomeViewModel @Inject constructor(
         val sizeWithSuffix = FilenameUtils.appendToString(input, "GB")
 
         if (selectedSize.isNotEmpty() && selectedSize.toInt() > maxAllocationUserdata) {
-            updateUserdataCard { it.copy(isError = true, maximumAllowed = maxAllocationUserdata) }
+            val fixedSize = FilenameUtils.appendToString("$maxAllocationUserdata", "GB")
+            updateUserdataCard {
+                it.copy(
+                    content = fixedSize,
+                    isError = true,
+                    maximumAllowed = maxAllocationUserdata,
+                )
+            }
             viewModelScope.launch(Dispatchers.IO) {
-                Thread.sleep(5000)
+                delay(5000)
                 updateUserdataCard { it.copy(isError = false) }
             }
+            return
         }
 
         updateUserdataCard { it.copy(content = sizeWithSuffix) }
@@ -386,13 +392,11 @@ class HomeViewModel @Inject constructor(
     //
 
     fun onCheckImageSizeCard() {
-        if (!uiState.value.imageSizeCard.isSelected) {
+        if (!uiState.value.imageSizeCard.isSelected)
             updateDialogState(DialogDisplay.IMAGESIZE_WARNING)
-        } else {
+        else
             dismissDialog()
-            updateImageSizeCard { it.copy(content = "") }
-        }
-        updateImageSizeCard { it.copy(isSelected = it.isSelected.not()) }
+        updateImageSizeCard { it.copy(isSelected = it.isSelected.not(), content = "") }
     }
 
     fun updateImageSize(input: String) {

@@ -22,13 +22,19 @@ class UserSelection(
     }
 
     fun setUserDataSize(size: String) {
-        if (size.isNotEmpty())
-            userSelectedUserdata = (FilenameUtils.getDigits(size).toLong()) * 1024L * 1024L * 1024L
+        userSelectedUserdata =
+            if (size.isNotEmpty())
+                (FilenameUtils.getDigits(size).toLong()) * 1024L * 1024L * 1024L
+            else
+                DSUConstants.DEFAULT_USERDATA
     }
 
     fun setImageSize(size: String) {
-        if (size.isNotEmpty())
-            userSelectedImageSize = FilenameUtils.getDigits(size).toLong()
+        userSelectedImageSize =
+            if (size.isNotEmpty())
+                FilenameUtils.getDigits(size).toLong()
+            else
+                DSUConstants.DEFAULT_IMAGE_SIZE
     }
 
     fun isCustomImageSize(): Boolean {

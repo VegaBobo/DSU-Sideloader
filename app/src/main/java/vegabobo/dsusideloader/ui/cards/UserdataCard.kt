@@ -42,7 +42,7 @@ fun UserdataCard(
                     isEnabled = !isEnabled,
                     isError = uiState.isError,
                     isNumberOnly = true,
-                    textFieldValue = uiState.getAllowedValue(),
+                    textFieldValue = uiState.content,
                     textFieldTitle = stringResource(id = R.string.userdata_size_n),
                     onValueChange = onValueChange
                 )

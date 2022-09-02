@@ -1,7 +1,6 @@
 package vegabobo.dsusideloader.ui.screen.home
 
 import vegabobo.dsusideloader.preparation.InstallationStep
-import vegabobo.dsusideloader.util.FilenameUtils
 
 data class InstallationCardState(
     val isTextFieldEnabled: Boolean = true,
@@ -20,15 +19,7 @@ data class UserDataCardState(
     val isError: Boolean = false,
     val content: String = "",
     val maximumAllowed: Int = 0,
-) {
-    fun getAllowedValue(): String {
-        if(content.isEmpty() || content == "0GB")
-            return ""
-        if(FilenameUtils.getDigits(content).toInt() > maximumAllowed)
-            return FilenameUtils.appendToString("$maximumAllowed","GB")
-        return content
-    }
-}
+)
 
 data class ImageSizeCardState(
     val isSelected: Boolean = false,
