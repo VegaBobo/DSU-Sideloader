@@ -50,6 +50,7 @@ fun Home(
         KeepScreenOn()
 
     LaunchedEffect(Unit) {
+        homeViewModel.setupUserPreferences()
         homeViewModel.homeViewAction.collectLatest {
             when (it) {
                 HomeViewAction.NAVIGATE_TO_ADB_SCREEN ->

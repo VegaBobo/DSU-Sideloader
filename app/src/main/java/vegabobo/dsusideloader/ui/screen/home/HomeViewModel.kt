@@ -73,7 +73,7 @@ class HomeViewModel @Inject constructor(
     // Home startup and checks
     //
 
-    private fun initialChecks() {
+    fun initialChecks() {
         updateAdditionalCardState(AdditionalCard.NONE)
 
         if (checkDynamicPartitions && !VerificationUtils.hasDynamicPartitions()) {
@@ -117,7 +117,7 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    private fun setupUserPreferences() {
+    fun setupUserPreferences() {
         viewModelScope.launch {
             _uiState.update { it.copy(shouldKeepScreenOn = readBoolPref(AppPrefs.KEEP_SCREEN_ON)) }
         }
@@ -135,7 +135,6 @@ class HomeViewModel @Inject constructor(
 
     init {
         initialChecks()
-        setupUserPreferences()
     }
 
     //
