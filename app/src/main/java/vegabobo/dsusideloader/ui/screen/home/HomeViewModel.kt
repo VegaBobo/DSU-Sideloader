@@ -197,7 +197,8 @@ class HomeViewModel @Inject constructor(
     private fun startPrivilegedInstallation() {
         updateInstallationCard { it.copy(installationStep = InstallationStep.WAITING_USER_CONFIRMATION) }
         DsuInstallationHandler(session).startInstallation()
-        if (OperationModeUtils.isReadLogsPermissionGranted(application))
+        if (OperationModeUtils.isReadLogsPermissionGranted(application)
+            || session.operationMode == OperationMode.ROOT)
             startLogging()
         else
             updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
