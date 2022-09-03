@@ -10,12 +10,16 @@ plugins {
 android {
     compileSdk = 33
 
+    val versionCode: Int by rootProject.extra
+    val versionName: String by rootProject.extra
+
     defaultConfig {
-        applicationId = "vegabobo.dsusideloader"
+        this.applicationId = "vegabobo.dsusideloader"
+        this.versionCode = versionCode
+        this.versionName = versionName
+
         minSdk = 29
         targetSdk = 33
-        versionCode = 4
-        versionName = "1.03"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true

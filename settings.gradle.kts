@@ -19,4 +19,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "DSU Helper"
-include(":app", ":hidden-api-stub")
+include(":app", ":hidden-api-stub", ":magisk-module")

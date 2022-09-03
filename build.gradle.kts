@@ -16,6 +16,9 @@ plugins {
     id("com.mikepenz.aboutlibraries.plugin") apply false
 }
 
+val versionCode by extra { 4 }
+val versionName by extra { "1.03" }
+
 task("clean") {
     delete(project.buildDir)
 }

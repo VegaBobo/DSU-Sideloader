@@ -1,0 +1,4 @@
+/build
+/out
+/src/main/resources/system/priv-app/DSUSideloader/*
+/src/main/resources/module.prop
