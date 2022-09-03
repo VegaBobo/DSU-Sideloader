@@ -38,10 +38,10 @@ fun Settings(
 
         if (uiState.isShowingBuiltinInstallerDialog)
             Dialog(
-                title = stringResource(id = R.string.experimental_feature_title),
+                title = stringResource(id = R.string.experimental_feature),
                 icon = Icons.Outlined.NewReleases,
-                text = stringResource(id = R.string.experimental_feature_text),
-                confirmText = stringResource(id = R.string.got_it),
+                text = stringResource(id = R.string.experimental_feature_description),
+                confirmText = stringResource(id = R.string.yes),
                 cancelText = stringResource(id = R.string.cancel),
                 onClickCancel = { settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, false) },
                 onClickConfirm = { settingsViewModel.updateInstallerDialogState(false) }
@@ -51,7 +51,7 @@ fun Settings(
         PreferenceItem(
             title = stringResource(id = R.string.builtin_installer),
             description =
-            if (uiState.isRoot) stringResource(id = R.string.use_builin_installer_desc)
+            if (uiState.isRoot) stringResource(id = R.string.builtin_installer_description)
             else stringResource(R.string.requires_root),
             showToggle = true,
             isEnabled = uiState.isRoot,
@@ -62,8 +62,8 @@ fun Settings(
             },
         )
         PreferenceItem(
-            title = stringResource(id = R.string.unmount_sd),
-            description = stringResource(id = R.string.unmount_sd_text),
+            title = stringResource(id = R.string.unmount_sd_title),
+            description = stringResource(id = R.string.unmount_sd_description),
             showToggle = true,
             isChecked = uiState.preferences[AppPrefs.UMOUNT_SD]!!,
             onClick = { settingsViewModel.togglePreference(AppPrefs.UMOUNT_SD, !it) },
@@ -77,12 +77,12 @@ fun Settings(
 
         Title(title = stringResource(id = R.string.other))
         PreferenceItem(
-            title = stringResource(id = R.string.op_mode),
+            title = stringResource(id = R.string.operation_mode),
             description = settingsViewModel.checkOperationMode()
         )
         PreferenceItem(
             title = stringResource(id = R.string.about),
-            description = stringResource(id = R.string.about_text),
+            description = stringResource(id = R.string.about_description),
             onClick = { navController.navigate(Destinations.About) }
         )
     }

@@ -55,12 +55,12 @@ fun AboutScreen(
         ) {
             PreferenceItem(
                 title = stringResource(id = R.string.github_repo),
-                description = stringResource(id = R.string.github_sauce),
+                description = stringResource(id = R.string.github_repo_description),
                 onClick = { uriHandler.openUri(AboutLinks.REPOSITORY_URL) }
             )
             PreferenceItem(
-                title = stringResource(id = R.string.libraries),
-                description = stringResource(id = R.string.libraries_used),
+                title = stringResource(id = R.string.libraries_title),
+                description = stringResource(id = R.string.libraries_description),
                 onClick = { navController.navigate(Destinations.Libraries) }
             )
         }
@@ -73,22 +73,22 @@ fun AboutScreen(
         ) {
             PreferenceItem(
                 title = "VegaBobo",
-                description = stringResource(id = R.string.developer),
+                description = stringResource(id = R.string.role_developer),
                 onClick = {}
             )
             PreferenceItem(
                 title = "WSTxda",
-                description = stringResource(id = R.string.design_and_icon),
+                description = stringResource(id = R.string.role_design_icon),
                 onClick = {}
             )
-            if (stringResource(id = R.string.translator_list).isNotEmpty())
+            if (stringResource(id = R.string.translators_list).isNotEmpty())
                 PreferenceItem(
-                    title = stringResource(id = R.string.translators),
-                    description = stringResource(id = R.string.translator_list)
+                    title = stringResource(id = R.string.translators_title),
+                    description = stringResource(id = R.string.translators_list)
                 )
             PreferenceItem(
-                title = stringResource(id = R.string.contributors),
-                description = stringResource(id = R.string.contribuitors_desc),
+                title = stringResource(id = R.string.contributors_title),
+                description = stringResource(id = R.string.contributors_text),
                 onClick = { uriHandler.openUri(AboutLinks.CONTRIBUTORS_URL) }
             )
         }

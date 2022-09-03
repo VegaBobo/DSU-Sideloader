@@ -41,7 +41,7 @@ fun LibrariesScreen(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopBar(
-                barTitle = stringResource(id = R.string.libraries),
+                barTitle = stringResource(id = R.string.libraries_title),
                 showBackButton = true,
                 scrollBehavior = scrollBehavior,
                 onClickBackButton = { navController.navigateUp() })

@@ -1,189 +1,229 @@
 <resources>
-    <string name="app_name">DSU Sideloader</string>
-    <string name="saf_choose_file">Choose a file</string>
-    <string name="type_bytes">Type value in bytes!</string>
-    <string name="auto">Auto</string>
-    <string name="invalid_gsi_size">Invalid GSI size, switched to default (%1$s)</string>
-    <string name="invalid_userdata_size">Invalid Userdata size, switched to default (%1$s)</string>
-    <string name="installation">Installation</string>
-    <string name="installation_details">Proceed with installation?\n\nSelected GSI: %1$s\nUserdata size: %2$sGB\nGSI file size: %3$s</string>
-    <string name="proceed">Proceed</string>
-    <string name="cancel">Cancel</string>
+    <string name="app_name" translatable="false">DSU Sideloader</string>
+
+    <!--
+        Home screen
+     -->
+
+    <!-- Warning cards -->
     <string name="unsupported">Unsupported</string>
-    <string name="file_unsupported">The file you choose isn\'t supported, only xz, gz and img files are supported</string>
-    <string name="got_it">Got it</string>
-    <string name="extracting_gzip">Extracting gzip file, so we can get image file size (Needed by DSU command line)…</string>
-    <string name="compressing_img_to_gzip">Compressing image file into gzip format (DSU need a image within gzip)…</string>
-    <string name="extracting_xz">Extracting xz file…</string>
-    <string name="almost_ready">Almost ready…</string>
-    <string name="brief_all_done">All done!\nCheck your notifications…</string>
-    <string name="done">Done</string>
-    <string name="process_finished">GSI is being installed, check your notifications to see progress!\nTo install other GSI, open this app again!</string>
-    <string name="close_app">Close app</string>
-    <string name="close_app_question">Close app?</string>
-    <string name="close">Close</string>
-    <string name="select_gsi_info">Select a GSI file to be installed</string>
-    <string name="select_file">Tap to select a file</string>
-    <string name="supported_file_formats">Supported formats are: xz, gz and img</string>
-    <string name="userdata_size_dsu">Userdata size for Dynamic System:</string>
-    <string name="default_userdata_help">Default is set to %1$dGB, uncheck to change</string>
-    <string name="gsi_file_size">GSI file size</string>
-    <string name="start_process">Install GSI via DSU</string>
-    <string name="warning">If you currently have a Dynamic System installed (or being installed), DISCARD before installing other GSI, otherwise, it will fail</string>
-    <string name="adb_howto_text">To start installation on non-rooted devices, you need to run this command on adb shell:</string>
-    <string name="adb_howto_directly">If you\'re running adb shell without PC (eg: LADB, Shizuku\'s Rish, WebADB, Bugjaeger..), you can remove adb shell, and run it directly:</string>
-    <string name="adb_howto_done">Once it\'s done, check your notifications to follow installation process, you can also close this app</string>
-    <string name="device_unsupported">Your device does not support dynamic partitions (DSU depends on dynamic partitions)</string>
-    <string name="notice">Notice</string>
-    <string name="notice_lockedbl_custom">You seem to be running a Custom OS that spoofs bootloader status, you need UNLOCKED bootloader to boot most of GSIs, remember to unlock yours if isn\'t yet\nAlso, compatibility with Custom ROMs aren\'t guaranteed</string>
-    <string name="notice_lockedbl">You need UNLOCKED bootloader to boot most GSI via DSU\nRemember to unlock yours if isn\'t yet</string>
-    <string name="notice_custom">You seem to be running a Custom OS, compatibility with Custom ROMs aren\'t guaranteed</string>
-    <string name="operation_mode">Operation mode: %1$s</string>
-    <string name="operation_nonroot">Once GSI is ready, you will need to run a command on ADB to start GSI via DSU installation</string>
-    <string name="operation_magisk">Magisk have been tested, and works fine with DSU on newest versions :)</string>
-    <string name="operation_root_other">We do not tested this app, or DSU feature on other root solutions than Magisk, but you should be fine</string>
-    <string name="storage">Setup storage</string>
-    <string name="storage_info">You need to select a folder to be used as our application storage (necessary to store temporary files)\n\nPlease select or create a new folder and allow access.</string>
-    <string name="gigabyte_holder" translatable="false">%1$dGB</string>
-    <string name="storage_warning">You have less than 40% of free storage, installation process will fail, free up some space</string>
-    <string name="outdated_magisk">Magisk version unsupported\n\nYour Magisk code version: %1$d\nRequired code version: 23018 or higher</string>
-    <string name="other_options">Other options</string>
-    <string name="keep_screen_on">Keep screen on</string>
-    <string name="error">Error</string>
-    <string name="about_info" translatable="false">DSU Sideloader %1$s https://github.com/VegaBobo/DSU-Sideloader</string>
-    <string name="install">Install</string>
-    <string name="preferences">Preferences</string>
-    <string name="about">About</string>
-    <string name="info">Info.</string>
-    <string name="logs_saved">Logs saved</string>
-    <string name="about_text">Credits, libraries and more…</string>
-    <string name="op_mode">Operation mode</string>
-    <string name="debug_installation_text">Show logs after invoking DSU installation activity</string>
-    <string name="debug_installation">Debug installation</string>
-    <string name="userdata_size_text">In GB, values applies when app restart</string>
-    <string name="userdata_size">Default userdata size</string>
-    <string name="gsi_size_warning">Always use Auto, not recommended changing</string>
-    <string name="version">version %1$s (%2$d)</string>
-    <string name="slogan">Simple app that helps you installing GSIs via DSU\'s feature.\n\n 2022 - VegaBobo</string>
-    <string name="github_sauce">Source code on GitHub</string>
-    <string name="author_github">Author on GitHub</string>
-    <string name="libraries">Libraries</string>
-    <string name="libsu">libsu by topjohnwu</string>
-    <string name="xzutils">XZ Utils by tukaani</string>
-    <string name="credits_google">Many others by Google/Android</string>
-    <string name="save_logs_file">Save logs to file</string>
-    <string name="debug_build_info">You\'re running a debug build.\nDSU Sideloader %1$s (%2$d)</string>
-    <string name="gz_copy">Copying gz file into our folder…</string>
-    <string name="copying_file">Copying file…</string>
+    <string name="device_unsupported_description">Your device does not support dynamic partitions (DSU requires dynamic partitions).</string>
 
-    <!-- WIP STRINGS -->
+    <string name="setup_storage">Setup storage</string>
+    <string name="setup_storage_description">You need to select a folder to be used as application storage (required to store temporary files).\n\nPlease select or create a new folder and allow access to it.</string>
+    <string name="setup">Setup</string>
 
-    <string name="clear">Clear</string>
-    <string name="userdata_size_n">Userdata size</string>
-    <string name="userdata_size_gb">Size in GB</string>
-    <string name="userdata_size_ct">Custom userdata size</string>
-    <string name="image_size">Image size</string>
-    <string name="image_size_custom">Size in bytes</string>
-    <string name="what_dsu">What is DSU?</string>
-    <string name="dsu_info">DSU (Dynamic System Updates), is a feature introduced in Android 10, allowing developers to test Android system images, without touching device partitions, with Android 11, DSU can also replace multiple partitions.</string>
-    <string name="placeholder">placeholder</string>
-    <string name="other">Other</string>
+    <string name="storage_warning">Storage warning</string>
+    <string name="storage_warning_description">You have less than %1$s%% of free storage, installation process will fail, please free up some space.</string>
     <string name="continue_anyway">Continue anyway</string>
-    <string name="cancel_description">All progress made will be lost, are you sure?</string>
-    <string name="no">No</string>
-    <string name="yes">Yes</string>
-    <string name="ok">Ok</string>
-    <string name="allowed_userdata_allocation">Maximum available for allocation: %1$sGB</string>
-    <string name="view_docs">View docs</string>
-    <string name="learn_more">Learn more</string>
-    <string name="custom_image_size">Set image size?</string>
-    <string name="custom_image_size_warning">DSU Sideloader will set this parameter for you automatically, setting image size manually is strongly inadvisable.</string>
-    <string name="set_anyway">Set anyway</string>
-    <string name="option_strongly_inadvisable">This option is strongly inadvisable!</string>
-    <string name="processing">Processing…</string>
-    <string name="ready_to_install">Installation</string>
-    <string name="copy">Copy text</string>
-    <string name="copied">Copied</string>
-    <string name="return_to_home">Return to homescreen?</string>
-    <string name="unmount_sd">Unmount SD</string>
-    <string name="unmount_sd_text">Temporary unmount sd when installing</string>
-    <string name="allocation_error_title">Allocation error</string>
-    <string name="allocation_error_description">GSI daemon is trying to allocate in external SD, but it fails for some reason (likely due sepolicy denials)\nTo fix that, you can install DSU Sideloader Magisk\'s module, or temporary eject sd to avoid this (you can set this option permanently in preferences).\n\nError: %1$s</string>
-    <string name="allocation_error_action">Eject SD and retry</string>
-    <string name="storage_error_title">Storage error</string>
-    <string name="storage_error_description">Android requires, at least 40% of free storage to proceed installation, free up some space and try again.\n\nError: %1$s</string>
-    <string name="filesystem_error_title">Filesystem features not found</string>
-    <string name="filesystem_error_description">Your kernel may be registering f2fs in different path, that one expected from GSI daemon \nTo fix that, you can try to install DSU Sideloader Magisk\'s module, or change kernel.\n\nError: %1$s</string>
-    <string name="selinux_error_title">SELinux error</string>
-    <string name="selinux_error_description">Looks like SELinux is blocking GSI daemon to work due denials, this error is common devices running Android 10\n To fix that, you can try to install DSU Sideloader Magisk\'s module, or set SELinux to permissive.\n** Changing to permissive will weakens your device security.\n\nError: %1$s</string>
-    <string name="selinux_error_action">Retry with permissive</string>
-    <string name="extents_error_title">Extents error</string>
-    <string name="extents_error_description">On Android 10 devices, images/filesystem needs to have more than 512 extents.\n To fix that, you can try to install DSU Sideloader Magisk\'s module.\n\nError: %1$s</string>
-    <string name="start_installation">Start installation</string>
-    <string name="save_logs">Save logs</string>
-    <string name="saved_logs">Logs saved!</string>
-    <string name="selected_file_not_supported">Selected file is not supported</string>
-    <string name="missing_permissions">Missing permissions</string>
-    <string name="grant_read_logs_shizuku">READ_LOGS permission is required, use Shizuku to allow it?\nAfter granting permission, application needs to be reopened.</string>
-    <string name="discard_gsi">A GSI is already installed, discard to continue?\n\n**All data present in DSU will be deleted.</string>
-    <string name="discard">Discard</string>
-    <string name="discarding">Discarding…</string>
-
-    <string name="installation_prompt">Installation prompt invoked, waiting user confirmation to proceed..</string>
-    <string name="waiting_too_long">Dismissed installation prompt? waiting for too long? try pressing "try again", it will invoke installation prompt one more time.</string>
-    <string name="try_again">Try again</string>
-
-    <string name="reboot_dsu">Reboot into DSU</string>
-    <string name="discard_dsu">Discard DSU</string>
-    <string name="discard_dsu_question">Discard installation?</string>
-
-    <string name="installing">Processing %1$s partition…</string>
-    <string name="view_logs">View logs</string>
-    <string name="mreturn">Return</string>
-    <string name="done_text">Image installed successfully, check your notifications to boot into dynamic system</string>
-    <string name="installation_canceled">Installation canceled</string>
-    <string name="unknown_error">Unknown error\n\nError: %1$s</string>
-    <string name="installation_logs">Installation logs</string>
-    <string name="extracting_file">Extracting file…</string>
-    <string name="creating_partition">Creating %1$s partition</string>
-    <string name="failed_create_partition">Failed to create %1$s partition</string>
-    <string name="installation_finished">Image installed successfully</string>
-    <string name="dsu_already_installed">A DSU installation is already present</string>
-    <string name="dsu_already_installed_warning">All data present in installed DSU will be DELETED after discarding, are you sure?</string>
-    <string name="experimental_feature_title">Experimental feature</string>
-    <string name="experimental_feature_text">This feature is under testing, and may be unstable, are you sure?</string>
-    <string name="builtin_installer">Built-in installer</string>
-    <string name="use_builin_installer_desc">Faster, use internal APIs to install images directly</string>
-    <string name="requires_root">Requires root</string>
-    <string name="check_updates">Check updates</string>
-    <string name="tap_to_check">Tap to check</string>
-    <string name="download">Download</string>
-    <string name="contributors">Contributors</string>
-    <string name="collaborators">Collaborators</string>
-    <string name="developer">Developer</string>
-    <string name="design_and_icon">Design reference, app icon</string>
-    <string name="github">Design and icon</string>
-    <string name="contribuitors">Contributions</string>
-    <string name="contribuitors_desc">People that helped this project</string>
-    <string name="translators">Translators</string>
-    <string name="translator_list"></string>
-    <string name="application">Application</string>
-    <string name="github_repo">GitHub Repository</string>
-    <string name="libraries_used">Libraries used in this app</string>
-    <string name="changelog">Changelog</string>
-    <string name="running_latest">Running latest version</string>
-    <string name="update_found">New %1$s version found</string>
 
     <string name="missing_permission">Missing permission</string>
-    <string name="requires_log_permission">DSU Sideloader requires READ_LOGS permission (allows logcat reading)\nIt will be used to obtain installation progress and diagnose errors in DSU installation.\n\n**After granting permission, application needs to be reopened</string>
-    <string name="grant">Grant</string>
-    <string name="refuse">Refuse</string>
+    <string name="missing_permission_description">DSU Sideloader requires READ_LOGS permission (which allows logcat reading)\nThis permission is used to obtain installation progress and diagnose errors in DSU installation.\n\n**Granting this permission may require a application restart.</string>
     <string name="granting_permission">Waiting service to grant permission, please wait…</string>
 
-    <string name="proceed_installation_title">Proceed installation?</string>
-    <string name="proceed_installation_text">Selected file will be installed with parameters shown below:</string>
-    <string name="selected_file_n">Selected file:</string>
-    <string name="userdata_size_nn">Userdata size:</string>
-    <string name="image_size_n">Image size:</string>
-    <string name="cancel_installation_n">Cancel installation?</string>
+    <!-- Installation card -->
+    <string name="select_gsi_info">Select a file to be installed</string>
+    <string name="dsu_already_installed">A DSU installation is already present.</string>
+
+    <string name="selected_file">Selected file</string>
+    <string name="file_unsupported">Unsupported file</string>
+
+    <string name="clear">Clear</string>
+    <string name="install">Install</string>
+
+    <!-- Installation dialog -->
+    <string name="proceed_installation">Proceed installation?</string>
+    <string name="proceed_installation_description">Installation will be made using the parameters shown below:</string>
+
+    <!-- Discard installed DSU dialog -->
+    <string name="discard_dsu_question">Discard installation?</string>
+    <string name="dsu_already_installed_warning">All data present in installed DSU will be DELETED after discarding, are you sure?</string>
+
+    <!-- Preparation -->
+    <string name="decompressing_gz">Extracting gz file…</string>
+    <string name="decompressing_xz">Extracting xz file…</string>
+    <string name="compressing_to_gz">Preparing image file…</string>
+    <string name="extracting_file">Extracting file…</string>
+    <string name="copying_file">Copying file…</string>
+    <string name="processing">Processing…</string>
+
+    <!-- Installation -->
+    <string name="installation_prompt">Installation prompt invoked, waiting user confirmation to proceed..</string>
+
+    <string name="creating_partition">Creating %1$s partition</string>
+    <string name="installing">Processing %1$s partition…</string>
+
+    <!-- Installation errors -->
+
+    <!-- Already installed DSU card -->
+    <string name="discard_dsu_otg">A DSU installation is already present, discard to continue?\n\n**All data stored in DSU installation will be deleted.</string>
+    <string name="discarding">Discarding…</string>
+    <string name="discard_dsu">Discard DSU</string>
+
+    <!-- Allocation error card -->
+    <string name="allocation_error">Allocation error</string>
+    <string name="allocation_error_description">GSI daemon is trying to allocate in external SD, but it fails for some reason.\nTo fix that, you can install DSU Sideloader Magisk\'s module, or by temporary ejecting sd (you can set this option permanently in preferences).</string>
+    <string name="allocation_error_action">Eject SD and retry</string>
+
+    <!-- No free storage error card -->
+    <string name="storage_error">Storage error</string>
+    <string name="storage_error_description">Android requires at least %1$s%% of free storage to proceed installation, free up some space and try again.</string>
+
+    <!-- Filesystem features not found error card -->
+    <string name="fs_features_error">FS features unavailable</string>
+    <string name="fs_features_error_description">Your kernel is likely to be registering f2fs in different path that one expected from GSI daemon.\nTo fix that, you can try to install DSU Sideloader Magisk\'s module, or change kernel.</string>
+
+    <!-- SELinux error card -->
+    <string name="selinux_error">SELinux error</string>
+    <string name="selinux_error_description">Looks like SELinux is blocking GSI daemon to work due denials, this error is common devices running Android 10.\nTo fix that, you can try to install DSU Sideloader Magisk\'s module, or by setting SELinux to permissive.\n\n** Changing to permissive will weakens your device security.</string>
+    <string name="selinux_error_action">Retry with permissive</string>
+
+    <!-- Extents error card -->
+    <string name="extents_error_title">Extents error</string>
+    <string name="extents_error_description">On Android 10 devices, images/filesystem needs to have more than 512 extents.\nTo fix that, you can try to install DSU Sideloader Magisk\'s module.</string>
+
+    <!-- Other errors card -->
+    <string name="failed_create_partition">Failed to create %1$s partition.</string>
+    <string name="unknown_error">Unknown error.</string>
+    <string name="error">Error</string>
+    <string name="try_again">Try again</string>
+    <string name="view_logs">View logs</string>
+    <string name="installation_canceled">Installation canceled.</string>
+
+    <!-- Cancel installation dialog -->
+    <string name="cancel_installation_question">Cancel installation?</string>
+    <string name="cancel_installation_description">All progress made will be lost, are you sure?</string>
+
+    <!-- Installation finished card -->
+    <string name="installation_finished_rootless">Image installed successfully, check your notifications to boot into dynamic system.</string>
+    <string name="installation_finished">Installation finished.</string>
+    <string name="reboot_into_dsu">Reboot into DSU</string>
+
+    <!-- Userdata card -->
+    <string name="userdata_size">Userdata size</string>
+    <string name="userdata_size_info">Size in gigabytes</string>
+    <string name="allowed_userdata_allocation">Maximum available for allocation: %1$sGB</string>
+
+    <!-- Image size card -->
+    <string name="image_size">Image size</string>
+    <string name="image_size_info">Size in bytes</string>
+    <string name="not_recommended_option">This option is strongly inadvisable!</string>
+
+    <!-- Image size dialog -->
+    <string name="dialog_image_size">Set image size?</string>
+    <string name="dialog_image_size_description">DSU Sideloader will set this parameter for you automatically, setting image size manually is strongly inadvisable.</string>
+    <string name="set_anyway">Set anyway</string>
+
+    <!-- What is DSU card -->
+    <string name="what_is_dsu">What is DSU?</string>
+    <string name="what_is_dsu_description">DSU (Dynamic System Updates) is a feature introduced in Android 10 that allow developers to test Android system images without touching device partitions, with Android 11, DSU can also replace multiple partitions.</string>
+    <string name="view_docs">View docs</string>
+    <string name="learn_more">Learn more</string>
+
+    <!--
+        Preferences screen
+    -->
+
+    <string name="preferences">Preferences</string>
+
+    <string name="experimental_feature">Experimental feature</string>
+    <string name="experimental_feature_description">This feature is under testing and may be unstable, are you sure?</string>
+
+    <string name="builtin_installer">Built-in installer</string>
+    <string name="builtin_installer_description">Faster, use internal APIs to install images directly</string>
+    <string name="requires_root">Requires root</string>
+
+    <string name="unmount_sd_title">Unmount SD</string>
+    <string name="unmount_sd_description">Temporary unmount sd when installing</string>
+
+    <string name="keep_screen_on">Keep screen on</string>
+
+    <string name="other">Other</string>
+
+    <string name="operation_mode">Operation mode</string>
+
+    <string name="about">About</string>
+    <string name="about_description">Credits, libraries and more…</string>
+
+    <!--
+        About screen
+    -->
+
+    <string name="version_info">version %1$s (%2$d)</string>
+    <string name="check_updates_title">Check updates</string>
+    <string name="check_updates_text_idle">Tap to check</string>
+    <string name="check_updates_text_found">New %1$s version found</string>
+    <string name="check_updates_text_updated">Running latest version</string>
+    <string name="changelog">Changelog</string>
+    <string name="download">Download</string>
+
+    <string name="application">Application</string>
+
+    <string name="github_repo">GitHub Repository</string>
+    <string name="github_repo_description">Source code on GitHub</string>
+
+    <string name="collaborators">Collaborators</string>
+
+    <string name="libraries_title">Libraries</string>
+    <string name="libraries_description">Libraries used in this app</string>
+
+    <string name="role_developer">Developer</string>
+    <string name="role_design_icon">Design reference, app icon</string>
+
+    <string name="translators_title">Translators</string>
+
+    <!--
+        Hello translator, since you have translated our app
+        feel free to put your name inside "translators_list", it will be shown on about screen.
+
+        If there is more than one translator, append names and separate each one by using a comma, like:
+        <string name="translators_list">Collaborator 1, Collaborator 2, Collaborator 3</string>
+    -->
+    <string name="translators_list"></string>
+
+    <string name="contributors_title">Contributors</string>
+    <string name="contributors_text">People that helped with this project</string>
+
+    <!--
+        ADB screen
+    -->
+
+    <string name="adb_how_to_adb_shell">To start installation on non-rooted devices, you need to run this command on adb shell:</string>
+    <string name="adb_how_to_shell">If you\'re running adb shell without PC (eg: LADB, Shizuku\'s Rish, WebADB, Bugjaeger..), you should run this command instead:</string>
+    <string name="adb_how_to_done">Once it\'s done, check your notifications to follow installation process, you can also close this app.</string>
+
+    <string name="copy">Copy text</string>
+    <string name="copied">Copied</string>
+
+    <string name="return_warning">Return?</string>
+    <string name="return_warning_description">Installation commands will be gone.</string>
+
+    <!--
+        View logs screen
+    -->
+
+    <string name="installation_logs">Installation logs</string>
+    <string name="save_logs">Save logs</string>
+    <string name="saved_logs">Logs saved!</string>
+
+    <!--
+        Generic and multipurpose strings
+     -->
+
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="ok">OK</string>
+
+    <string name="grant">Grant</string>
+    <string name="refuse">Refuse</string>
+    <string name="proceed">Proceed</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+    <string name="mreturn">Return</string>
+
+    <string name="installation">Installation</string>
+    <string name="discard">Discard</string>
+
+    <string name="close_app">Close app</string>
+    <string name="close_app_question">Close app?</string>
 </resources>

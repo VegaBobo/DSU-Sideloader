@@ -19,7 +19,7 @@ fun RequiresLogPermissionCard(
     SimpleCard(
         modifier = Modifier.fillMaxWidth(),
         cardTitle = stringResource(id = R.string.missing_permission),
-        text = stringResource(id = R.string.requires_log_permission)
+        text = stringResource(id = R.string.missing_permission_description)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             Row {

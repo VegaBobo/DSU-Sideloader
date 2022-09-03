@@ -27,9 +27,9 @@ fun ConfirmInstallationDialog(
     onClickCancel: () -> Unit,
 ) {
     Dialog(
-        title = stringResource(id = R.string.proceed_installation_title),
+        title = stringResource(id = R.string.proceed_installation),
         icon = Icons.Outlined.InstallMobile,
-        text = stringResource(id = R.string.proceed_installation_text),
+        text = stringResource(id = R.string.proceed_installation_description),
         content = {
             Divider(
                 modifier = Modifier
@@ -40,18 +40,18 @@ fun ConfirmInstallationDialog(
             )
             DialogItem(
                 icon = Icons.Outlined.InsertDriveFile,
-                title = stringResource(id = R.string.selected_file_n),
+                title = "${stringResource(id = R.string.selected_file)}:",
                 text = filename
             )
             DialogItem(
                 icon = Icons.Outlined.Storage,
-                title = stringResource(id = R.string.userdata_size_nn),
+                title = "${stringResource(id = R.string.userdata_size)}:",
                 text = "${userdata}GB"
             )
             if (fileSize != DSUConstants.DEFAULT_IMAGE_SIZE)
                 DialogItem(
                     icon = Icons.Outlined.Article,
-                    title = stringResource(id = R.string.image_size_n),
+                    title = "${stringResource(id = R.string.image_size)}:",
                     text = "${fileSize}b"
                 )
             Divider(

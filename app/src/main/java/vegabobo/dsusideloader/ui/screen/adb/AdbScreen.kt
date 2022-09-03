@@ -34,9 +34,9 @@ fun AdbScreen(
 
     if (uiState.isShowingExitDialog)
         Dialog(
-            title = stringResource(id = R.string.installation),
+            title = stringResource(id = R.string.return_warning),
             icon = Icons.Outlined.ExitToApp,
-            text = stringResource(id = R.string.return_to_home),
+            text = stringResource(id = R.string.return_warning_description),
             confirmText = stringResource(id = R.string.yes),
             cancelText = stringResource(id = R.string.no),
             onClickConfirm = { navController.navigateUp() },
@@ -48,7 +48,7 @@ fun AdbScreen(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         topBar = {
             TopBar(
-                barTitle = stringResource(id = R.string.ready_to_install),
+                barTitle = stringResource(id = R.string.installation),
                 scrollBehavior = it,
                 showBackButton = true,
                 onClickIcon = { navController.navigate(Destinations.Preferences) },
@@ -56,11 +56,11 @@ fun AdbScreen(
             )
         },
         content = {
-            Text(text = stringResource(id = R.string.adb_howto_text))
-            ContentCopyableCard(text = startInstallationCommand)
-            Text(text = stringResource(id = R.string.adb_howto_directly))
+            Text(text = stringResource(id = R.string.adb_how_to_adb_shell))
             ContentCopyableCard(text = startInstallationCommandAdb)
-            Text(text = stringResource(id = R.string.adb_howto_done))
+            Text(text = stringResource(id = R.string.adb_how_to_shell))
+            ContentCopyableCard(text = startInstallationCommand)
+            Text(text = stringResource(id = R.string.adb_how_to_done))
         }
     )
 

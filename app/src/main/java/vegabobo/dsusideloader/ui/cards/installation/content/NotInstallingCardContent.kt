@@ -41,7 +41,7 @@ fun NotInstallingCardContent(
     ) {
         AnimatedVisibility(visible = uiState.isError) {
             Text(
-                text = stringResource(id = R.string.selected_file_not_supported),
+                text = stringResource(id = R.string.file_unsupported),
                 modifier = Modifier.padding(start = 2.dp),
                 color = MaterialTheme.colorScheme.error
             )

@@ -13,9 +13,9 @@ fun CancelDialog(
     onClickCancel: () -> Unit,
 ) {
     Dialog(
-        title = stringResource(id = R.string.cancel_installation_n),
+        title = stringResource(id = R.string.cancel_installation_question),
         icon = Icons.Outlined.Cancel,
-        text = stringResource(id = R.string.cancel_description),
+        text = stringResource(id = R.string.cancel_installation_description),
         confirmText = stringResource(id = R.string.yes),
         cancelText = stringResource(id = R.string.no),
         onClickConfirm = onClickConfirm,

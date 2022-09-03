@@ -25,12 +25,12 @@ fun SetupStorage(
 
     SimpleCard(
         modifier = Modifier.fillMaxWidth(),
-        cardTitle = stringResource(id = R.string.storage),
-        text = stringResource(id = R.string.storage_info)
+        cardTitle = stringResource(id = R.string.setup_storage),
+        text = stringResource(id = R.string.setup_storage_description)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             PrimaryButton(
-                text = stringResource(id = R.string.storage),
+                text = stringResource(id = R.string.setup),
                 onClick = { launcherSetupStorage.launch(intent) })
         }
     }

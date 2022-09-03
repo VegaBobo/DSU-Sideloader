@@ -19,8 +19,8 @@ fun DsuInfoCard(
 ) {
     SimpleCard(
         modifier = modifier,
-        cardTitle = stringResource(id = R.string.what_dsu),
-        text = stringResource(id = R.string.dsu_info),
+        cardTitle = stringResource(id = R.string.what_is_dsu),
+        text = stringResource(id = R.string.what_is_dsu_description),
         justifyText = true
     ) {
         Row(modifier = Modifier.padding(top = 6.dp)) {

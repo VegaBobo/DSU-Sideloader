@@ -45,13 +45,13 @@ fun ImageSizeCard(
                     isError = false,
                     isNumberOnly = true,
                     textFieldValue = uiState.content,
-                    textFieldTitle = stringResource(id = R.string.image_size_custom),
+                    textFieldTitle = stringResource(id = R.string.image_size_info),
                     onValueChange = onValueChange
                 )
                 AnimatedVisibility(visible = uiState.content.isEmpty()) {
                     Text(
                         modifier = Modifier.padding(start = 1.dp),
-                        text = stringResource(id = R.string.option_strongly_inadvisable),
+                        text = stringResource(id = R.string.not_recommended_option),
                         color = MaterialTheme.colorScheme.error,
                         lineHeight = 14.sp,
                         fontSize = 14.sp

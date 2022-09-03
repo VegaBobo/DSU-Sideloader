@@ -88,7 +88,7 @@ fun UpdaterCard(
             )
             Text(
                 text = stringResource(
-                    id = R.string.version,
+                    id = R.string.version_info,
                     BuildConfig.VERSION_NAME,
                     BuildConfig.VERSION_CODE
                 ),
@@ -98,15 +98,15 @@ fun UpdaterCard(
         }
         Spacer(modifier = Modifier.padding(10.dp))
         PreferenceItem(
-            title = stringResource(id = R.string.check_updates),
+            title = stringResource(id = R.string.check_updates_title),
             description =
             when (uiState.updateStatus) {
                 UpdateStatus.NO_UPDATE_FOUND ->
-                    stringResource(id = R.string.running_latest)
+                    stringResource(id = R.string.check_updates_text_updated)
                 UpdateStatus.UPDATE_FOUND ->
-                    stringResource(R.string.update_found, uiState.updateVersion)
+                    stringResource(R.string.check_updates_text_found, uiState.updateVersion)
                 else ->
-                    stringResource(id = R.string.tap_to_check)
+                    stringResource(id = R.string.check_updates_text_idle)
             },
             onClick = { onClickCheckUpdates() }
         )

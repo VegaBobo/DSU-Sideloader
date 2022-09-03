@@ -16,8 +16,8 @@ fun StorageWarningCard(
 ) {
     SimpleCard(
         modifier = Modifier.fillMaxWidth(),
-        cardTitle = stringResource(id = R.string.storage),
-        text = stringResource(id = R.string.storage_warning)
+        cardTitle = stringResource(id = R.string.storage_warning),
+        text = stringResource(id = R.string.storage_warning_description, "40")
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             PrimaryButton(text = stringResource(id = R.string.continue_anyway), onClick = onClick)

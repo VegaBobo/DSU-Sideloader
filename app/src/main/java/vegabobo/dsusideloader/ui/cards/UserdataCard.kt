@@ -25,7 +25,7 @@ fun UserdataCard(
 ) {
     CardBox(
         modifier = modifier,
-        cardTitle = stringResource(id = R.string.userdata_size_ct),
+        cardTitle = stringResource(id = R.string.userdata_size),
         addToggle = true,
         isToggleEnabled = !isEnabled,
         isToggleChecked = uiState.isSelected,
@@ -43,7 +43,7 @@ fun UserdataCard(
                     isError = uiState.isError,
                     isNumberOnly = true,
                     textFieldValue = uiState.content,
-                    textFieldTitle = stringResource(id = R.string.userdata_size_n),
+                    textFieldTitle = stringResource(id = R.string.userdata_size_info),
                     onValueChange = onValueChange
                 )
                 AnimatedVisibility(visible = uiState.isError) {

@@ -13,9 +13,9 @@ fun ImageSizeWarningDialog(
     onClickCancel: () -> Unit
 ) {
     Dialog(
-        title = stringResource(id = R.string.custom_image_size),
+        title = stringResource(id = R.string.dialog_image_size),
         icon = Icons.Outlined.Edit,
-        text = stringResource(id = R.string.custom_image_size_warning),
+        text = stringResource(id = R.string.dialog_image_size_description),
         confirmText = stringResource(id = R.string.set_anyway),
         cancelText = stringResource(id = R.string.cancel),
         onClickConfirm = onClickConfirm,

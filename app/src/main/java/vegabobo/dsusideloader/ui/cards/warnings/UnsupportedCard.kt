@@ -19,7 +19,7 @@ fun UnsupportedCard(
         modifier = Modifier.fillMaxWidth(),
         cardColor = MaterialTheme.colorScheme.errorContainer,
         cardTitle = stringResource(id = R.string.unsupported),
-        text = stringResource(id = R.string.device_unsupported)
+        text = stringResource(id = R.string.device_unsupported_description)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             ErrorButton(

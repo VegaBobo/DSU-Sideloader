@@ -35,7 +35,7 @@ fun InstallationCardStep(
         InstallationStep.DSU_ALREADY_INSTALLED ->
             ProgressableCardContent(
                 text = stringResource(R.string.dsu_already_installed),
-                textFirstButton = stringResource(id = R.string.reboot_dsu),
+                textFirstButton = stringResource(id = R.string.reboot_into_dsu),
                 onClickFirstButton = onClickRebootToDynOS,
                 textSecondButton = stringResource(id = R.string.discard),
                 onClickSecondButton = onClickDiscardDsu
@@ -58,7 +58,7 @@ fun InstallationCardStep(
             )
         InstallationStep.DECOMPRESSING_XZ ->
             ProgressableCardContent(
-                text = stringResource(R.string.extracting_xz),
+                text = stringResource(R.string.decompressing_xz),
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation,
                 showProgressBar = true,
@@ -66,7 +66,7 @@ fun InstallationCardStep(
             )
         InstallationStep.COMPRESSING_TO_GZ ->
             ProgressableCardContent(
-                text = stringResource(R.string.compressing_img_to_gzip),
+                text = stringResource(R.string.compressing_to_gz),
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation,
                 showProgressBar = true,
@@ -90,7 +90,7 @@ fun InstallationCardStep(
             )
         InstallationStep.DISCARD_CURRENT_GSI -> {
             ProgressableCardContent(
-                text = stringResource(R.string.discard_gsi),
+                text = stringResource(R.string.discard_dsu_otg),
                 textFirstButton = stringResource(id = R.string.discard_dsu),
                 onClickFirstButton = onClickDiscardInstalledGsiAndInstall,
                 textSecondButton = stringResource(id = R.string.cancel),
@@ -153,7 +153,7 @@ fun InstallationCardStep(
             )
         InstallationStep.ERROR_REQUIRES_DISCARD_DSU ->
             ProgressableCardContent(
-                text = stringResource(R.string.discard_gsi),
+                text = stringResource(R.string.discard_dsu_otg),
                 textFirstButton = stringResource(id = R.string.discard),
                 onClickFirstButton = onClickDiscardInstalledGsiAndInstall,
                 textSecondButton = stringResource(id = R.string.cancel),
@@ -178,7 +178,7 @@ fun InstallationCardStep(
             )
         InstallationStep.ERROR_NO_AVAIL_STORAGE ->
             ProgressableCardContent(
-                text = stringResource(R.string.storage_error_description, uiState.errorContent),
+                text = stringResource(R.string.storage_error_description, "40"),
                 textFirstButton = stringResource(id = R.string.try_again),
                 onClickFirstButton = onClickRetryInstallation,
                 textSecondButton = stringResource(id = R.string.cancel),
@@ -187,7 +187,7 @@ fun InstallationCardStep(
         InstallationStep.ERROR_F2FS_WRONG_PATH ->
             ProgressableCardContent(
                 text = stringResource(
-                    R.string.filesystem_error_description,
+                    R.string.fs_features_error_description,
                     uiState.errorContent
                 ),
                 textFirstButton = stringResource(id = R.string.view_logs),
@@ -197,15 +197,15 @@ fun InstallationCardStep(
             )
         InstallationStep.ERROR_EXTENTS ->
             ProgressableCardContent(
-                text = stringResource(R.string.extents_error_description, uiState.errorContent),
+                text = stringResource(R.string.extents_error_description),
                 textFirstButton = stringResource(id = R.string.view_logs),
                 onClickFirstButton = onClickViewLogs,
-                textSecondButton = stringResource(id = R.string.got_it),
+                textSecondButton = stringResource(id = R.string.ok),
                 onClickSecondButton = onClickClear
             )
         InstallationStep.ERROR_SELINUX_A10 ->
             ProgressableCardContent(
-                text = stringResource(R.string.selinux_error_description, uiState.errorContent),
+                text = stringResource(R.string.selinux_error_description),
                 textFirstButton = stringResource(id = R.string.selinux_error_action),
                 onClickFirstButton = onClickSetSeLinuxPermissive,
                 textSecondButton = stringResource(id = R.string.cancel),
@@ -213,7 +213,7 @@ fun InstallationCardStep(
             )
         InstallationStep.ERROR_SELINUX_A10_ROOTLESS ->
             ProgressableCardContent(
-                text = stringResource(R.string.selinux_error_description, uiState.errorContent),
+                text = stringResource(R.string.selinux_error_description),
                 textFirstButton = stringResource(id = R.string.view_logs),
                 onClickFirstButton = onClickViewLogs,
                 textSecondButton = stringResource(id = R.string.cancel),
@@ -221,14 +221,14 @@ fun InstallationCardStep(
             )
         InstallationStep.INSTALL_SUCCESS ->
             ProgressableCardContent(
-                text = stringResource(R.string.done_text),
+                text = stringResource(R.string.installation_finished_rootless),
                 textSecondButton = stringResource(id = R.string.mreturn),
                 onClickSecondButton = onClickClear
             )
         InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS ->
             ProgressableCardContent(
                 text = stringResource(R.string.installation_finished),
-                textFirstButton = stringResource(id = R.string.reboot_dsu),
+                textFirstButton = stringResource(id = R.string.reboot_into_dsu),
                 onClickFirstButton = onClickRebootToDynOS,
                 textSecondButton = stringResource(id = R.string.discard),
                 onClickSecondButton = onClickDiscardDsu
