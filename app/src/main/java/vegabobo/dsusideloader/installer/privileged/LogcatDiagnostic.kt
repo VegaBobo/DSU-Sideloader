@@ -38,6 +38,7 @@ class LogcatDiagnostic(
             ) {
                 destroy()
                 onInstallationError(InstallationStep.ERROR_EXTERNAL_SDCARD_ALLOC, it)
+                return@runReadEachLine
             }
 
             /**
@@ -48,6 +49,7 @@ class LogcatDiagnostic(
             if (it.contains("is below the minimum threshold of")) {
                 destroy()
                 onInstallationError(InstallationStep.ERROR_NO_AVAIL_STORAGE, it)
+                return@runReadEachLine
             }
 
             /**
@@ -62,6 +64,7 @@ class LogcatDiagnostic(
             ) {
                 destroy()
                 onInstallationError(InstallationStep.ERROR_F2FS_WRONG_PATH, it)
+                return@runReadEachLine
             }
 
             /**
@@ -76,6 +79,7 @@ class LogcatDiagnostic(
             ) {
                 destroy()
                 onInstallationError(InstallationStep.ERROR_SELINUX_A10, it)
+                return@runReadEachLine
             }
 
             /**
@@ -86,6 +90,7 @@ class LogcatDiagnostic(
             if (it.contains("File is too fragmented")) {
                 destroy()
                 onInstallationError(InstallationStep.ERROR_EXTENTS, it)
+                return@runReadEachLine
             }
 
             /**
@@ -97,6 +102,7 @@ class LogcatDiagnostic(
                 else
                     onInstallationError(InstallationStep.ERROR, it)
                 destroy()
+                return@runReadEachLine
             }
 
             /**
@@ -121,6 +127,7 @@ class LogcatDiagnostic(
             if (it.contains("READY") && it.contains("INSTALL_COMPLETED")) {
                 destroy()
                 onInstallationSuccess()
+                return@runReadEachLine
             }
 
         }
