@@ -27,7 +27,7 @@ tasks.register<Zip>("assembleMagiskModule") {
 
     println("Building $id $versionName ($versionCode)")
     val workDirectory = "${System.getProperty("user.dir")}/${project.name}"
-    val moduleDirectory = "$workDirectory/src/main/resources"
+    val moduleDirectory = "$workDirectory/src/main/resources/module"
     val outDirectory = "$workDirectory/out"
 
     val apkPath = "$moduleDirectory/system/priv-app/DSUSideloader/ReleaseDSUSideloader.apk"
