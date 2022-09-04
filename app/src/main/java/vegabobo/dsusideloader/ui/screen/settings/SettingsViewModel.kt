@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     override val dataStore: DataStore<Preferences>,
-    private val installationSession: Session,
+    private val session: Session,
     val application: Application
 ) : BaseViewModel(dataStore) {
 
@@ -61,7 +61,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun checkOperationMode(): String {
-        return OperationModeUtils.getOperationModeAsString(installationSession.operationMode)
+        return OperationModeUtils.getOperationModeAsString(session.getOperationMode())
     }
 
 }

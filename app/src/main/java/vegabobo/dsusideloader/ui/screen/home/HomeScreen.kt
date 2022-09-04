@@ -18,7 +18,9 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.ActivityAction
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.cards.*
+import vegabobo.dsusideloader.ui.cards.DsuInfoCard
+import vegabobo.dsusideloader.ui.cards.ImageSizeCard
+import vegabobo.dsusideloader.ui.cards.UserdataCard
 import vegabobo.dsusideloader.ui.cards.installation.InstallationCard
 import vegabobo.dsusideloader.ui.cards.warnings.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
@@ -50,6 +52,9 @@ fun Home(
         KeepScreenOn()
 
     LaunchedEffect(Unit) {
+        homeViewModel.session.operationMode.collectLatest {
+            homeViewModel.initialChecks()
+        }
         homeViewModel.setupUserPreferences()
         homeViewModel.homeViewAction.collectLatest {
             when (it) {
@@ -110,7 +115,7 @@ fun Home(
                         StorageWarningCard { homeViewModel.overrideUnavaiableStorage() }
                     AdditionalCard.MISSING_READ_LOGS_PERMISSION ->
                         RequiresLogPermissionCard(
-                            onClickGrant =  { homeViewModel.grantReadLogs() },
+                            onClickGrant = { homeViewModel.grantReadLogs() },
                             onClickRefuse = { homeViewModel.refuseReadLogs() }
                         )
                     AdditionalCard.GRANTING_READ_LOGS_PERMISSION ->
@@ -119,7 +124,7 @@ fun Home(
                 }
             }
 
-            if (uiState.canInstall) {
+            if (uiState.canInstall && uiState.additionalCard == AdditionalCard.NONE) {
                 InstallationCard(
                     uiState = uiState.installationCard,
                     onClickInstall = { homeViewModel.onClickInstall() },

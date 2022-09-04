@@ -1,6 +1,8 @@
 package vegabobo.dsusideloader.model
 
 import android.net.Uri
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import vegabobo.dsusideloader.installer.privileged.LogcatDiagnostic
 import vegabobo.dsusideloader.util.FilenameUtils
 import vegabobo.dsusideloader.util.OperationMode
@@ -46,9 +48,14 @@ class Session(
     var userSelection: UserSelection = UserSelection(),
     var dsuInstallation: DSUInstallation = DSUInstallation(),
     var preferences: InstallationPreferences = InstallationPreferences(),
-    var operationMode: OperationMode = OperationMode.UNROOTED,
+    var operationMode: MutableStateFlow<OperationMode> = MutableStateFlow(OperationMode.UNROOTED),
     var logger: LogcatDiagnostic? = null,
 ) {
+
+    fun getOperationMode() = operationMode.value
+    fun setOperationMode(newOpMode: OperationMode) {
+        operationMode.value = newOpMode
+    }
 
     // Only populated on UNROOTED mode
     var installationScript = ""

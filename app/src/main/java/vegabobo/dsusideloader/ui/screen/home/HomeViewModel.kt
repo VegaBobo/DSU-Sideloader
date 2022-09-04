@@ -86,7 +86,7 @@ class HomeViewModel @Inject constructor(
             return
         }
 
-        if (session.operationMode == OperationMode.SHIZUKU
+        if (session.getOperationMode() == OperationMode.SHIZUKU
             && !OperationModeUtils.isReadLogsPermissionGranted(application)
             && checkReadLogsPermission
         ) {
@@ -130,10 +130,6 @@ class HomeViewModel @Inject constructor(
 
     fun overrideUnavaiableStorage() {
         checkUnavaiableStorage = false
-        initialChecks()
-    }
-
-    init {
         initialChecks()
     }
 
@@ -181,7 +177,7 @@ class HomeViewModel @Inject constructor(
 
     private fun startInstallation() {
         updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
-        if (session.operationMode == OperationMode.UNROOTED) {
+        if (session.getOperationMode() == OperationMode.UNROOTED) {
             startRootlessInstallation()
             return
         }
@@ -198,7 +194,8 @@ class HomeViewModel @Inject constructor(
         updateInstallationCard { it.copy(installationStep = InstallationStep.WAITING_USER_CONFIRMATION) }
         DsuInstallationHandler(session).startInstallation()
         if (OperationModeUtils.isReadLogsPermissionGranted(application)
-            || session.operationMode == OperationMode.ROOT)
+            || session.getOperationMode() == OperationMode.ROOT
+        )
             startLogging()
         else
             updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
@@ -254,7 +251,7 @@ class HomeViewModel @Inject constructor(
         }
 
     fun onClickCancelInstallationButton() {
-        if (session.operationMode != OperationMode.UNROOTED && session.logger != null && session.logger!!.isLogging) {
+        if (session.getOperationMode() != OperationMode.UNROOTED && session.logger != null && session.logger!!.isLogging) {
             session.logger!!.destroy()
             session.logger = null
             // Since stopping installation requires MANAGE_DYNAMIC_SYSTEM

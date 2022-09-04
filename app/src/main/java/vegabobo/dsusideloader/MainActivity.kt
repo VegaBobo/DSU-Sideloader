@@ -34,7 +34,7 @@ object ActivityAction {
 class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListener {
 
     @Inject
-    lateinit var installationSession: Session
+    lateinit var session: Session
 
     //
     // Shizuku
@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
 
     private fun setupOperationMode(checkShizuku: Boolean) {
         val operationMode = OperationModeUtils.getOperationMode(application, checkShizuku)
-        installationSession.operationMode = operationMode
+        session.setOperationMode(operationMode)
     }
 
     private val BINDER_RECEIVED_LISTENER = Shizuku.OnBinderReceivedListener {
@@ -86,8 +86,10 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
     }
 
     override fun onRequestPermissionResult(requestCode: Int, grantResult: Int) {
-        if (grantResult == PackageManager.PERMISSION_GRANTED && requestCode == SHIZUKU_REQUEST_CODE)
+        if (grantResult == PackageManager.PERMISSION_GRANTED && requestCode == SHIZUKU_REQUEST_CODE) {
+            Shizuku.bindUserService(userServiceArgs, PrivilegedProvider.connection)
             setupOperationMode(true)
+        }
         Shizuku.removeRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
     }
 
@@ -134,7 +136,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
             setupOperationMode(false)
         }
 
-        if (installationSession.operationMode == OperationMode.SYSTEM) {
+        if (session.getOperationMode() == OperationMode.SYSTEM) {
             val service = Intent(this, PrivilegedSystemService::class.java)
             bindService(service, PrivilegedProvider.connection, Context.BIND_AUTO_CREATE)
         }
@@ -148,7 +150,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
 
     override fun onDestroy() {
         removeShizukuListeners()
-        when (installationSession.operationMode) {
+        when (session.getOperationMode()) {
             OperationMode.ROOT -> RootService.unbind(PrivilegedProvider.connection)
             OperationMode.SYSTEM -> unbindService(PrivilegedProvider.connection)
             OperationMode.SHIZUKU -> {
