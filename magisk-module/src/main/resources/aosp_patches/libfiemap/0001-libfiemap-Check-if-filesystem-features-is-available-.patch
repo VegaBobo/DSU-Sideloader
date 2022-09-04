@@ -1,0 +1,30 @@
+From 5a541d50ac2e0bf11d54aad3513f5dba9ba65eee Mon Sep 17 00:00:00 2001
+From: VegaBobo <vegazstestando@gmail.com>
+Date: Sat, 3 Sep 2022 17:45:44 -0300
+Subject: [PATCH 1/1] libfiemap: Check if filesystem features is available in f2fs_dev
+
+Some kernels are registering f2fs as f2fs_dev, if there is no filesystem features in f2fs expected path, it will fail.
+With this change, before failing, we check if there filesystem features in f2fs_dev, if there is, then use it instead of failing.
+
+Change-Id: I887fb8f1955886dbaeb734916d7472cf02d180ba
+---
+ fs_mgr/libfiemap/utility.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs_mgr/libfiemap/utility.cpp b/fs_mgr/libfiemap/utility.cpp
+index 54cf1836b..66faaee20 100644
+--- a/fs_mgr/libfiemap/utility.cpp
++++ b/fs_mgr/libfiemap/utility.cpp
+@@ -111,6 +111,9 @@ bool F2fsPinBeforeAllocate(int file_fd, bool* supported) {
+ 
+     std::string contents;
+     std::string feature_file = "/sys/fs/f2fs/" + bdev + "/features";
++    if (access(feature_file.c_str(), F_OK) != 0) {
++        feature_file = "/sys/fs/f2fs_dev/" + bdev + "/features";
++    }
+     if (!android::base::ReadFileToString(feature_file, &contents)) {
+         PLOG(ERROR) << "read failed: " << feature_file;
+         return false;
+-- 
+2.25.1
+
