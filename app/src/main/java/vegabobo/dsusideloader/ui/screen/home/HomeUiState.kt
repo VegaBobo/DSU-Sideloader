@@ -40,7 +40,8 @@ enum class DialogDisplay {
     IMAGESIZE_WARNING,
     CONFIRM_INSTALLATION,
     CANCEL_INSTALLATION,
-    DISCARD_DSU
+    DISCARD_DSU,
+    VIEW_LOGS
 }
 
 enum class HomeViewAction {
@@ -54,7 +55,8 @@ data class HomeUiState(
     val imageSizeCard: ImageSizeCardState = ImageSizeCardState(),
     val additionalCard: AdditionalCard = AdditionalCard.NONE,
     val dialogDisplay: DialogDisplay = DialogDisplay.NONE,
-    val isLogging: Boolean = false,
+    val installationLogs: String = "",
+    val isViewingLogs: Boolean = false,
     val canInstall: Boolean = false,
     val shouldKeepScreenOn: Boolean = false,
 ) {

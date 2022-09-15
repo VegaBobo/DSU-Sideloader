@@ -1,8 +1,6 @@
 package vegabobo.dsusideloader.ui.cards
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -23,7 +21,8 @@ fun LogcatCard(
         color = MaterialTheme.colorScheme.inverseOnSurface,
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
-            .fillMaxSize()
+            .fillMaxWidth()
+            .height(400.dp)
     ) {
         Column(
             Modifier
@@ -31,7 +30,7 @@ fun LogcatCard(
                 .padding(10.dp)
                 .fillMaxSize()
         ) {
-            Text(text = logs, fontSize = 14.sp, lineHeight = 18.sp)
+            Text(text = logs, fontSize = 14.sp, lineHeight = 18.sp, color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }

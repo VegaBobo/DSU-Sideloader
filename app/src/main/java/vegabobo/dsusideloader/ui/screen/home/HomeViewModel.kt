@@ -45,6 +45,8 @@ class HomeViewModel @Inject constructor(
     var checkReadLogsPermission = true
     var installationJob: Job = Job()
 
+    var logger: LogcatDiagnostic? = null
+
     //
     // Helper methods used for controlling UI State
     //
@@ -196,7 +198,7 @@ class HomeViewModel @Inject constructor(
         if (OperationModeUtils.isReadLogsPermissionGranted(application)
             || session.getOperationMode() == OperationMode.ROOT
         )
-            startLogging()
+            viewModelScope.launch { startLogging() }
         else
             updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
     }
@@ -227,15 +229,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun startLogging() {
-        _uiState.update { it.copy(isLogging = true) }
-        session.logger = LogcatDiagnostic(
+    private suspend fun startLogging() {
+        logger = LogcatDiagnostic(
             onInstallationError = this::onInstallationError,
             onStepUpdate = this::onStepUpdate,
             onInstallationProgressUpdate = this::onInstallationProgressUpdate,
             onInstallationSuccess = this::onInstallationSuccess
         )
-        session.logger!!.startLogging()
+        logger!!.startLogging()
+        while (logger != null && logger!!.isLogging) {
+            _uiState.update { it.copy(installationLogs = logger!!.logs) }
+            delay(1000)
+        }
     }
 
     private fun onInstallationSuccess() {
@@ -251,9 +256,9 @@ class HomeViewModel @Inject constructor(
         }
 
     fun onClickCancelInstallationButton() {
-        if (session.getOperationMode() != OperationMode.UNROOTED && session.logger != null && session.logger!!.isLogging) {
-            session.logger!!.destroy()
-            session.logger = null
+        if (session.getOperationMode() != OperationMode.UNROOTED && logger != null && logger!!.isLogging) {
+            logger!!.destroy()
+            logger = null
             // Since stopping installation requires MANAGE_DYNAMIC_SYSTEM
             // then, we stop installation using other way, not so polite, but works :)))
             PrivilegedProvider.getService().forceStopPackage("com.android.dynsystem")
@@ -263,7 +268,6 @@ class HomeViewModel @Inject constructor(
             installationJob.cancel()
         resetInstallationCard()
         session.dsuInstallation = DSUInstallation()
-        _uiState.update { it.copy(isLogging = false) }
     }
 
     //
@@ -455,6 +459,14 @@ class HomeViewModel @Inject constructor(
     fun refuseReadLogs() {
         checkReadLogsPermission = false
         initialChecks()
+    }
+
+    fun toggleLogsView() {
+        updateDialogState(DialogDisplay.VIEW_LOGS)
+    }
+
+    fun saveLogs(uriToSaveLogs: Uri) {
+        storageManager.writeStringToUri(uiState.value.installationLogs, uriToSaveLogs)
     }
 
 }
