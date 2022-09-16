@@ -229,18 +229,23 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun startLogging() {
-        logger = LogcatDiagnostic(
-            onInstallationError = this::onInstallationError,
-            onStepUpdate = this::onStepUpdate,
-            onInstallationProgressUpdate = this::onInstallationProgressUpdate,
-            onInstallationSuccess = this::onInstallationSuccess
-        )
-        logger!!.startLogging()
-        while (logger != null && logger!!.isLogging) {
-            _uiState.update { it.copy(installationLogs = logger!!.logs) }
-            delay(1000)
+    private fun startLogging() {
+        if (logger != null && logger!!.isLogging) {
+            logger!!.destroy()
+        } else {
+            logger = LogcatDiagnostic(
+                onInstallationError = this::onInstallationError,
+                onStepUpdate = this::onStepUpdate,
+                onInstallationProgressUpdate = this::onInstallationProgressUpdate,
+                onInstallationSuccess = this::onInstallationSuccess,
+                onLogLineReceived = this::onLogLineReceived,
+            )
         }
+        logger!!.startLogging()
+    }
+
+    private fun onLogLineReceived() {
+        _uiState.update { it.copy(installationLogs = logger!!.logs) }
     }
 
     private fun onInstallationSuccess() {

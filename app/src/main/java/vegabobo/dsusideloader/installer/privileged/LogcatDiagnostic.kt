@@ -8,6 +8,7 @@ class LogcatDiagnostic(
     private val onStepUpdate: (step: InstallationStep) -> Unit,
     private val onInstallationProgressUpdate: (progress: Float, partition: String) -> Unit,
     private val onInstallationSuccess: () -> Unit,
+    private val onLogLineReceived: () -> Unit
 ) {
 
     var logs = ""
@@ -25,6 +26,7 @@ class LogcatDiagnostic(
             }
 
             logs += "$it\n"
+            onLogLineReceived()
 
             /**
              * When realpath fails with permission denied reason
