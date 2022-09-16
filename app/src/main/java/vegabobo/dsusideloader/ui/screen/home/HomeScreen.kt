@@ -53,10 +53,10 @@ fun Home(
         KeepScreenOn()
 
     LaunchedEffect(Unit) {
+        homeViewModel.setupUserPreferences()
         homeViewModel.session.operationMode.collectLatest {
             homeViewModel.initialChecks()
         }
-        homeViewModel.setupUserPreferences()
     }
 
     LaunchedEffect(Unit) {

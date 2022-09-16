@@ -104,15 +104,16 @@ class HomeViewModel @Inject constructor(
                 _uiState.update { it.copy(canInstall = true) }
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            if (PrivilegedProvider.isRoot() &&
-                PrivilegedProvider.getService().isInstalled
-            ) {
-                updateInstallationCard {
-                    it.copy(
-                        installationStep = InstallationStep.DSU_ALREADY_INSTALLED,
-                        isInstallable = true
-                    )
+        if (session.getOperationMode() == OperationMode.ROOT) {
+            viewModelScope.launch(Dispatchers.IO) {
+                if (PrivilegedProvider.isRoot() &&
+                    PrivilegedProvider.getService().isInstalled
+                ) {
+                    updateInstallationCard {
+                        it.copy(
+                            installationStep = InstallationStep.DSU_ALREADY_INSTALLED,
+                        )
+                    }
                 }
             }
         }
