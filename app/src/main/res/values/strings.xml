@@ -53,6 +53,10 @@
     <string name="creating_partition">Creating %1$s partition</string>
     <string name="installing">Processing %1$s partition…</string>
 
+    <!-- ADB install -->
+    <string name="require_adb_cmd_to_continue">Preparation done, a command is required to proceed with installation.</string>
+    <string name="see_commands">See commands</string>
+
     <!-- Installation errors -->
 
     <!-- Already installed DSU card -->
@@ -194,9 +198,6 @@
 
     <string name="copy">Copy text</string>
     <string name="copied">Copied</string>
-
-    <string name="return_warning">Return?</string>
-    <string name="return_warning_description">Installation commands will be gone.</string>
 
     <!--
         View logs screen

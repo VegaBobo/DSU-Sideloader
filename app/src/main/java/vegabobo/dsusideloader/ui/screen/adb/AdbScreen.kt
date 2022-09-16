@@ -1,13 +1,9 @@
 package vegabobo.dsusideloader.ui.screen.adb
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -16,17 +12,14 @@ import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.ContentCopyableCard
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
-import vegabobo.dsusideloader.ui.components.DialogLikeBottomSheet
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.screen.Destinations
-import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
 @Composable
 fun AdbScreen(
     navController: NavController,
     adbViewModel: AdbViewModel = hiltViewModel()
 ) {
-    val uiState by adbViewModel.uiState.collectAsStateWithLifecycle()
     val scriptPath = adbViewModel.obtainScriptPath()
 
     val startInstallationCommand = "sh $scriptPath"
@@ -40,7 +33,7 @@ fun AdbScreen(
                 scrollBehavior = it,
                 showBackButton = true,
                 onClickIcon = { navController.navigate(Destinations.Preferences) },
-                onClickBackButton = { adbViewModel.onBackPressed() }
+                onClickBackButton = { navController.navigateUp() }
             )
         },
         content = {
@@ -51,20 +44,4 @@ fun AdbScreen(
             Text(text = stringResource(id = R.string.adb_how_to_done))
         }
     )
-
-    if (uiState.isShowingExitSheet)
-        DialogLikeBottomSheet(
-            title = stringResource(id = R.string.return_warning),
-            icon = Icons.Outlined.ExitToApp,
-            text = stringResource(id = R.string.return_warning_description),
-            confirmText = stringResource(id = R.string.yes),
-            cancelText = stringResource(id = R.string.no),
-            onClickConfirm = { navController.navigateUp() },
-            onClickCancel = { adbViewModel.onClickCancelDialog() }
-        )
-
-    BackHandler {
-        if (!uiState.isShowingExitSheet)
-            adbViewModel.onBackPressed()
-    }
 }

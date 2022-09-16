@@ -59,18 +59,6 @@ fun Home(
         }
     }
 
-    LaunchedEffect(Unit) {
-        homeViewModel.homeViewAction.collectLatest {
-            when (it) {
-                HomeViewAction.NAVIGATE_TO_ADB_SCREEN -> {
-                    navController.navigate(Destinations.ADBInstallation)
-                }
-                else -> {}
-            }
-            homeViewModel.resetViewAction()
-        }
-    }
-
     ApplicationScreen(
         modifier = Modifier.padding(start = 18.dp, end = 18.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -114,7 +102,8 @@ fun Home(
                     onClickDiscardInstalledGsiAndInstall = { homeViewModel.onClickDiscardGsiAndStartInstallation() },
                     onClickDiscardDsu = { homeViewModel.showDiscardSheet() },
                     onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
-                    onClickViewLogs = { homeViewModel.toggleLogsView() }
+                    onClickViewLogs = { homeViewModel.toggleLogsView() },
+                    onClickViewCommands = { navController.navigate(Destinations.ADBInstallation) }
                 )
                 UserdataCard(
                     isEnabled = uiState.isInstalling(),

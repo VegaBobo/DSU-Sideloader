@@ -16,6 +16,7 @@ enum class InstallationStep {
     EXTRACTING_FILE,
 
     // Installation Steps
+    REQUIRES_ADB_CMD_TO_CONTINUE,
     DISCARD_CURRENT_GSI,
     WAITING_USER_CONFIRMATION,
     INSTALLING,

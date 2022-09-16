@@ -23,6 +23,7 @@ fun InstallationCardStep(
     onClickDiscardDsu: () -> Unit,
     onClickRebootToDynOS: () -> Unit,
     onClickViewLogs: () -> Unit,
+    onClickViewCommands: () -> Unit,
 ) {
     when (uiState.installationStep) {
         InstallationStep.NOT_INSTALLING ->
@@ -232,6 +233,14 @@ fun InstallationCardStep(
                 onClickFirstButton = onClickRebootToDynOS,
                 textSecondButton = stringResource(id = R.string.discard),
                 onClickSecondButton = onClickDiscardDsu
+            )
+        InstallationStep.REQUIRES_ADB_CMD_TO_CONTINUE ->
+            ProgressableCardContent(
+                text = stringResource(R.string.require_adb_cmd_to_continue),
+                textFirstButton = stringResource(id = R.string.see_commands),
+                onClickFirstButton = onClickViewCommands,
+                textSecondButton = stringResource(id = R.string.mreturn),
+                onClickSecondButton = onClickClear
             )
     }
 }

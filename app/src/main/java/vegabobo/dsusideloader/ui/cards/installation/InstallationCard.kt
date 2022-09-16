@@ -28,6 +28,7 @@ fun InstallationCard(
     onClickRebootToDynOS: () -> Unit,
     onSelectFileSuccess: (Uri) -> Unit,
     onClickViewLogs: () -> Unit,
+    onClickViewCommands: () -> Unit,
 ) {
 
     var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
@@ -68,7 +69,8 @@ fun InstallationCard(
             onClickDiscardInstalledGsiAndInstall = onClickDiscardInstalledGsiAndInstall,
             onClickDiscardDsu = onClickDiscardDsu,
             onClickRebootToDynOS = onClickRebootToDynOS,
-            onClickViewLogs = onClickViewLogs
+            onClickViewLogs = onClickViewLogs,
+            onClickViewCommands = onClickViewCommands
         )
     }
 }

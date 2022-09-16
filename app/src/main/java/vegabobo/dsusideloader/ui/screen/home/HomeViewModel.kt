@@ -38,7 +38,6 @@ class HomeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
-    val homeViewAction = MutableStateFlow(HomeViewAction.NONE)
 
     var checkDynamicPartitions = true
     var checkUnavaiableStorage = true
@@ -66,10 +65,7 @@ class HomeViewModel @Inject constructor(
     private fun updateSheetState(sheetDisplay: SheetDisplay) =
         _uiState.update { it.copy(sheetDisplay = sheetDisplay) }
 
-    private fun viewAction(action: HomeViewAction) = homeViewAction.update { action }
-
     fun dismissSheet() = updateSheetState(SheetDisplay.NONE)
-    fun resetViewAction() = viewAction(HomeViewAction.NONE)
 
     //
     // Home startup and checks
@@ -226,7 +222,7 @@ class HomeViewModel @Inject constructor(
         AdbInstallationHandler(storageManager, session).generate {
             session.installationScript = it
             resetInstallationCard()
-            viewAction(HomeViewAction.NAVIGATE_TO_ADB_SCREEN)
+            updateInstallationCard { it.copy(installationStep = InstallationStep.REQUIRES_ADB_CMD_TO_CONTINUE) }
         }
     }
 
