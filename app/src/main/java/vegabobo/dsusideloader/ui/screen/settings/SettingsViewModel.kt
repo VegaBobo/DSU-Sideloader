@@ -49,8 +49,8 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun updateInstallerDialogState(isShowing: Boolean) {
-        _uiState.update { it.copy(isShowingBuiltinInstallerDialog = isShowing) }
+    fun updateInstallerSheetState(isShowing: Boolean) {
+        _uiState.update { it.copy(isShowingBuiltinInstallerSheet = isShowing) }
     }
 
     fun checkIfRootIsAvail() {

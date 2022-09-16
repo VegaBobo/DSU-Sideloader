@@ -16,7 +16,7 @@ import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.ContentCopyableCard
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
-import vegabobo.dsusideloader.ui.components.Dialog
+import vegabobo.dsusideloader.ui.components.DialogLikeBottomSheet
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
@@ -31,18 +31,6 @@ fun AdbScreen(
 
     val startInstallationCommand = "sh $scriptPath"
     val startInstallationCommandAdb = "adb shell $startInstallationCommand"
-
-    if (uiState.isShowingExitDialog)
-        Dialog(
-            title = stringResource(id = R.string.return_warning),
-            icon = Icons.Outlined.ExitToApp,
-            text = stringResource(id = R.string.return_warning_description),
-            confirmText = stringResource(id = R.string.yes),
-            cancelText = stringResource(id = R.string.no),
-            onClickConfirm = { navController.navigateUp() },
-            onClickCancel = { adbViewModel.onClickCancelDialog() }
-        )
-
     ApplicationScreen(
         modifier = Modifier.padding(start = 18.dp, end = 18.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
@@ -64,8 +52,19 @@ fun AdbScreen(
         }
     )
 
+    if (uiState.isShowingExitSheet)
+        DialogLikeBottomSheet(
+            title = stringResource(id = R.string.return_warning),
+            icon = Icons.Outlined.ExitToApp,
+            text = stringResource(id = R.string.return_warning_description),
+            confirmText = stringResource(id = R.string.yes),
+            cancelText = stringResource(id = R.string.no),
+            onClickConfirm = { navController.navigateUp() },
+            onClickCancel = { adbViewModel.onClickCancelDialog() }
+        )
+
     BackHandler {
-        if (!uiState.isShowingExitDialog)
+        if (!uiState.isShowingExitSheet)
             adbViewModel.onBackPressed()
     }
 }

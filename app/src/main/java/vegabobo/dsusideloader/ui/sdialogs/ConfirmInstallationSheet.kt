@@ -1,66 +1,55 @@
-package vegabobo.dsusideloader.ui.dialogs
+package vegabobo.dsusideloader.ui.sdialogs
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Article
 import androidx.compose.material.icons.outlined.InsertDriveFile
 import androidx.compose.material.icons.outlined.InstallMobile
 import androidx.compose.material.icons.outlined.Storage
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.model.DSUConstants
-import vegabobo.dsusideloader.ui.components.Dialog
 import vegabobo.dsusideloader.ui.components.DialogItem
+import vegabobo.dsusideloader.ui.components.DialogLikeBottomSheet
 
 @Composable
-fun ConfirmInstallationDialog(
+fun ConfirmInstallationSheet(
     filename: String,
     userdata: String,
     fileSize: Long,
     onClickConfirm: () -> Unit,
     onClickCancel: () -> Unit,
 ) {
-    Dialog(
+    DialogLikeBottomSheet(
         title = stringResource(id = R.string.proceed_installation),
         icon = Icons.Outlined.InstallMobile,
         text = stringResource(id = R.string.proceed_installation_description),
         content = {
-            Divider(
-                modifier = Modifier
-                    .padding(top = 10.dp, bottom = 10.dp)
-                    .alpha(0.50f),
-                color = MaterialTheme.colorScheme.onBackground,
-                thickness = 1.dp,
-            )
+            Spacer(modifier = Modifier.padding(4.dp))
             DialogItem(
                 icon = Icons.Outlined.InsertDriveFile,
                 title = "${stringResource(id = R.string.selected_file)}:",
-                text = filename
+                text = filename,
+                textColor = MaterialTheme.colorScheme.onBackground
             )
             DialogItem(
                 icon = Icons.Outlined.Storage,
                 title = "${stringResource(id = R.string.userdata_size)}:",
-                text = "${userdata}GB"
+                text = "${userdata}GB",
+                textColor = MaterialTheme.colorScheme.onBackground
             )
             if (fileSize != DSUConstants.DEFAULT_IMAGE_SIZE)
                 DialogItem(
                     icon = Icons.Outlined.Article,
                     title = "${stringResource(id = R.string.image_size)}:",
-                    text = "${fileSize}b"
+                    text = "${fileSize}b",
+                    textColor = MaterialTheme.colorScheme.onBackground
                 )
-            Divider(
-                modifier = Modifier
-                    .padding(top = 10.dp, bottom = 10.dp)
-                    .alpha(0.50f),
-                color = MaterialTheme.colorScheme.onBackground,
-                thickness = 1.dp,
-            )
         },
         confirmText = stringResource(id = R.string.proceed),
         cancelText = stringResource(id = R.string.cancel),

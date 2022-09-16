@@ -8,6 +8,6 @@ data class SettingsUiState(
         AppPrefs.KEEP_SCREEN_ON to false,
         AppPrefs.UMOUNT_SD to false
     ),
-    val isShowingBuiltinInstallerDialog: Boolean = false,
+    val isShowingBuiltinInstallerSheet: Boolean = false,
     val isRoot: Boolean = false,
 )

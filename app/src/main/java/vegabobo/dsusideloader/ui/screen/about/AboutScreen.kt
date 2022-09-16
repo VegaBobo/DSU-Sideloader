@@ -30,7 +30,7 @@ fun AboutScreen(
     val uriHandler = LocalUriHandler.current
 
     ApplicationScreen(
-        modifier = Modifier.padding(10.dp),
+        modifier = Modifier.padding(start = 10.dp, end = 10.dp),
         topBar = {
             TopBar(
                 barTitle = stringResource(id = R.string.about),

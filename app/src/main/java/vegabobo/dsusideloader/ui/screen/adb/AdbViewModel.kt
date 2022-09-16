@@ -12,7 +12,7 @@ import javax.inject.Inject
 data class AdbUiState(
     val buttonCopyText1: Boolean = false,
     val buttonCopyText2: Boolean = false,
-    val isShowingExitDialog: Boolean = false,
+    val isShowingExitSheet: Boolean = false,
 )
 
 @HiltViewModel
@@ -26,11 +26,11 @@ class AdbViewModel @Inject constructor(
     fun obtainScriptPath(): String = session.installationScript
 
     fun onBackPressed() {
-        _uiState.update { it.copy(isShowingExitDialog = true) }
+        _uiState.update { it.copy(isShowingExitSheet = true) }
     }
 
     fun onClickCancelDialog() {
-        _uiState.update { it.copy(isShowingExitDialog = false) }
+        _uiState.update { it.copy(isShowingExitSheet = false) }
     }
 
 }

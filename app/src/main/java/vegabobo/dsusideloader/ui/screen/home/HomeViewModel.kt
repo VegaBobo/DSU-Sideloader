@@ -63,12 +63,12 @@ class HomeViewModel @Inject constructor(
     private fun updateImageSizeCard(update: (ImageSizeCardState) -> ImageSizeCardState) =
         _uiState.update { it.copy(imageSizeCard = update(it.imageSizeCard.copy())) }
 
-    private fun updateDialogState(dialogDisplay: DialogDisplay) =
-        _uiState.update { it.copy(dialogDisplay = dialogDisplay) }
+    private fun updateSheetState(sheetDisplay: SheetDisplay) =
+        _uiState.update { it.copy(sheetDisplay = sheetDisplay) }
 
     private fun viewAction(action: HomeViewAction) = homeViewAction.update { action }
 
-    fun dismissDialog() = updateDialogState(DialogDisplay.NONE)
+    fun dismissSheet() = updateSheetState(SheetDisplay.NONE)
     fun resetViewAction() = viewAction(HomeViewAction.NONE)
 
     //
@@ -143,18 +143,18 @@ class HomeViewModel @Inject constructor(
 
     fun onClickCancel() {
         if (uiState.value.isInstalling()) {
-            updateDialogState(DialogDisplay.CANCEL_INSTALLATION)
+            updateSheetState(SheetDisplay.CANCEL_INSTALLATION)
         }
     }
 
     fun onClickInstall() {
         session.userSelection.setUserDataSize(uiState.value.userDataCard.content)
         session.userSelection.setImageSize(uiState.value.imageSizeCard.content)
-        updateDialogState(DialogDisplay.CONFIRM_INSTALLATION)
+        updateSheetState(SheetDisplay.CONFIRM_INSTALLATION)
     }
 
-    fun onConfirmInstallationDialog() {
-        _uiState.update { it.copy(dialogDisplay = DialogDisplay.NONE) }
+    fun onConfirmInstallationSheet() {
+        _uiState.update { it.copy(sheetDisplay = SheetDisplay.NONE) }
         installationJob = Job()
         viewModelScope.launch(Dispatchers.IO + installationJob) {
             session.preferences.isUnmountSdCard = readBoolPref(AppPrefs.UMOUNT_SD)
@@ -251,7 +251,7 @@ class HomeViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 installationCard = InstallationCardState(),
-                dialogDisplay = DialogDisplay.NONE
+                sheetDisplay = SheetDisplay.NONE
             )
         }
 
@@ -290,7 +290,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             PrivilegedProvider.getService().remove()
         }
-        dismissDialog()
+        dismissSheet()
         resetInstallationCard()
     }
 
@@ -314,8 +314,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun showDiscardDialog() {
-        updateDialogState(DialogDisplay.DISCARD_DSU)
+    fun showDiscardSheet() {
+        updateSheetState(SheetDisplay.DISCARD_DSU)
     }
 
     //
@@ -395,9 +395,9 @@ class HomeViewModel @Inject constructor(
 
     fun onCheckImageSizeCard() {
         if (!uiState.value.imageSizeCard.isSelected)
-            updateDialogState(DialogDisplay.IMAGESIZE_WARNING)
+            updateSheetState(SheetDisplay.IMAGESIZE_WARNING)
         else
-            dismissDialog()
+            dismissSheet()
         updateImageSizeCard { it.copy(isSelected = it.isSelected.not(), content = "") }
     }
 
@@ -462,7 +462,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun toggleLogsView() {
-        updateDialogState(DialogDisplay.VIEW_LOGS)
+        updateSheetState(SheetDisplay.VIEW_LOGS)
     }
 
     fun saveLogs(uriToSaveLogs: Uri) {

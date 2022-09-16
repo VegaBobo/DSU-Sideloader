@@ -19,6 +19,7 @@ fun Settings(
     navController: NavController,
     settingsViewModel: SettingsViewModel = hiltViewModel(),
 ) {
+    val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         settingsViewModel.checkIfRootIsAvail()
@@ -34,18 +35,6 @@ fun Settings(
             )
         }
     ) {
-        val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
-
-        if (uiState.isShowingBuiltinInstallerDialog)
-            Dialog(
-                title = stringResource(id = R.string.experimental_feature),
-                icon = Icons.Outlined.NewReleases,
-                text = stringResource(id = R.string.experimental_feature_description),
-                confirmText = stringResource(id = R.string.yes),
-                cancelText = stringResource(id = R.string.cancel),
-                onClickCancel = { settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, false) },
-                onClickConfirm = { settingsViewModel.updateInstallerDialogState(false) }
-            )
 
         Title(title = stringResource(id = R.string.installation))
         PreferenceItem(
@@ -57,7 +46,7 @@ fun Settings(
             isEnabled = uiState.isRoot,
             isChecked = uiState.preferences[AppPrefs.USE_BUILTIN_INSTALLER]!!,
             onClick = {
-                settingsViewModel.updateInstallerDialogState(!it)
+                settingsViewModel.updateInstallerSheetState(!it)
                 settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, !it)
             },
         )
@@ -86,5 +75,19 @@ fun Settings(
             onClick = { navController.navigate(Destinations.About) }
         )
     }
+
+    if (uiState.isShowingBuiltinInstallerSheet)
+        DialogLikeBottomSheet(
+            title = stringResource(id = R.string.experimental_feature),
+            icon = Icons.Outlined.NewReleases,
+            text = stringResource(id = R.string.experimental_feature_description),
+            confirmText = stringResource(id = R.string.yes),
+            cancelText = stringResource(id = R.string.cancel),
+            onClickCancel = {
+                settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, false)
+                settingsViewModel.updateInstallerSheetState(false)
+            },
+            onClickConfirm = { settingsViewModel.updateInstallerSheetState(false) }
+        )
 
 }

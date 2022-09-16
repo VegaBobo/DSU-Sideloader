@@ -35,7 +35,7 @@ enum class AdditionalCard {
     GRANTING_READ_LOGS_PERMISSION,
 }
 
-enum class DialogDisplay {
+enum class SheetDisplay {
     NONE,
     IMAGESIZE_WARNING,
     CONFIRM_INSTALLATION,
@@ -54,7 +54,7 @@ data class HomeUiState(
     val userDataCard: UserDataCardState = UserDataCardState(),
     val imageSizeCard: ImageSizeCardState = ImageSizeCardState(),
     val additionalCard: AdditionalCard = AdditionalCard.NONE,
-    val dialogDisplay: DialogDisplay = DialogDisplay.NONE,
+    val sheetDisplay: SheetDisplay = SheetDisplay.NONE,
     val installationLogs: String = "",
     val isViewingLogs: Boolean = false,
     val canInstall: Boolean = false,

@@ -1,15 +1,15 @@
 package vegabobo.dsusideloader.ui.screen.home
 
-import android.widget.Toast
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -26,10 +26,10 @@ import vegabobo.dsusideloader.ui.cards.warnings.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.components.bsheets.ViewLogsBottomSheet
-import vegabobo.dsusideloader.ui.dialogs.CancelDialog
-import vegabobo.dsusideloader.ui.dialogs.ConfirmInstallationDialog
-import vegabobo.dsusideloader.ui.dialogs.DiscardDSUDialog
-import vegabobo.dsusideloader.ui.dialogs.ImageSizeWarningDialog
+import vegabobo.dsusideloader.ui.sdialogs.CancelSheet
+import vegabobo.dsusideloader.ui.sdialogs.ConfirmInstallationSheet
+import vegabobo.dsusideloader.ui.sdialogs.DiscardDSUSheet
+import vegabobo.dsusideloader.ui.sdialogs.ImageSizeWarningSheet
 import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.ui.util.KeepScreenOn
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
@@ -48,7 +48,6 @@ fun Home(
 
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
-    val context = LocalContext.current
 
     if (uiState.shouldKeepScreenOn)
         KeepScreenOn()
@@ -58,10 +57,14 @@ fun Home(
             homeViewModel.initialChecks()
         }
         homeViewModel.setupUserPreferences()
+    }
+
+    LaunchedEffect(Unit) {
         homeViewModel.homeViewAction.collectLatest {
             when (it) {
-                HomeViewAction.NAVIGATE_TO_ADB_SCREEN ->
+                HomeViewAction.NAVIGATE_TO_ADB_SCREEN -> {
                     navController.navigate(Destinations.ADBInstallation)
+                }
                 else -> {}
             }
             homeViewModel.resetViewAction()
@@ -109,7 +112,7 @@ fun Home(
                     onSelectFileSuccess = { homeViewModel.onFileSelectionResult(it) },
                     onClickCancelInstallation = { homeViewModel.onClickCancel() },
                     onClickDiscardInstalledGsiAndInstall = { homeViewModel.onClickDiscardGsiAndStartInstallation() },
-                    onClickDiscardDsu = { homeViewModel.showDiscardDialog() },
+                    onClickDiscardDsu = { homeViewModel.showDiscardSheet() },
                     onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
                     onClickViewLogs = { homeViewModel.toggleLogsView() }
                 )
@@ -133,39 +136,36 @@ fun Home(
         }
     )
 
-    when (uiState.dialogDisplay) {
-        DialogDisplay.CONFIRM_INSTALLATION ->
-            ConfirmInstallationDialog(
+    when (uiState.sheetDisplay) {
+        SheetDisplay.CONFIRM_INSTALLATION ->
+            ConfirmInstallationSheet(
                 filename = homeViewModel.obtainSelectedFilename(),
                 userdata = homeViewModel.session.userSelection.getUserDataSizeAsGB(),
                 fileSize = homeViewModel.session.userSelection.userSelectedImageSize,
-                onClickConfirm = { homeViewModel.onConfirmInstallationDialog() },
-                onClickCancel = { homeViewModel.dismissDialog() }
+                onClickConfirm = { homeViewModel.onConfirmInstallationSheet() },
+                onClickCancel = { homeViewModel.dismissSheet() }
             )
-        DialogDisplay.CANCEL_INSTALLATION ->
-            CancelDialog(
+        SheetDisplay.CANCEL_INSTALLATION ->
+            CancelSheet(
                 onClickConfirm = { homeViewModel.onClickCancelInstallationButton() },
-                onClickCancel = { homeViewModel.dismissDialog() },
+                onClickCancel = { homeViewModel.dismissSheet() },
             )
-        DialogDisplay.IMAGESIZE_WARNING ->
-            ImageSizeWarningDialog(
-                onClickConfirm = { homeViewModel.dismissDialog() },
+        SheetDisplay.IMAGESIZE_WARNING -> {
+            ImageSizeWarningSheet(
+                onClickConfirm = { homeViewModel.dismissSheet() },
                 onClickCancel = { homeViewModel.onCheckImageSizeCard() }
             )
-        DialogDisplay.DISCARD_DSU ->
-            DiscardDSUDialog(
+        }
+        SheetDisplay.DISCARD_DSU ->
+            DiscardDSUSheet(
                 onClickConfirm = { homeViewModel.onClickDiscardGsi() },
-                onClickCancel = { homeViewModel.dismissDialog() }
+                onClickCancel = { homeViewModel.dismissSheet() }
             )
-        DialogDisplay.VIEW_LOGS -> {
-            val logsSavedText = stringResource(id = R.string.saved_logs)
+        SheetDisplay.VIEW_LOGS -> {
             ViewLogsBottomSheet(
                 logs = uiState.installationLogs,
-                onClickSaveLogs = {
-                    homeViewModel.saveLogs(it)
-                    Toast.makeText(context, logsSavedText, Toast.LENGTH_SHORT).show()
-                },
-                onClose = { homeViewModel.dismissDialog() }
+                onClickSaveLogs = { homeViewModel.saveLogs(it) },
+                onDismiss = { homeViewModel.dismissSheet() }
             )
         }
         else -> {}

@@ -7,6 +7,7 @@ import vegabobo.dsusideloader.model.DSUConstants
 import vegabobo.dsusideloader.model.DSUInstallation
 import vegabobo.dsusideloader.model.Session
 import vegabobo.dsusideloader.service.PrivilegedProvider
+import vegabobo.dsusideloader.util.OperationMode
 
 class Preparation(
     private val storageManager: StorageManager,
@@ -22,7 +23,9 @@ class Preparation(
     val userSelectedFileUri = session.userSelection.selectedFileUri
 
     override fun invoke() {
-        if (session.preferences.useBuiltinInstaller && PrivilegedProvider.isRoot())
+        if (session.getOperationMode() != OperationMode.UNROOTED &&
+            session.preferences.useBuiltinInstaller && PrivilegedProvider.isRoot()
+        )
             prepareRooted()
         else
             prepareForDSU()
