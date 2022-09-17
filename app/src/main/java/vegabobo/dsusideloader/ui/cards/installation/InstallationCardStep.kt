@@ -47,7 +47,7 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation,
                 showProgressBar = true,
-                progress = uiState.installationProgress
+                isIndeterminate = true
             )
         InstallationStep.COPYING_FILE ->
             ProgressableCardContent(

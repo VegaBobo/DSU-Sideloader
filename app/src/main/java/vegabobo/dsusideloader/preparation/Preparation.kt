@@ -23,7 +23,7 @@ class Preparation(
     val userSelectedFileUri = session.userSelection.selectedFileUri
 
     override fun invoke() {
-        if (session.getOperationMode() != OperationMode.UNROOTED &&
+        if (session.getOperationMode() != OperationMode.ADB &&
             session.preferences.useBuiltinInstaller && PrivilegedProvider.isRoot()
         )
             prepareRooted()

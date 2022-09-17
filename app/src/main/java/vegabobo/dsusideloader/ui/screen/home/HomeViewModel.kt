@@ -100,7 +100,7 @@ class HomeViewModel @Inject constructor(
                 _uiState.update { it.copy(canInstall = true) }
         }
 
-        if (session.getOperationMode() == OperationMode.ROOT) {
+        if (session.isRoot()) {
             viewModelScope.launch(Dispatchers.IO) {
                 if (PrivilegedProvider.isRoot() &&
                     PrivilegedProvider.getService().isInstalled
@@ -151,7 +151,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onConfirmInstallationSheet() {
-        _uiState.update { it.copy(sheetDisplay = SheetDisplay.NONE) }
+        dismissSheet()
+        updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
         installationJob = Job()
         viewModelScope.launch(Dispatchers.IO + installationJob) {
             session.preferences.isUnmountSdCard = readBoolPref(AppPrefs.UMOUNT_SD)
@@ -175,13 +176,16 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun startInstallation() {
+        if (installationJob.isCancelled)
+            return
+
         updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
-        if (session.getOperationMode() == OperationMode.UNROOTED) {
+        if (session.getOperationMode() == OperationMode.ADB) {
             startRootlessInstallation()
             return
         }
 
-        if (session.preferences.useBuiltinInstaller && PrivilegedProvider.isRoot()) {
+        if (session.preferences.useBuiltinInstaller && session.isRoot()) {
             startRootInstallation()
             return
         }
@@ -192,9 +196,7 @@ class HomeViewModel @Inject constructor(
     private fun startPrivilegedInstallation() {
         updateInstallationCard { it.copy(installationStep = InstallationStep.WAITING_USER_CONFIRMATION) }
         DsuInstallationHandler(session).startInstallation()
-        if (OperationModeUtils.isReadLogsPermissionGranted(application)
-            || session.getOperationMode() == OperationMode.ROOT
-        )
+        if (OperationModeUtils.isReadLogsPermissionGranted(application) || session.isRoot())
             viewModelScope.launch { startLogging() }
         else
             updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
@@ -258,7 +260,8 @@ class HomeViewModel @Inject constructor(
         }
 
     fun onClickCancelInstallationButton() {
-        if (session.getOperationMode() != OperationMode.UNROOTED && logger != null && logger!!.isLogging) {
+        resetInstallationCard()
+        if (session.getOperationMode() != OperationMode.ADB && logger != null && logger!!.isLogging) {
             logger!!.destroy()
             logger = null
             // Since stopping installation requires MANAGE_DYNAMIC_SYSTEM
@@ -268,7 +271,6 @@ class HomeViewModel @Inject constructor(
 
         if (installationJob.isActive)
             installationJob.cancel()
-        resetInstallationCard()
         session.dsuInstallation = DSUInstallation()
     }
 

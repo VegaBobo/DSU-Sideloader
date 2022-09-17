@@ -18,7 +18,7 @@
     <string name="continue_anyway">Continue anyway</string>
 
     <string name="missing_permission">Missing permission</string>
-    <string name="missing_permission_description">DSU Sideloader requires READ_LOGS permission (which allows logcat reading)\nThis permission is used to obtain installation progress and diagnose errors in DSU installation.\n\n**Granting this permission may require a application restart.</string>
+    <string name="missing_permission_description">DSU Sideloader requires READ_LOGS permission (which allows logcat reading).\nThis permission is used to obtain installation progress and diagnose errors in DSU installation.\n\n** Granting this permission may require a application restart.</string>
     <string name="granting_permission">Waiting service to grant permission, please wait…</string>
 
     <!-- Installation card -->

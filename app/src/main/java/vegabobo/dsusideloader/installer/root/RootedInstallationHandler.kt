@@ -217,7 +217,6 @@ class RootedInstallationHandler(
         }
         if (!installationJob.isCancelled) {
             finishInstallation()
-            setEnable(enable = true, oneShot = true)
             onInstallationSuccess()
         }
     }
