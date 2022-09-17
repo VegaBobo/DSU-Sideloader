@@ -46,8 +46,13 @@ class Session(
     var userSelection: UserSelection = UserSelection(),
     var dsuInstallation: DSUInstallation = DSUInstallation(),
     var preferences: InstallationPreferences = InstallationPreferences(),
-    var operationMode: MutableStateFlow<OperationMode> = MutableStateFlow(OperationMode.UNROOTED),
+    var operationMode: MutableStateFlow<OperationMode> = MutableStateFlow(OperationMode.ADB),
 ) {
+
+    fun isRoot(): Boolean {
+        return (operationMode.value == OperationMode.SYSTEM_AND_ROOT
+                || operationMode.value == OperationMode.ROOT)
+    }
 
     fun getOperationMode() = operationMode.value
     fun setOperationMode(newOpMode: OperationMode) {

@@ -36,48 +36,53 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
     @Inject
     lateinit var session: Session
 
-    //
-    // Shizuku
-    //
+    private var checkShizuku = false
 
-    val userServiceArgs = Shizuku.UserServiceArgs(
-        ComponentName(
-            BuildConfig.APPLICATION_ID,
-            PrivilegedService::class.java.name
-        )
-    ).daemon(false).processNameSuffix("service").debuggable(BuildConfig.DEBUG)
-        .version(BuildConfig.VERSION_CODE)
-
-    private val SHIZUKU_REQUEST_CODE = 1000
-    private val REQUEST_PERMISSION_RESULT_LISTENER = this::onRequestPermissionResult
-
-    fun addShizukuListeners() {
-        Shizuku.addBinderReceivedListenerSticky(BINDER_RECEIVED_LISTENER)
-        Shizuku.addRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
-    }
-
-    fun removeShizukuListeners() {
-        Shizuku.removeRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
-        Shizuku.removeBinderReceivedListener(BINDER_RECEIVED_LISTENER)
-    }
-
-    private fun setupOperationMode(checkShizuku: Boolean) {
+    private fun setupSessionOperationMode() {
         val operationMode = OperationModeUtils.getOperationMode(application, checkShizuku)
         session.setOperationMode(operationMode)
     }
 
+    //
+    // Shizuku
+    //
+
+    val userServiceArgs =
+        Shizuku.UserServiceArgs(
+            ComponentName(BuildConfig.APPLICATION_ID, PrivilegedService::class.java.name)
+        )
+            .daemon(false)
+            .processNameSuffix("service")
+            .debuggable(BuildConfig.DEBUG)
+            .version(BuildConfig.VERSION_CODE)
+
+    private val SHIZUKU_REQUEST_CODE = 1000
+    private val REQUEST_PERMISSION_RESULT_LISTENER = this::onRequestPermissionResult
+
+    private fun addShizukuListeners() {
+        Shizuku.addBinderReceivedListenerSticky(BINDER_RECEIVED_LISTENER)
+        Shizuku.addRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
+    }
+
+    private fun removeShizukuListeners() {
+        Shizuku.removeRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
+        Shizuku.removeBinderReceivedListener(BINDER_RECEIVED_LISTENER)
+    }
+
     private val BINDER_RECEIVED_LISTENER = Shizuku.OnBinderReceivedListener {
         Log.i(BuildConfig.APPLICATION_ID, "Binder received")
-        if (Shell.getShell().isRoot) return@OnBinderReceivedListener
+        if (Shell.getShell().isRoot)
+            return@OnBinderReceivedListener
         if (!OperationModeUtils.isShizukuPermissionGranted(this)) {
             askShizukuPermission()
             return@OnBinderReceivedListener
         }
         Shizuku.bindUserService(userServiceArgs, PrivilegedProvider.connection)
-        setupOperationMode(true)
+        checkShizuku = true
+        setupSessionOperationMode()
     }
 
-    fun askShizukuPermission() {
+    private fun askShizukuPermission() {
         if (Shizuku.isPreV11() || Shizuku.getVersion() < 11) {
             requestPermissions(arrayOf(ShizukuProvider.PERMISSION), SHIZUKU_REQUEST_CODE)
         } else {
@@ -88,7 +93,8 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
     override fun onRequestPermissionResult(requestCode: Int, grantResult: Int) {
         if (grantResult == PackageManager.PERMISSION_GRANTED && requestCode == SHIZUKU_REQUEST_CODE) {
             Shizuku.bindUserService(userServiceArgs, PrivilegedProvider.connection)
-            setupOperationMode(true)
+            checkShizuku = true
+            setupSessionOperationMode()
         }
         Shizuku.removeRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
     }
@@ -113,6 +119,21 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
         RootService.bind(e, PrivilegedProvider.connection)
     }
 
+    private fun setupService() {
+        if (session.isRoot()) {
+            setupRootAIDL()
+            return
+        }
+
+        if (session.getOperationMode() == OperationMode.SYSTEM) {
+            val service = Intent(this, PrivilegedSystemService::class.java)
+            bindService(service, PrivilegedProvider.connection, Context.BIND_AUTO_CREATE)
+            return
+        }
+
+        addShizukuListeners()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Shell.getShell {}
@@ -128,19 +149,9 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
                 Navigation(activityRequest)
             }
         }
-        if (Shell.getShell().isRoot)
-            setupRootAIDL()
 
-        if (savedInstanceState == null) {
-            addShizukuListeners()
-            setupOperationMode(false)
-        }
-
-        if (session.getOperationMode() == OperationMode.SYSTEM) {
-            val service = Intent(this, PrivilegedSystemService::class.java)
-            bindService(service, PrivilegedProvider.connection, Context.BIND_AUTO_CREATE)
-        }
-
+        setupSessionOperationMode()
+        setupService()
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -151,15 +162,12 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
     override fun onDestroy() {
         removeShizukuListeners()
         when (session.getOperationMode()) {
-            OperationMode.ROOT -> RootService.unbind(PrivilegedProvider.connection)
-            OperationMode.SYSTEM -> unbindService(PrivilegedProvider.connection)
-            OperationMode.SHIZUKU -> {
-                Shizuku.unbindUserService(
-                    userServiceArgs,
-                    PrivilegedProvider.connection,
-                    true
-                )
-            }
+            OperationMode.ROOT, OperationMode.SYSTEM_AND_ROOT ->
+                RootService.unbind(PrivilegedProvider.connection)
+            OperationMode.SYSTEM ->
+                unbindService(PrivilegedProvider.connection)
+            OperationMode.SHIZUKU ->
+                Shizuku.unbindUserService(userServiceArgs, PrivilegedProvider.connection, true)
             else -> {}
         }
         super.onDestroy()
