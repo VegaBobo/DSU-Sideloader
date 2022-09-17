@@ -17,6 +17,7 @@ import vegabobo.dsusideloader.ui.util.LauncherAcResult
 fun InstallationCard(
     uiState: InstallationCardState,
     modifier: Modifier = Modifier,
+    minPercentageOfFreeStorage: String,
     onClickClear: () -> Unit,
     onClickInstall: () -> Unit,
     onClickRetryInstallation: () -> Unit,
@@ -70,7 +71,8 @@ fun InstallationCard(
             onClickDiscardDsu = onClickDiscardDsu,
             onClickRebootToDynOS = onClickRebootToDynOS,
             onClickViewLogs = onClickViewLogs,
-            onClickViewCommands = onClickViewCommands
+            onClickViewCommands = onClickViewCommands,
+            minPercentageOfFreeStorage = minPercentageOfFreeStorage
         )
     }
 }

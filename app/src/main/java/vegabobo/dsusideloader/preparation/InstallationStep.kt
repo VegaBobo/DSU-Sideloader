@@ -32,8 +32,8 @@ enum class InstallationStep {
     ERROR_NO_AVAIL_STORAGE,
     ERROR_F2FS_WRONG_PATH,
     ERROR_EXTENTS,
-    ERROR_SELINUX_A10,
-    ERROR_SELINUX_A10_ROOTLESS,
+    ERROR_SELINUX,
+    ERROR_SELINUX_ROOTLESS,
 
     // Once installation is finished
     INSTALL_SUCCESS,

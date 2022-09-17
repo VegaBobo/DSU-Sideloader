@@ -2,7 +2,7 @@ package vegabobo.dsusideloader.util
 
 import android.util.Log
 
-class VerificationUtils {
+class DevicePropUtils {
 
     companion object {
 
@@ -10,7 +10,12 @@ class VerificationUtils {
             return getSystemProperty("ro.boot.dynamic_partitions") == "true"
         }
 
-        private fun getSystemProperty(key: String?): String? {
+        fun isUsingCustomGsiBinary(): Float {
+            val minAllowed = getSystemProperty("ro.vegabobo.dsusideloader.gsid_min_alloc")
+            return if (minAllowed.isNotEmpty()) minAllowed.toFloat() else 0.40F
+        }
+
+        private fun getSystemProperty(key: String?): String {
             var value: String? = null
             try {
                 value = Class.forName("android.os.SystemProperties")
@@ -18,7 +23,7 @@ class VerificationUtils {
             } catch (e: Exception) {
                 Log.e("getSystemProperty", e.stackTraceToString())
             }
-            return value
+            return value.toString()
         }
     }
 

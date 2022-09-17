@@ -103,7 +103,8 @@ fun Home(
                     onClickDiscardDsu = { homeViewModel.showDiscardSheet() },
                     onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
                     onClickViewLogs = { homeViewModel.toggleLogsView() },
-                    onClickViewCommands = { navController.navigate(Destinations.ADBInstallation) }
+                    onClickViewCommands = { navController.navigate(Destinations.ADBInstallation) },
+                    minPercentageOfFreeStorage = String.format("%.0f", homeViewModel.minAllowedAlloc * 100)
                 )
                 UserdataCard(
                     isEnabled = uiState.isInstalling(),

@@ -12,12 +12,13 @@ import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
 
 @Composable
 fun StorageWarningCard(
+    minPercentageOfFreeStorage: String = "40",
     onClick: () -> Unit
 ) {
     SimpleCard(
         modifier = Modifier.fillMaxWidth(),
         cardTitle = stringResource(id = R.string.storage_warning),
-        text = stringResource(id = R.string.storage_warning_description, "40")
+        text = stringResource(id = R.string.storage_warning_description, minPercentageOfFreeStorage)
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             PrimaryButton(text = stringResource(id = R.string.continue_anyway), onClick = onClick)

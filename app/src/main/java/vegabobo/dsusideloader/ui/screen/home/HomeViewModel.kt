@@ -44,6 +44,8 @@ class HomeViewModel @Inject constructor(
     var checkReadLogsPermission = true
     var installationJob: Job = Job()
 
+    val minAllowedAlloc = DevicePropUtils.isUsingCustomGsiBinary()
+
     var logger: LogcatDiagnostic? = null
 
     //
@@ -74,7 +76,7 @@ class HomeViewModel @Inject constructor(
     fun initialChecks() {
         updateAdditionalCardState(AdditionalCard.NONE)
 
-        if (checkDynamicPartitions && !VerificationUtils.hasDynamicPartitions()) {
+        if (checkDynamicPartitions && !DevicePropUtils.hasDynamicPartitions()) {
             updateAdditionalCardState(AdditionalCard.NO_DYNAMIC_PARTITIONS)
             return
         }
@@ -229,7 +231,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun startLogging() {
-        if (logger != null && logger!!.isLogging) {
+        if (logger != null && logger!!.isLogging.get()) {
             logger!!.destroy()
         } else {
             logger = LogcatDiagnostic(
@@ -261,7 +263,7 @@ class HomeViewModel @Inject constructor(
 
     fun onClickCancelInstallationButton() {
         resetInstallationCard()
-        if (session.getOperationMode() != OperationMode.ADB && logger != null && logger!!.isLogging) {
+        if (session.getOperationMode() != OperationMode.ADB && logger != null && logger!!.isLogging.get()) {
             logger!!.destroy()
             logger = null
             // Since stopping installation requires MANAGE_DYNAMIC_SYSTEM
@@ -306,13 +308,16 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onClickUnmountSdCardAndRetry() {
-        session.preferences.isUnmountSdCard = true
-        startInstallation()
+        updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
+        viewModelScope.launch(Dispatchers.IO + installationJob) {
+            session.preferences.isUnmountSdCard = true
+            startInstallation()
+        }
     }
 
     fun onClickSetSeLinuxPermissive() {
         viewModelScope.launch(Dispatchers.IO + installationJob) {
-            Shell.cmd("setenforce 0").submit()
+            Shell.cmd("setenforce 0").exec()
             startInstallation()
             startLogging()
         }
@@ -338,9 +343,9 @@ class HomeViewModel @Inject constructor(
 
     private fun onInstallationError(error: InstallationStep, errorContent: String) =
         updateInstallationCard {
-            if (error == InstallationStep.ERROR_SELINUX_A10 && !PrivilegedProvider.isRoot()) {
+            if (error == InstallationStep.ERROR_SELINUX && !PrivilegedProvider.isRoot()) {
                 it.copy(
-                    installationStep = InstallationStep.ERROR_SELINUX_A10_ROOTLESS,
+                    installationStep = InstallationStep.ERROR_SELINUX_ROOTLESS,
                     errorContent = errorContent
                 )
             } else {
@@ -370,7 +375,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun updateUserdataSize(input: String) {
-        val maxAllocationUserdata = StorageUtils.maximumAllowedAllocation()
+        val maxAllocationUserdata = StorageUtils.maximumAllowedAllocation(minAllowedAlloc)
         val selectedSize = FilenameUtils.getDigits(input)
         val sizeWithSuffix = FilenameUtils.appendToString(input, "GB")
 

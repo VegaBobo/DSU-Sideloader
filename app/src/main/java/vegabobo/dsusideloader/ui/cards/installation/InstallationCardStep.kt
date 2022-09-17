@@ -13,6 +13,7 @@ import vegabobo.dsusideloader.ui.screen.home.InstallationCardState
 fun InstallationCardStep(
     uiState: InstallationCardState,
     textFieldInteraction: MutableInteractionSource,
+    minPercentageOfFreeStorage: String = "40",
     onClickClear: () -> Unit,
     onClickInstall: () -> Unit,
     onClickRetryInstallation: () -> Unit,
@@ -179,7 +180,7 @@ fun InstallationCardStep(
             )
         InstallationStep.ERROR_NO_AVAIL_STORAGE ->
             ProgressableCardContent(
-                text = stringResource(R.string.storage_error_description, "40"),
+                text = stringResource(R.string.storage_error_description, minPercentageOfFreeStorage),
                 textFirstButton = stringResource(id = R.string.try_again),
                 onClickFirstButton = onClickRetryInstallation,
                 textSecondButton = stringResource(id = R.string.cancel),
@@ -201,10 +202,10 @@ fun InstallationCardStep(
                 text = stringResource(R.string.extents_error_description),
                 textFirstButton = stringResource(id = R.string.view_logs),
                 onClickFirstButton = onClickViewLogs,
-                textSecondButton = stringResource(id = R.string.ok),
+                textSecondButton = stringResource(id = R.string.mreturn),
                 onClickSecondButton = onClickClear
             )
-        InstallationStep.ERROR_SELINUX_A10 ->
+        InstallationStep.ERROR_SELINUX ->
             ProgressableCardContent(
                 text = stringResource(R.string.selinux_error_description),
                 textFirstButton = stringResource(id = R.string.selinux_error_action),
@@ -212,13 +213,13 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation
             )
-        InstallationStep.ERROR_SELINUX_A10_ROOTLESS ->
+        InstallationStep.ERROR_SELINUX_ROOTLESS ->
             ProgressableCardContent(
                 text = stringResource(R.string.selinux_error_description),
                 textFirstButton = stringResource(id = R.string.view_logs),
                 onClickFirstButton = onClickViewLogs,
-                textSecondButton = stringResource(id = R.string.cancel),
-                onClickSecondButton = onClickCancelInstallation
+                textSecondButton = stringResource(id = R.string.mreturn),
+                onClickSecondButton = onClickClear
             )
         InstallationStep.INSTALL_SUCCESS ->
             ProgressableCardContent(

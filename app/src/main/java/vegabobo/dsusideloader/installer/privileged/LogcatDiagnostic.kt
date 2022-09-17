@@ -2,6 +2,7 @@ package vegabobo.dsusideloader.installer.privileged
 
 import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.util.CmdRunner
+import java.util.concurrent.atomic.AtomicBoolean
 
 class LogcatDiagnostic(
     private val onInstallationError: (error: InstallationStep, errorInfo: String) -> Unit,
@@ -12,11 +13,11 @@ class LogcatDiagnostic(
 ) {
 
     var logs = ""
-    var isLogging = false
+    val isLogging = AtomicBoolean(false)
 
     fun startLogging() {
         logs = ""
-        isLogging = true
+        isLogging.set(true)
         CmdRunner.run("logcat -c")
         CmdRunner.runReadEachLine("logcat --format brief | grep -e gsid -e DynamicSystem | grep -v OUT") {
 
@@ -24,6 +25,9 @@ class LogcatDiagnostic(
                 onStepUpdate(InstallationStep.INSTALLING)
                 onInstallationProgressUpdate(0F, "userdata")
             }
+
+            if (!isLogging.get())
+                return@runReadEachLine
 
             logs += "$it\n"
             onLogLineReceived()
@@ -33,13 +37,13 @@ class LogcatDiagnostic(
              * probably gsid is trying to allocate into external sdcard
              * however it throws error, likely due selinux denial
              * E gsid    : realpath failed: /mnt/media_rw/AE5C-6D79/dsu: Permission denied
-             * Solutions -> run app in system-mode or temporary unmount sdcard
+             * Solutions -> install Magisk module (which may include sepolicy rules to fix that) or temporary unmount sdcard
              */
             if (it.contains("realpath failed")
                 && it.contains("Permission denied")
             ) {
-                destroy()
                 onInstallationError(InstallationStep.ERROR_EXTERNAL_SDCARD_ALLOC, it)
+                destroy()
                 return@runReadEachLine
             }
 
@@ -49,8 +53,8 @@ class LogcatDiagnostic(
              * Solutions -> delete some stuff
              */
             if (it.contains("is below the minimum threshold of")) {
-                destroy()
                 onInstallationError(InstallationStep.ERROR_NO_AVAIL_STORAGE, it)
+                destroy()
                 return@runReadEachLine
             }
 
@@ -58,40 +62,40 @@ class LogcatDiagnostic(
              * Some kernels are registering f2fs as f2fs_dev, throwing error
              * for reference: https://cs.android.com/android/platform/superproject/+/android-12.1.0_r8:system/core/fs_mgr/libfiemap/utility.cpp;l=113
              * E gsid    : read failed: /sys/fs/f2fs/dm-4/features: No such file or directory
-             * Solutions -> run app in system-mode or fix kernel
+             * Solutions -> install Magisk module (which include custom gsid binary, that checks f2fs_dev before failing) or fix kernel
              */
             if (it.contains("read failed")
                 && it.contains("No such file or directory")
                 && it.contains("f2fs")
             ) {
-                destroy()
                 onInstallationError(InstallationStep.ERROR_F2FS_WRONG_PATH, it)
+                destroy()
                 return@runReadEachLine
             }
 
             /**
-             * Android 10 does not set sepolicy rules for gsid
+             * Some ROMs may not set required sepolicy rules to get gsid work correctly
              * W Binder:10924_1: type=1400 audit(0.0:51): avc: denied { getattr } for path="/dev/block/mmcblk0p42" \
              * dev="tmpfs" ino=12407 scontext=u:r:gsid:s0 tcontext=u:object_r:mmcblk_device:s0 tclass=blk_file permissive=0
              * E gsid    : Failed to get stat for block device: /dev/block/mmcblk0p42: Permission denied
-             * Solutions -> run app in system-mode or setenforce 0
+             * Solutions -> install Magisk module (which may include sepolicy rules to fix that) or setenforce 0
              */
             if (it.contains("Failed to get stat for block device")
                 && it.contains("Permission denied")
             ) {
+                onInstallationError(InstallationStep.ERROR_SELINUX, it)
                 destroy()
-                onInstallationError(InstallationStep.ERROR_SELINUX_A10, it)
                 return@runReadEachLine
             }
 
             /**
              * Android 10 seems to require a high extents value
              * E gsid : File is too fragmented, needs more than 512 extents.
-             * Solutions -> run app in system-mode (not tested)
+             * Possible solution -> install Magisk module (not tested at time i've been writing this)
              */
-            if (it.contains("File is too fragmented")) {
-                destroy()
+            if (it.contains("File is too fragmented") && it.contains("512")) {
                 onInstallationError(InstallationStep.ERROR_EXTENTS, it)
+                destroy()
                 return@runReadEachLine
             }
 
@@ -127,8 +131,8 @@ class LogcatDiagnostic(
              * DynamicSystemInstallationService: status: READY, cause: INSTALL_COMPLETED
              */
             if (it.contains("READY") && it.contains("INSTALL_COMPLETED")) {
-                destroy()
                 onInstallationSuccess()
+                destroy()
                 return@runReadEachLine
             }
 
@@ -136,9 +140,9 @@ class LogcatDiagnostic(
     }
 
     fun destroy() {
-        if (isLogging) {
+        if (isLogging.get()) {
             CmdRunner.destroy()
-            isLogging = false
+            isLogging.set(false)
         }
     }
 
