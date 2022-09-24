@@ -54,7 +54,6 @@ class OperationModeUtils {
     companion object {
 
         fun getOperationMode(context: Context, checkShizuku: Boolean): OperationMode {
-
             if (isDsuPermissionGranted(context)) {
                 if (Shell.getShell().isRoot)
                     return OperationMode.SYSTEM_AND_ROOT
@@ -80,23 +79,23 @@ class OperationModeUtils {
             }
         }
 
-        fun isPermissionGranted(context: Context, permission: String): Boolean {
+        private fun isPermissionGranted(context: Context, permission: String): Boolean {
             return context.checkCallingOrSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
         }
 
-        fun isDsuPermissionGranted(context: Context): Boolean {
+        private fun isDsuPermissionGranted(context: Context): Boolean {
             val dynPermission = "android.permission.INSTALL_DYNAMIC_SYSTEM"
             return isPermissionGranted(context, dynPermission)
         }
 
         fun isReadLogsPermissionGranted(context: Context): Boolean {
-            val dynPermission = "android.permission.READ_LOGS"
-            return isPermissionGranted(context, dynPermission)
+            val readLogsPermission = "android.permission.READ_LOGS"
+            return isPermissionGranted(context, readLogsPermission)
         }
 
         fun isShizukuPermissionGranted(context: Context): Boolean {
             return if (Shizuku.isPreV11() || Shizuku.getVersion() < 11) {
-                context.checkSelfPermission(ShizukuProvider.PERMISSION) == PackageManager.PERMISSION_GRANTED
+                isPermissionGranted(context, ShizukuProvider.PERMISSION)
             } else {
                 Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
             }

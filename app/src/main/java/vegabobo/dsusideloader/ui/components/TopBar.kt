@@ -11,16 +11,15 @@ fun TopBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     barTitle: String,
     icon: ImageVector? = null,
-    iconContentDescription: String? = "Unknown",
+    iconContentDescription: String? = "icon",
     onClickIcon: () -> Unit = {},
-    showBackButton: Boolean = false,
-    onClickBackButton: () -> Unit = {},
+    onClickBackButton: (() -> Unit)? = null,
 ) {
     LargeTopAppBar(
         colors = TopAppBarDefaults.largeTopAppBarColors(scrolledContainerColor = MaterialTheme.colorScheme.background),
         title = { Text(text = barTitle, style = MaterialTheme.typography.headlineMedium) },
         navigationIcon = {
-            if(showBackButton)
+            if (onClickBackButton != null)
                 IconButton(onClickBackButton) {
                     Icon(
                         imageVector = Icons.Outlined.ArrowBack,

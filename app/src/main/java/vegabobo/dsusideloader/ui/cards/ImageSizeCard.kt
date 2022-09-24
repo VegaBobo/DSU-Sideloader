@@ -5,11 +5,13 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vegabobo.dsusideloader.R
@@ -43,12 +45,12 @@ fun ImageSizeCard(
                     modifier = Modifier.padding(bottom = 4.dp),
                     isEnabled = !isEnabled,
                     isError = false,
-                    isNumberOnly = true,
-                    textFieldValue = uiState.content,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    textFieldValue = uiState.text,
                     textFieldTitle = stringResource(id = R.string.image_size_info),
                     onValueChange = onValueChange
                 )
-                AnimatedVisibility(visible = uiState.content.isEmpty()) {
+                AnimatedVisibility(visible = uiState.text.isEmpty()) {
                     Text(
                         modifier = Modifier.padding(start = 1.dp),
                         text = stringResource(id = R.string.not_recommended_option),

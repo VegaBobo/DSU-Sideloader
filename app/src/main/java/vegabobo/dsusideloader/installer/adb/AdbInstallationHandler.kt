@@ -8,7 +8,7 @@ import vegabobo.dsusideloader.model.Session
  * Used only for installing over adb commands
  */
 class AdbInstallationHandler(
-    val storageManager: StorageManager,
+    private val storageManager: StorageManager,
     val session: Session
 ) {
     fun generate(onGenerated: (String) -> Unit) {

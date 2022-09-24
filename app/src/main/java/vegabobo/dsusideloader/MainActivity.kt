@@ -26,20 +26,16 @@ import vegabobo.dsusideloader.util.OperationMode
 import vegabobo.dsusideloader.util.OperationModeUtils
 import javax.inject.Inject
 
-object ActivityAction {
-    const val FINISH_APP = 1
-}
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListener {
 
     @Inject
     lateinit var session: Session
 
-    private var checkShizuku = false
+    private var shouldCheckShizuku = false
 
     private fun setupSessionOperationMode() {
-        val operationMode = OperationModeUtils.getOperationMode(application, checkShizuku)
+        val operationMode = OperationModeUtils.getOperationMode(application, shouldCheckShizuku)
         session.setOperationMode(operationMode)
     }
 
@@ -78,7 +74,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
             return@OnBinderReceivedListener
         }
         Shizuku.bindUserService(userServiceArgs, PrivilegedProvider.connection)
-        checkShizuku = true
+        shouldCheckShizuku = true
         setupSessionOperationMode()
     }
 
@@ -93,7 +89,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
     override fun onRequestPermissionResult(requestCode: Int, grantResult: Int) {
         if (grantResult == PackageManager.PERMISSION_GRANTED && requestCode == SHIZUKU_REQUEST_CODE) {
             Shizuku.bindUserService(userServiceArgs, PrivilegedProvider.connection)
-            checkShizuku = true
+            shouldCheckShizuku = true
             setupSessionOperationMode()
         }
         Shizuku.removeRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
@@ -138,15 +134,10 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
         super.onCreate(savedInstanceState)
         Shell.getShell {}
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        val activityRequest: (Int) -> Unit = {
-            when (it) {
-                ActivityAction.FINISH_APP -> this.finishAffinity()
-            }
-        }
 
         setContent {
             DSUHelperTheme {
-                Navigation(activityRequest)
+                Navigation()
             }
         }
 

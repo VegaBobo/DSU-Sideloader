@@ -15,7 +15,7 @@ import vegabobo.dsusideloader.ui.components.SimpleCard
 import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
 
 @Composable
-fun ContentCopyableCard(
+fun CopyableTextCard(
     text: String,
     showToast: Boolean = true,
 ) {

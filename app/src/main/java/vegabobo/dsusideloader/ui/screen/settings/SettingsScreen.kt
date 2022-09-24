@@ -3,7 +3,6 @@ package vegabobo.dsusideloader.ui.screen.settings
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,21 +20,15 @@ fun Settings(
 ) {
     val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        settingsViewModel.checkIfRootIsAvail()
-    }
-
     ApplicationScreen(
         topBar = {
             TopBar(
                 barTitle = stringResource(id = R.string.preferences),
                 scrollBehavior = it,
-                showBackButton = true,
                 onClickBackButton = { navController.navigateUp() }
             )
         }
     ) {
-
         Title(title = stringResource(id = R.string.installation))
         PreferenceItem(
             title = stringResource(id = R.string.builtin_installer),

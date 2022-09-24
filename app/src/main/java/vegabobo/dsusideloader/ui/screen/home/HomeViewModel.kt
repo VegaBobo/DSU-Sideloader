@@ -13,13 +13,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import vegabobo.dsusideloader.BuildConfig
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.core.StorageManager
 import vegabobo.dsusideloader.installer.adb.AdbInstallationHandler
 import vegabobo.dsusideloader.installer.privileged.DsuInstallationHandler
 import vegabobo.dsusideloader.installer.privileged.LogcatDiagnostic
-import vegabobo.dsusideloader.installer.root.RootedInstallationHandler
-import vegabobo.dsusideloader.model.DSUInstallation
+import vegabobo.dsusideloader.installer.root.DSUInstaller
+import vegabobo.dsusideloader.model.DSUInstallationSource
 import vegabobo.dsusideloader.model.Session
 import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.preparation.InstallationStep
@@ -42,17 +43,22 @@ class HomeViewModel @Inject constructor(
     var checkDynamicPartitions = true
     var checkUnavaiableStorage = true
     var checkReadLogsPermission = true
+
     var installationJob: Job = Job()
-
-    val minAllowedAlloc = DevicePropUtils.isUsingCustomGsiBinary()
-
     var logger: LogcatDiagnostic? = null
+
+    private val allocPercentage = DevicePropUtils.getGsidBinaryAllowedPerc()
+    val allocPercentageInt = String.format("%.0f", allocPercentage * 100).toInt()
+
+    private val storageStats = StorageUtils.getAllocInfo(allocPercentage)
+    private val hasAvailableStorage = storageStats.first
+    private val maximumAllowedForAllocation = storageStats.second
 
     //
     // Helper methods used for controlling UI State
     //
 
-    private fun updateAdditionalCardState(additionalCard: AdditionalCard) =
+    private fun updateAdditionalCardState(additionalCard: AdditionalCardState) =
         _uiState.update { it.copy(additionalCard = additionalCard) }
 
     private fun updateUserdataCard(update: (UserDataCardState) -> UserDataCardState) =
@@ -64,58 +70,57 @@ class HomeViewModel @Inject constructor(
     private fun updateImageSizeCard(update: (ImageSizeCardState) -> ImageSizeCardState) =
         _uiState.update { it.copy(imageSizeCard = update(it.imageSizeCard.copy())) }
 
-    private fun updateSheetState(sheetDisplay: SheetDisplay) =
+    private fun updateSheetState(sheetDisplay: SheetDisplayState) =
         _uiState.update { it.copy(sheetDisplay = sheetDisplay) }
 
-    fun dismissSheet() = updateSheetState(SheetDisplay.NONE)
+    fun resetInstallationCard() =
+        _uiState.update {
+            it.copy(
+                installationCard = InstallationCardState(),
+                sheetDisplay = SheetDisplayState.NONE
+            )
+        }
+
+    fun dismissSheet() = updateSheetState(SheetDisplayState.NONE)
 
     //
     // Home startup and checks
     //
 
     fun initialChecks() {
-        updateAdditionalCardState(AdditionalCard.NONE)
-
         if (checkDynamicPartitions && !DevicePropUtils.hasDynamicPartitions()) {
-            updateAdditionalCardState(AdditionalCard.NO_DYNAMIC_PARTITIONS)
+            updateAdditionalCardState(AdditionalCardState.NO_DYNAMIC_PARTITIONS)
             return
         }
 
-        if (checkUnavaiableStorage && !StorageUtils.hasAvailableStorage()) {
-            updateAdditionalCardState(AdditionalCard.UNAVAIABLE_STORAGE)
+        if (checkUnavaiableStorage && !hasAvailableStorage) {
+            updateAdditionalCardState(AdditionalCardState.UNAVAIABLE_STORAGE)
             return
         }
 
-        if (session.getOperationMode() == OperationMode.SHIZUKU
+        if (session.getOperationMode() == OperationMode.SHIZUKU && checkReadLogsPermission
             && !OperationModeUtils.isReadLogsPermissionGranted(application)
-            && checkReadLogsPermission
         ) {
-            updateAdditionalCardState(AdditionalCard.MISSING_READ_LOGS_PERMISSION)
+            updateAdditionalCardState(AdditionalCardState.MISSING_READ_LOGS_PERMISSION)
             return
         }
 
         viewModelScope.launch {
             val result = readStringPref(AppPrefs.SAF_PATH)
             if (!storageManager.arePermissionsGrantedToFolder(result))
-                updateAdditionalCardState(AdditionalCard.SETUP_STORAGE)
+                updateAdditionalCardState(AdditionalCardState.SETUP_STORAGE)
             else
-                _uiState.update { it.copy(canInstall = true) }
+                _uiState.update { it.copy(passedInitialChecks = true) }
         }
 
+        // Check if a DSU is already installed
+        // Root-only because MANAGE_DYNAMIC_SYSTEM is required
         if (session.isRoot()) {
-            viewModelScope.launch(Dispatchers.IO) {
-                if (PrivilegedProvider.isRoot() &&
-                    PrivilegedProvider.getService().isInstalled
-                ) {
-                    updateInstallationCard {
-                        it.copy(
-                            installationStep = InstallationStep.DSU_ALREADY_INSTALLED,
-                        )
-                    }
-                }
+            PrivilegedProvider.run {
+                if (isInstalled)
+                    updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
             }
         }
-
     }
 
     fun setupUserPreferences() {
@@ -142,14 +147,14 @@ class HomeViewModel @Inject constructor(
 
     fun onClickCancel() {
         if (uiState.value.isInstalling()) {
-            updateSheetState(SheetDisplay.CANCEL_INSTALLATION)
+            updateSheetState(SheetDisplayState.CANCEL_INSTALLATION)
         }
     }
 
     fun onClickInstall() {
-        session.userSelection.setUserDataSize(uiState.value.userDataCard.content)
-        session.userSelection.setImageSize(uiState.value.imageSizeCard.content)
-        updateSheetState(SheetDisplay.CONFIRM_INSTALLATION)
+        session.userSelection.setUserDataSize(uiState.value.userDataCard.text)
+        session.userSelection.setImageSize(uiState.value.imageSizeCard.text)
+        updateSheetState(SheetDisplayState.CONFIRM_INSTALLATION)
     }
 
     fun onConfirmInstallationSheet() {
@@ -158,8 +163,7 @@ class HomeViewModel @Inject constructor(
         installationJob = Job()
         viewModelScope.launch(Dispatchers.IO + installationJob) {
             session.preferences.isUnmountSdCard = readBoolPref(AppPrefs.UMOUNT_SD)
-            session.preferences.useBuiltinInstaller =
-                readBoolPref(AppPrefs.USE_BUILTIN_INSTALLER)
+            session.preferences.useBuiltinInstaller = readBoolPref(AppPrefs.USE_BUILTIN_INSTALLER)
             Preparation(
                 storageManager = storageManager,
                 session = session,
@@ -172,40 +176,37 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun onPreparationFinished(dsuInstallation: DSUInstallation) {
+    private fun onPreparationFinished(dsuInstallation: DSUInstallationSource) {
         session.dsuInstallation = dsuInstallation
         startInstallation()
     }
 
     private fun startInstallation() {
-        if (installationJob.isCancelled)
-            return
-
         updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
+
         if (session.getOperationMode() == OperationMode.ADB) {
-            startRootlessInstallation()
+            setupAdbInstallation()
             return
         }
 
         if (session.preferences.useBuiltinInstaller && session.isRoot()) {
-            startRootInstallation()
+            startDSUInstallation()
             return
         }
 
         startPrivilegedInstallation()
     }
 
-    private fun startPrivilegedInstallation() {
-        updateInstallationCard { it.copy(installationStep = InstallationStep.WAITING_USER_CONFIRMATION) }
-        DsuInstallationHandler(session).startInstallation()
-        if (OperationModeUtils.isReadLogsPermissionGranted(application) || session.isRoot())
-            viewModelScope.launch { startLogging() }
-        else
-            updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
+    private fun setupAdbInstallation() {
+        AdbInstallationHandler(storageManager, session).generate { scriptPath ->
+            session.installationScript = scriptPath
+            resetInstallationCard()
+            updateInstallationCard { it.copy(installationStep = InstallationStep.REQUIRES_ADB_CMD_TO_CONTINUE) }
+        }
     }
 
-    private fun startRootInstallation() {
-        RootedInstallationHandler(
+    private fun startDSUInstallation() {
+        DSUInstaller(
             application = application,
             userdataSize = session.userSelection.userSelectedUserdata,
             dsuInstallation = session.dsuInstallation,
@@ -218,18 +219,16 @@ class HomeViewModel @Inject constructor(
         ).invoke()
     }
 
-    private fun onRootInstallationSuccess() {
-        updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS) }
+    private fun startPrivilegedInstallation() {
+        updateInstallationCard { it.copy(installationStep = InstallationStep.WAITING_USER_CONFIRMATION) }
+        DsuInstallationHandler(session).startInstallation()
+        if (session.isRoot() || OperationModeUtils.isReadLogsPermissionGranted(application))
+            viewModelScope.launch { startLogging() }
+        else
+            updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
     }
 
-    private fun startRootlessInstallation() {
-        AdbInstallationHandler(storageManager, session).generate {
-            session.installationScript = it
-            resetInstallationCard()
-            updateInstallationCard { it.copy(installationStep = InstallationStep.REQUIRES_ADB_CMD_TO_CONTINUE) }
-        }
-    }
-
+    // Track and diagnose installation by reading logcat
     private fun startLogging() {
         if (logger != null && logger!!.isLogging.get()) {
             logger!!.destroy()
@@ -245,35 +244,25 @@ class HomeViewModel @Inject constructor(
         logger!!.startLogging()
     }
 
-    private fun onLogLineReceived() {
-        _uiState.update { it.copy(installationLogs = logger!!.logs) }
+    fun saveLogs(uriToSaveLogs: Uri) {
+        storageManager.writeStringToUri(uiState.value.installationLogs, uriToSaveLogs)
     }
-
-    private fun onInstallationSuccess() {
-        updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
-    }
-
-    fun resetInstallationCard() =
-        _uiState.update {
-            it.copy(
-                installationCard = InstallationCardState(),
-                sheetDisplay = SheetDisplay.NONE
-            )
-        }
 
     fun onClickCancelInstallationButton() {
         resetInstallationCard()
-        if (session.getOperationMode() != OperationMode.ADB && logger != null && logger!!.isLogging.get()) {
+        if (session.getOperationMode() != OperationMode.ADB
+            && logger != null && logger!!.isLogging.get()
+        ) {
             logger!!.destroy()
             logger = null
             // Since stopping installation requires MANAGE_DYNAMIC_SYSTEM
             // then, we stop installation using other way, not so polite, but works :)))
-            PrivilegedProvider.getService().forceStopPackage("com.android.dynsystem")
+            PrivilegedProvider.run { forceStopPackage("com.android.dynsystem") }
         }
 
         if (installationJob.isActive)
             installationJob.cancel()
-        session.dsuInstallation = DSUInstallation()
+        session.dsuInstallation = DSUInstallationSource()
     }
 
     //
@@ -281,26 +270,34 @@ class HomeViewModel @Inject constructor(
     //
 
     fun onClickRebootToDynOS() {
-        PrivilegedProvider.getService().setEnable(true, true)
-        Shell.cmd("reboot").submit()
+        updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
+        PrivilegedProvider.run {
+            setEnable(true, true)
+            Shell.cmd("reboot").exec()
+        }
     }
 
     fun onClickDiscardGsiAndStartInstallation() {
-        viewModelScope.launch(Dispatchers.IO + installationJob) {
-            PrivilegedProvider.getService().remove()
-            startRootInstallation()
+        updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
+        PrivilegedProvider.run {
+            remove()
+            forceStopPackage("com.android.dynsystem")
+            startDSUInstallation()
         }
     }
 
     fun onClickDiscardGsi() {
-        viewModelScope.launch {
-            PrivilegedProvider.getService().remove()
+        updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
+        PrivilegedProvider.run {
+            remove()
+            forceStopPackage("com.android.dynsystem")
+            dismissSheet()
+            resetInstallationCard()
         }
-        dismissSheet()
-        resetInstallationCard()
     }
 
     fun onClickRetryInstallation() {
+        updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
         viewModelScope.launch(Dispatchers.IO + installationJob) {
             startInstallation()
             startLogging()
@@ -316,6 +313,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onClickSetSeLinuxPermissive() {
+        updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
         viewModelScope.launch(Dispatchers.IO + installationJob) {
             Shell.cmd("setenforce 0").exec()
             startInstallation()
@@ -323,96 +321,54 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun showDiscardSheet() {
-        updateSheetState(SheetDisplay.DISCARD_DSU)
-    }
-
-    //
-    // Progress tracking
-    //
-
-    private fun onStepUpdate(step: InstallationStep) =
-        updateInstallationCard {
-            it.copy(installationStep = step)
-        }
-
-    private fun onPreparationProgressUpdate(progress: Float) =
-        updateInstallationCard {
-            it.copy(installationProgress = progress)
-        }
-
-    private fun onInstallationError(error: InstallationStep, errorContent: String) =
-        updateInstallationCard {
-            if (error == InstallationStep.ERROR_SELINUX && !PrivilegedProvider.isRoot()) {
-                it.copy(
-                    installationStep = InstallationStep.ERROR_SELINUX_ROOTLESS,
-                    errorContent = errorContent
-                )
-            } else {
-                it.copy(installationStep = error, errorContent = errorContent)
-            }
-        }
-
-    private fun onInstallationProgressUpdate(progress: Float, partition: String) =
-        updateInstallationCard {
-            it.copy(workingPartition = partition, installationProgress = progress)
-        }
-
-    private fun onCreatePartition(partition: String) =
-        updateInstallationCard {
-            it.copy(
-                installationStep = InstallationStep.CREATING_PARTITION,
-                workingPartition = partition
-            )
-        }
+    fun showDiscardSheet() = updateSheetState(SheetDisplayState.DISCARD_DSU)
 
     //
     // Userdata card
     //
 
-    fun onCheckUserdataCard() {
-        updateUserdataCard { it.copy(isSelected = it.isSelected.not(), content = "") }
-    }
+    fun onCheckUserdataCard() =
+        updateUserdataCard { it.copy(isSelected = !it.isSelected, text = "") }
 
     fun updateUserdataSize(input: String) {
-        val maxAllocationUserdata = StorageUtils.maximumAllowedAllocation(minAllowedAlloc)
         val selectedSize = FilenameUtils.getDigits(input)
-        val sizeWithSuffix = FilenameUtils.appendToString(input, "GB")
+        val sizeWithSuffix = FilenameUtils.appendToDigitsStrings(input, "GB")
 
-        if (selectedSize.isNotEmpty() && selectedSize.toInt() > maxAllocationUserdata) {
-            val fixedSize = FilenameUtils.appendToString("$maxAllocationUserdata", "GB")
+        if (selectedSize.isNotEmpty() && selectedSize.toInt() > maximumAllowedForAllocation) {
+            val fixedSize =
+                FilenameUtils.appendToDigitsStrings("$maximumAllowedForAllocation", "GB")
             updateUserdataCard {
                 it.copy(
-                    content = fixedSize,
+                    text = fixedSize,
                     isError = true,
-                    maximumAllowed = maxAllocationUserdata,
+                    maximumAllowed = maximumAllowedForAllocation,
                 )
             }
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch {
                 delay(5000)
                 updateUserdataCard { it.copy(isError = false) }
             }
             return
         }
 
-        updateUserdataCard { it.copy(content = sizeWithSuffix) }
+        updateUserdataCard { it.copy(text = sizeWithSuffix) }
     }
 
     //
-    // Imagesize card
+    // Image size card
     //
 
     fun onCheckImageSizeCard() {
         if (!uiState.value.imageSizeCard.isSelected)
-            updateSheetState(SheetDisplay.IMAGESIZE_WARNING)
+            updateSheetState(SheetDisplayState.IMAGESIZE_WARNING)
         else
             dismissSheet()
-        updateImageSizeCard { it.copy(isSelected = it.isSelected.not(), content = "") }
+        updateImageSizeCard { it.copy(isSelected = !it.isSelected, text = "") }
     }
 
     fun updateImageSize(input: String) {
-        val inputWithSuffix = FilenameUtils.appendToString(input, "b")
-        updateImageSizeCard { it.copy(content = inputWithSuffix) }
+        val inputWithSuffix = FilenameUtils.appendToDigitsStrings(input, "b")
+        updateImageSizeCard { it.copy(text = inputWithSuffix) }
     }
 
     //
@@ -431,7 +387,8 @@ class HomeViewModel @Inject constructor(
 
     fun onFileSelectionResult(uri: Uri) {
         val filename = FilenameUtils.queryName(application.contentResolver, uri)
-        if (!FilenameUtils.isFileSupported(filename)) {
+        val isFileSupported = arrayOf(".gz", ".xz", ".zip", ".img", ".gzip").contains(filename)
+        if (isFileSupported) {
             viewModelScope.launch {
                 updateInstallationCard { it.copy(isError = true, isTextFieldEnabled = false) }
                 delay(2000)
@@ -444,24 +401,28 @@ class HomeViewModel @Inject constructor(
         session.userSelection.selectedFileUri = uri
         updateInstallationCard {
             it.copy(
-                content = filename,
+                text = filename,
                 isTextFieldEnabled = false,
                 isInstallable = true
             )
         }
     }
 
+    //
+    // Read logs permission warning
+    //
+
     fun grantReadLogs() {
-        updateAdditionalCardState(AdditionalCard.GRANTING_READ_LOGS_PERMISSION)
+        updateAdditionalCardState(AdditionalCardState.GRANTING_READ_LOGS_PERMISSION)
         val intent = Intent()
         intent.setClassName(
-            "vegabobo.dsusideloader",
-            "vegabobo.dsusideloader.MainActivity"
+            BuildConfig.APPLICATION_ID,
+            "${BuildConfig.APPLICATION_ID}.MainActivity"
         )
         intent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
-        viewModelScope.launch(Dispatchers.IO) {
-            PrivilegedProvider.getService().grantPermission("android.permission.READ_LOGS")
-            PrivilegedProvider.getService().startActivity(intent)
+        PrivilegedProvider.run {
+            grantPermission("android.permission.READ_LOGS")
+            startActivity(intent)
         }
     }
 
@@ -470,12 +431,54 @@ class HomeViewModel @Inject constructor(
         initialChecks()
     }
 
-    fun toggleLogsView() {
-        updateSheetState(SheetDisplay.VIEW_LOGS)
+    fun showLogsWarning() {
+        updateSheetState(SheetDisplayState.VIEW_LOGS)
     }
 
-    fun saveLogs(uriToSaveLogs: Uri) {
-        storageManager.writeStringToUri(uiState.value.installationLogs, uriToSaveLogs)
+    //
+    // Progress tracking
+    //
+
+    private fun onRootInstallationSuccess() {
+        updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS_REBOOT_DYN_OS) }
     }
 
+    private fun onInstallationSuccess() {
+        updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
+    }
+
+    private fun onLogLineReceived() {
+        _uiState.update { it.copy(installationLogs = logger!!.logs) }
+    }
+
+    private fun onStepUpdate(step: InstallationStep) =
+        updateInstallationCard { it.copy(installationStep = step) }
+
+    private fun onPreparationProgressUpdate(progress: Float) =
+        updateInstallationCard { it.copy(installationProgress = progress) }
+
+    private fun onInstallationError(error: InstallationStep, errorContent: String) =
+        updateInstallationCard {
+            if (error == InstallationStep.ERROR_SELINUX && !session.isRoot()) {
+                it.copy(
+                    installationStep = InstallationStep.ERROR_SELINUX_ROOTLESS,
+                    errorText = errorContent
+                )
+            } else {
+                it.copy(installationStep = error, errorText = errorContent)
+            }
+        }
+
+    private fun onInstallationProgressUpdate(progress: Float, partition: String) =
+        updateInstallationCard {
+            it.copy(currentPartitionText = partition, installationProgress = progress)
+        }
+
+    private fun onCreatePartition(partition: String) =
+        updateInstallationCard {
+            it.copy(
+                installationStep = InstallationStep.CREATING_PARTITION,
+                currentPartitionText = partition
+            )
+        }
 }

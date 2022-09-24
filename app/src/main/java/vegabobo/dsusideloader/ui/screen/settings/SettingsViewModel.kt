@@ -5,7 +5,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,7 +12,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.model.Session
-import vegabobo.dsusideloader.service.PrivilegedProvider
 import vegabobo.dsusideloader.util.OperationModeUtils
 import javax.inject.Inject
 
@@ -34,6 +32,7 @@ class SettingsViewModel @Inject constructor(
                 togglePreference(entry.key, isEnabled)
             }
         }
+        setupRootFeatures()
     }
 
     fun togglePreference(preference: String, value: Boolean) {
@@ -53,11 +52,9 @@ class SettingsViewModel @Inject constructor(
         _uiState.update { it.copy(isShowingBuiltinInstallerSheet = isShowing) }
     }
 
-    fun checkIfRootIsAvail() {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (PrivilegedProvider.isRoot())
-                _uiState.update { it.copy(isRoot = true) }
-        }
+    private fun setupRootFeatures() {
+        if (session.isRoot())
+            _uiState.update { it.copy(isRoot = true) }
     }
 
     fun checkOperationMode(): String {

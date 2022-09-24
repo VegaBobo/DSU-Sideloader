@@ -2,7 +2,6 @@ package vegabobo.dsusideloader.util
 
 import com.topjohnwu.superuser.CallbackList
 import com.topjohnwu.superuser.Shell
-import kotlinx.coroutines.*
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -33,18 +32,14 @@ object CmdRunner {
     }
 
     private fun runCommand(cmd: String, onReceive: (String) -> Unit) {
-        CoroutineScope(Job()).launch {
-            withContext(Dispatchers.IO) {
-                process = ProcessBuilder("/bin/sh", "-c", cmd).start()
-                val bufferedReader = BufferedReader(InputStreamReader(process!!.inputStream))
-                try {
-                    var line: String
-                    while (bufferedReader.readLine().also { line = it ?: "" } != null) {
-                        if (line.isNotEmpty()) onReceive(line)
-                    }
-                } catch (_: IOException) {
-                }
+        process = ProcessBuilder("/bin/sh", "-c", cmd).start()
+        val bufferedReader = BufferedReader(InputStreamReader(process!!.inputStream))
+        try {
+            var line: String
+            while (bufferedReader.readLine().also { line = it ?: "" } != null) {
+                if (line.isNotEmpty()) onReceive(line)
             }
+        } catch (_: IOException) {
         }
     }
 
@@ -60,11 +55,11 @@ object CmdRunner {
         if (Shell.getShell().isRoot) {
             Shell.getShell().close()
             Shell.getShell()
-        } else {
-            if (process != null) {
-                process!!.destroy()
-                process = null
-            }
+            return
+        }
+        if (process != null) {
+            process!!.destroy()
+            process = null
         }
     }
 

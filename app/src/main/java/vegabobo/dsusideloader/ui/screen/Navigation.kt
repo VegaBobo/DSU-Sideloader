@@ -19,12 +19,10 @@ object Destinations {
 }
 
 @Composable
-fun Navigation(
-    activityRequest: (Int) -> Unit
-) {
+fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Destinations.Homepage) {
-        composable(Destinations.Homepage) { Home(navController, activityRequest) }
+        composable(Destinations.Homepage) { Home(navController) }
         composable(Destinations.Preferences) { Settings(navController) }
         composable(Destinations.ADBInstallation) { AdbScreen(navController) }
         composable(Destinations.About) { AboutScreen(navController) }

@@ -8,19 +8,16 @@ class StorageUtils {
 
     companion object {
 
-        fun hasAvailableStorage(): Boolean {
+        fun getAllocInfo(allowedPercentage: Float): Pair<Boolean, Int> {
             val statFs = StatFs(Environment.getDataDirectory().absolutePath)
             val blockSize = statFs.blockSizeLong
             val totalSize = statFs.blockCountLong * blockSize
             val availableSize = statFs.availableBlocksLong * blockSize
-            return ((availableSize.toFloat() / totalSize.toFloat()) * 100).roundToInt() > 40
-        }
-
-        fun maximumAllowedAllocation(allocationPercentage: Float): Int {
-            val statFs = StatFs(Environment.getDataDirectory().absolutePath)
-            val blockSize = statFs.blockSizeLong
-            val availableSize = statFs.availableBlocksLong * blockSize
-            return ((((availableSize / 1024L) / 1024L) / 1024L) * allocationPercentage).toInt()
+            val hasAvailableStorage =
+                (availableSize.toFloat() / totalSize.toFloat() * 100).roundToInt() > allowedPercentage
+            val maximumAllowedForAllocation =
+                ((availableSize / 1024L / 1024L / 1024L) * allowedPercentage).toInt()
+            return Pair(hasAvailableStorage, maximumAllowedForAllocation)
         }
 
     }

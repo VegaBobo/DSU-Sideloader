@@ -31,7 +31,7 @@ fun NotInstallingCardContent(
         isEnabled = uiState.isTextFieldEnabled,
         isError = uiState.isError,
         isReadOnly = true,
-        textFieldValue = uiState.content,
+        textFieldValue = uiState.text,
         textFieldTitle = stringResource(id = R.string.select_gsi_info)
     )
     Spacer(modifier = Modifier.padding(top = 10.dp))

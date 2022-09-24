@@ -50,8 +50,7 @@ open class DsuInstallationHandler(
                 PrivilegedProvider.getService().unmount(volume.id)
                 volumesUnmount.add(volume.id)
             }
-        val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-        scope.launch {
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             delay(30 * 1000)
             for (volume in volumesUnmount)
                 PrivilegedProvider.getService().mount(volume)

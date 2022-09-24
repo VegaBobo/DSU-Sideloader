@@ -30,7 +30,12 @@ fun LogcatCard(
                 .padding(10.dp)
                 .fillMaxSize()
         ) {
-            Text(text = logs, fontSize = 14.sp, lineHeight = 18.sp, color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                text = logs,
+                fontSize = 14.sp,
+                lineHeight = 18.sp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }

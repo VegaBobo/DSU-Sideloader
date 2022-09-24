@@ -25,10 +25,14 @@ fun DsuInfoCard(
     ) {
         Row(modifier = Modifier.padding(top = 6.dp)) {
             Spacer(modifier = Modifier.weight(1F))
-            PrimaryButton(text = stringResource(id = R.string.view_docs), onClick = onClickViewDocs)
+            PrimaryButton(
+                text = stringResource(id = R.string.view_docs),
+                onClick = onClickViewDocs
+            )
             Spacer(modifier = Modifier.padding(start = 10.dp))
             PrimaryButton(
-                text = stringResource(id = R.string.learn_more), onClick = onClickLearnMore
+                text = stringResource(id = R.string.learn_more),
+                onClick = onClickLearnMore
             )
         }
     }

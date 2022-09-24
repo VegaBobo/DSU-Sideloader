@@ -63,7 +63,7 @@ fun CustomBottomSheet(
     ModalBottomSheetLayout(
         sheetState = sheetState,
         sheetContent = {
-            BottomSheet(
+            BottomSheetContent(
                 title = title,
                 icon = icon
             ) {

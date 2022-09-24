@@ -32,16 +32,6 @@ class DataStoreUtils {
             }.first().toString()
         }
 
-        suspend fun readBoolPref(
-            dataStore: DataStore<Preferences>,
-            key: String,
-            default: Boolean,
-            onFinish: (Boolean) -> Unit = {}
-        ) {
-            val result = readBoolPref(dataStore, key, default)
-            onFinish(result)
-        }
-
         suspend fun readStringPref(
             dataStore: DataStore<Preferences>,
             key: String,

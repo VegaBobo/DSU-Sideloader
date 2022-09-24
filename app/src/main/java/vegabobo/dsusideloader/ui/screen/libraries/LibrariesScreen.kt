@@ -42,7 +42,6 @@ fun LibrariesScreen(
         topBar = {
             TopBar(
                 barTitle = stringResource(id = R.string.libraries_title),
-                showBackButton = true,
                 scrollBehavior = scrollBehavior,
                 onClickBackButton = { navController.navigateUp() })
         }

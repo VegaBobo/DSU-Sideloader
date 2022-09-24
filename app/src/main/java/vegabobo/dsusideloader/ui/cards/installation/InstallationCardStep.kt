@@ -111,7 +111,7 @@ fun InstallationCardStep(
         }
         InstallationStep.INSTALLING -> {
             ProgressableCardContent(
-                text = stringResource(R.string.installing, uiState.workingPartition),
+                text = stringResource(R.string.installing, uiState.currentPartitionText),
                 textFirstButton = stringResource(id = R.string.cancel),
                 onClickFirstButton = onClickCancelInstallation,
                 textSecondButton = stringResource(id = R.string.view_logs),
@@ -122,7 +122,7 @@ fun InstallationCardStep(
         }
         InstallationStep.INSTALLING_ROOTED -> {
             ProgressableCardContent(
-                text = stringResource(R.string.installing, uiState.workingPartition),
+                text = stringResource(R.string.installing, uiState.currentPartitionText),
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation,
                 showProgressBar = true,
@@ -131,7 +131,7 @@ fun InstallationCardStep(
         }
         InstallationStep.CREATING_PARTITION ->
             ProgressableCardContent(
-                text = stringResource(R.string.creating_partition, uiState.workingPartition),
+                text = stringResource(R.string.creating_partition, uiState.currentPartitionText),
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation,
                 showProgressBar = true,
@@ -139,7 +139,7 @@ fun InstallationCardStep(
             )
         InstallationStep.ERROR ->
             ProgressableCardContent(
-                text = stringResource(R.string.unknown_error, uiState.errorContent),
+                text = stringResource(R.string.unknown_error, uiState.errorText),
                 textFirstButton = stringResource(id = R.string.view_logs),
                 onClickFirstButton = onClickViewLogs,
                 textSecondButton = stringResource(id = R.string.mreturn),
@@ -171,7 +171,7 @@ fun InstallationCardStep(
             ProgressableCardContent(
                 text = stringResource(
                     R.string.allocation_error_description,
-                    uiState.errorContent
+                    uiState.errorText
                 ),
                 textFirstButton = stringResource(id = R.string.allocation_error_action),
                 onClickFirstButton = onClickUnmountSdCardAndRetry,
@@ -190,7 +190,7 @@ fun InstallationCardStep(
             ProgressableCardContent(
                 text = stringResource(
                     R.string.fs_features_error_description,
-                    uiState.errorContent
+                    uiState.errorText
                 ),
                 textFirstButton = stringResource(id = R.string.view_logs),
                 onClickFirstButton = onClickViewLogs,

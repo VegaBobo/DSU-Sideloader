@@ -1,4 +1,4 @@
-package vegabobo.dsusideloader.ui.components.bsheets
+package vegabobo.dsusideloader.ui.sdialogs
 
 import android.content.Intent
 import android.net.Uri

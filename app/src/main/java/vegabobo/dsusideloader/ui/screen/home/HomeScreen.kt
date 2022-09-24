@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.flow.collectLatest
-import vegabobo.dsusideloader.ActivityAction
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.DsuInfoCard
 import vegabobo.dsusideloader.ui.cards.ImageSizeCard
@@ -25,7 +24,7 @@ import vegabobo.dsusideloader.ui.cards.installation.InstallationCard
 import vegabobo.dsusideloader.ui.cards.warnings.*
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
-import vegabobo.dsusideloader.ui.components.bsheets.ViewLogsBottomSheet
+import vegabobo.dsusideloader.ui.sdialogs.ViewLogsBottomSheet
 import vegabobo.dsusideloader.ui.sdialogs.CancelSheet
 import vegabobo.dsusideloader.ui.sdialogs.ConfirmInstallationSheet
 import vegabobo.dsusideloader.ui.sdialogs.DiscardDSUSheet
@@ -33,6 +32,7 @@ import vegabobo.dsusideloader.ui.sdialogs.ImageSizeWarningSheet
 import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.ui.util.KeepScreenOn
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
+import kotlin.system.exitProcess
 
 object HomeLinks {
     const val DSU_LEARN_MORE = "https://developer.android.com/topic/dsu"
@@ -42,7 +42,6 @@ object HomeLinks {
 @Composable
 fun Home(
     navController: NavController,
-    activityRequest: (Int) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
 
@@ -73,23 +72,26 @@ fun Home(
         content = {
             Box(modifier = Modifier.animateContentSize()) {
                 when (uiState.additionalCard) {
-                    AdditionalCard.NO_DYNAMIC_PARTITIONS ->
-                        UnsupportedCard { activityRequest(ActivityAction.FINISH_APP) }
-                    AdditionalCard.SETUP_STORAGE ->
+                    AdditionalCardState.NO_DYNAMIC_PARTITIONS ->
+                        UnsupportedCard { exitProcess(0) }
+                    AdditionalCardState.SETUP_STORAGE ->
                         SetupStorage { homeViewModel.takeUriPermission(it) }
-                    AdditionalCard.UNAVAIABLE_STORAGE ->
-                        StorageWarningCard { homeViewModel.overrideUnavaiableStorage() }
-                    AdditionalCard.MISSING_READ_LOGS_PERMISSION ->
+                    AdditionalCardState.UNAVAIABLE_STORAGE ->
+                        StorageWarningCard(
+                            minPercentageFreeStorage = homeViewModel.allocPercentageInt.toString(),
+                            onClick = { homeViewModel.overrideUnavaiableStorage() }
+                        )
+                    AdditionalCardState.MISSING_READ_LOGS_PERMISSION ->
                         RequiresLogPermissionCard(
                             onClickGrant = { homeViewModel.grantReadLogs() },
                             onClickRefuse = { homeViewModel.refuseReadLogs() }
                         )
-                    AdditionalCard.GRANTING_READ_LOGS_PERMISSION ->
+                    AdditionalCardState.GRANTING_READ_LOGS_PERMISSION ->
                         GrantingPermissionCard()
-                    else -> {}
+                    AdditionalCardState.NONE -> {}
                 }
             }
-            if (uiState.canInstall && uiState.additionalCard == AdditionalCard.NONE) {
+            if (uiState.passedInitialChecks && uiState.additionalCard == AdditionalCardState.NONE) {
                 InstallationCard(
                     uiState = uiState.installationCard,
                     onClickInstall = { homeViewModel.onClickInstall() },
@@ -102,9 +104,9 @@ fun Home(
                     onClickDiscardInstalledGsiAndInstall = { homeViewModel.onClickDiscardGsiAndStartInstallation() },
                     onClickDiscardDsu = { homeViewModel.showDiscardSheet() },
                     onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
-                    onClickViewLogs = { homeViewModel.toggleLogsView() },
+                    onClickViewLogs = { homeViewModel.showLogsWarning() },
                     onClickViewCommands = { navController.navigate(Destinations.ADBInstallation) },
-                    minPercentageOfFreeStorage = String.format("%.0f", homeViewModel.minAllowedAlloc * 100)
+                    minPercentageOfFreeStorage = homeViewModel.allocPercentageInt.toString()
                 )
                 UserdataCard(
                     isEnabled = uiState.isInstalling(),
@@ -127,7 +129,7 @@ fun Home(
     )
 
     when (uiState.sheetDisplay) {
-        SheetDisplay.CONFIRM_INSTALLATION ->
+        SheetDisplayState.CONFIRM_INSTALLATION ->
             ConfirmInstallationSheet(
                 filename = homeViewModel.obtainSelectedFilename(),
                 userdata = homeViewModel.session.userSelection.getUserDataSizeAsGB(),
@@ -135,30 +137,28 @@ fun Home(
                 onClickConfirm = { homeViewModel.onConfirmInstallationSheet() },
                 onClickCancel = { homeViewModel.dismissSheet() }
             )
-        SheetDisplay.CANCEL_INSTALLATION ->
+        SheetDisplayState.CANCEL_INSTALLATION ->
             CancelSheet(
                 onClickConfirm = { homeViewModel.onClickCancelInstallationButton() },
                 onClickCancel = { homeViewModel.dismissSheet() },
             )
-        SheetDisplay.IMAGESIZE_WARNING -> {
+        SheetDisplayState.IMAGESIZE_WARNING ->
             ImageSizeWarningSheet(
                 onClickConfirm = { homeViewModel.dismissSheet() },
                 onClickCancel = { homeViewModel.onCheckImageSizeCard() }
             )
-        }
-        SheetDisplay.DISCARD_DSU ->
+        SheetDisplayState.DISCARD_DSU ->
             DiscardDSUSheet(
                 onClickConfirm = { homeViewModel.onClickDiscardGsi() },
                 onClickCancel = { homeViewModel.dismissSheet() }
             )
-        SheetDisplay.VIEW_LOGS -> {
+        SheetDisplayState.VIEW_LOGS ->
             ViewLogsBottomSheet(
                 logs = uiState.installationLogs,
                 onClickSaveLogs = { homeViewModel.saveLogs(it) },
                 onDismiss = { homeViewModel.dismissSheet() }
             )
-        }
-        else -> {}
+        SheetDisplayState.NONE -> {}
     }
 
 }

@@ -4,7 +4,7 @@ import android.net.Uri
 import kotlinx.coroutines.Job
 import vegabobo.dsusideloader.core.StorageManager
 import vegabobo.dsusideloader.model.DSUConstants
-import vegabobo.dsusideloader.model.DSUInstallation
+import vegabobo.dsusideloader.model.DSUInstallationSource
 import vegabobo.dsusideloader.model.Session
 import vegabobo.dsusideloader.service.PrivilegedProvider
 import vegabobo.dsusideloader.util.OperationMode
@@ -16,40 +16,45 @@ class Preparation(
     private val onStepUpdate: (step: InstallationStep) -> Unit,
     private val onPreparationProgressUpdate: (progress: Float) -> Unit,
     private val onCanceled: () -> Unit,
-    private val onPreparationFinished: (preparedDSU: DSUInstallation) -> Unit
+    private val onPreparationFinished: (preparedDSU: DSUInstallationSource) -> Unit
 ) : () -> Unit {
 
-    val userSelectedImageSize = session.userSelection.userSelectedImageSize
-    val userSelectedFileUri = session.userSelection.selectedFileUri
+    private val userSelectedImageSize = session.userSelection.userSelectedImageSize
+    private val userSelectedFileUri = session.userSelection.selectedFileUri
 
     override fun invoke() {
         if (session.getOperationMode() != OperationMode.ADB &&
             session.preferences.useBuiltinInstaller && PrivilegedProvider.isRoot()
-        )
+        ) {
             prepareRooted()
-        else
+            return
+        } else {
             prepareForDSU()
+        }
     }
 
     private fun prepareRooted() {
-        val source: DSUInstallation = when (getExtension(userSelectedFileUri)) {
+        val source: DSUInstallationSource = when (getExtension(userSelectedFileUri)) {
             "img" -> {
-                DSUInstallation.SingleSystemImage(
+                DSUInstallationSource.SingleSystemImage(
                     userSelectedFileUri, getFileSize(userSelectedFileUri)
                 )
             }
             "xz", "gz", "gzip" -> {
                 val result = extractFile(userSelectedFileUri)
-                DSUInstallation.SingleSystemImage(result.first, result.second)
+                DSUInstallationSource.SingleSystemImage(result.first, result.second)
             }
             "zip" -> {
-                DSUInstallation.DsuPackage(userSelectedFileUri)
+                DSUInstallationSource.DsuPackage(userSelectedFileUri)
             }
             else -> {
                 throw Exception("Unsupported filetype")
             }
         }
-        onPreparationFinished(source)
+        if (!job.isCancelled)
+            onPreparationFinished(source)
+        else
+            onCanceled()
     }
 
     private fun prepareForDSU() {
@@ -64,15 +69,15 @@ class Preparation(
                 else -> throw Exception("Unsupported filetype")
             }
 
-        val source: DSUInstallation
+        val source: DSUInstallationSource
 
         val preparedUri = preparedFilePair.first
         val preparedFileSize = preparedFilePair.second
 
         source = if (fileExtension == "zip")
-            DSUInstallation.DsuPackage(preparedUri)
+            DSUInstallationSource.DsuPackage(preparedUri)
         else
-            DSUInstallation.SingleSystemImage(preparedUri, preparedFileSize)
+            DSUInstallationSource.SingleSystemImage(preparedUri, preparedFileSize)
 
         onStepUpdate(InstallationStep.WAITING_USER_CONFIRMATION)
 

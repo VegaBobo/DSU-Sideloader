@@ -7,13 +7,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
 fun FileSelectionBox(
     modifier: Modifier = Modifier,
     isReadOnly: Boolean = false,
-    isNumberOnly: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
     isEnabled: Boolean,
     isError: Boolean,
     textFieldTitle: String,
@@ -22,8 +21,7 @@ fun FileSelectionBox(
     onValueChange: (String) -> Unit = {}
 ) {
     OutlinedTextField(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         value = textFieldValue,
         placeholder = { Text(text = "") },
         onValueChange = onValueChange,
@@ -31,9 +29,7 @@ fun FileSelectionBox(
         isError = isError,
         singleLine = true,
         readOnly = isReadOnly,
-        keyboardOptions = if (isNumberOnly) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions(),
+        keyboardOptions = keyboardOptions,
         interactionSource = textFieldInteraction,
-        label = {
-            Text(text = textFieldTitle)
-        })
+        label = { Text(text = textFieldTitle) })
 }

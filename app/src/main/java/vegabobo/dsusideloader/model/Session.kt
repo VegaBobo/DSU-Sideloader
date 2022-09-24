@@ -44,7 +44,7 @@ class UserSelection(
 
 class Session(
     var userSelection: UserSelection = UserSelection(),
-    var dsuInstallation: DSUInstallation = DSUInstallation(),
+    var dsuInstallation: DSUInstallationSource = DSUInstallationSource(),
     var preferences: InstallationPreferences = InstallationPreferences(),
     var operationMode: MutableStateFlow<OperationMode> = MutableStateFlow(OperationMode.ADB),
 ) {

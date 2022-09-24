@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.cards.ContentCopyableCard
+import vegabobo.dsusideloader.ui.cards.CopyableTextCard
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.screen.Destinations
@@ -31,16 +31,15 @@ fun AdbScreen(
             TopBar(
                 barTitle = stringResource(id = R.string.installation),
                 scrollBehavior = it,
-                showBackButton = true,
                 onClickIcon = { navController.navigate(Destinations.Preferences) },
                 onClickBackButton = { navController.navigateUp() }
             )
         },
         content = {
             Text(text = stringResource(id = R.string.adb_how_to_adb_shell))
-            ContentCopyableCard(text = startInstallationCommandAdb)
+            CopyableTextCard(text = startInstallationCommandAdb)
             Text(text = stringResource(id = R.string.adb_how_to_shell))
-            ContentCopyableCard(text = startInstallationCommand)
+            CopyableTextCard(text = startInstallationCommand)
             Text(text = stringResource(id = R.string.adb_how_to_done))
         }
     )

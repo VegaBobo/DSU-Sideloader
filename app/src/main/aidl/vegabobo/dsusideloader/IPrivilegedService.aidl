@@ -28,7 +28,7 @@ interface IPrivilegedService {
     boolean remove() = 4006;
     boolean setEnable(boolean enable, boolean oneShot) = 4007;
     boolean finishInstallation() = 4008;
-    boolean startInstallation(String dsuSlot) = 1009;
+    boolean startInstallation(String dsuSlot) = 4009;
     boolean createPartition(@utf8InCpp String name, long size, boolean readOnly) = 4010;
     boolean closePartition() = 4011;
     boolean setAshmem(in ParcelFileDescriptor fd, long size) = 4012;

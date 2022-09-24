@@ -13,7 +13,9 @@ import androidx.compose.runtime.Composable
 fun LauncherAcResult(
     result: (Uri) -> Unit,
 ): ManagedActivityResultLauncher<Intent, ActivityResult> {
-    return rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    return rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
         if (it.resultCode == Activity.RESULT_OK)
             result(it.data!!.data!!)
     }

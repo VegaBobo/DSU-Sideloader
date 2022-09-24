@@ -35,7 +35,6 @@ fun AboutScreen(
             TopBar(
                 barTitle = stringResource(id = R.string.about),
                 scrollBehavior = it,
-                showBackButton = true,
                 onClickBackButton = { navController.navigateUp() }
             )
         }

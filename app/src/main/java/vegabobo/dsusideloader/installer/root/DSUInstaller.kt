@@ -8,7 +8,7 @@ import android.util.Log
 import kotlinx.coroutines.*
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import vegabobo.dsusideloader.BuildConfig
-import vegabobo.dsusideloader.model.DSUInstallation
+import vegabobo.dsusideloader.model.DSUInstallationSource
 import vegabobo.dsusideloader.model.ImagePartition
 import vegabobo.dsusideloader.model.Type
 import vegabobo.dsusideloader.preparation.InstallationStep
@@ -33,10 +33,10 @@ import java.util.zip.ZipInputStream
  *
  * That's why this installation way requires root.
  */
-class RootedInstallationHandler(
+class DSUInstaller(
     private val application: Application,
     private val userdataSize: Long,
-    private val dsuInstallation: DSUInstallation,
+    private val dsuInstallation: DSUInstallationSource,
     private var installationJob: Job = Job(),
     private val onInstallationError: (error: InstallationStep, errorInfo: String) -> Unit,
     private val onInstallationProgressUpdate: (progress: Float, partition: String) -> Unit,
