@@ -58,6 +58,7 @@ class FileUnPacker(
                 when {
                     endsWith("xz") -> XZCompressorInputStream(inputStream)
                     endsWith("gz") -> GzipCompressorInputStream(inputStream)
+                    endsWith("gzip") -> GzipCompressorInputStream(inputStream)
                     else -> throw Exception("File type not supported")
                 }
             }
@@ -69,7 +70,7 @@ class FileUnPacker(
     }
 
     private fun updateProgress(fileSize: Long, readed: Long) {
-        val percent: Float = (readed * 1f) / fileSize
+        val percent: Float = readed.toFloat() / fileSize.toFloat()
         onProgressChange(percent)
     }
 

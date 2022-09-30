@@ -32,11 +32,14 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
     @Inject
     lateinit var session: Session
 
+    private val tag = this.javaClass.simpleName
+
     private var shouldCheckShizuku = false
 
     private fun setupSessionOperationMode() {
         val operationMode = OperationModeUtils.getOperationMode(application, shouldCheckShizuku)
         session.setOperationMode(operationMode)
+        Log.d(tag, "Operation mode is: $operationMode")
     }
 
     //
@@ -66,16 +69,11 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
     }
 
     private val BINDER_RECEIVED_LISTENER = Shizuku.OnBinderReceivedListener {
-        Log.i(BuildConfig.APPLICATION_ID, "Binder received")
-        if (Shell.getShell().isRoot)
-            return@OnBinderReceivedListener
         if (!OperationModeUtils.isShizukuPermissionGranted(this)) {
             askShizukuPermission()
             return@OnBinderReceivedListener
         }
-        Shizuku.bindUserService(userServiceArgs, PrivilegedProvider.connection)
-        shouldCheckShizuku = true
-        setupSessionOperationMode()
+        bindShizuku()
     }
 
     private fun askShizukuPermission() {
@@ -88,11 +86,15 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
 
     override fun onRequestPermissionResult(requestCode: Int, grantResult: Int) {
         if (grantResult == PackageManager.PERMISSION_GRANTED && requestCode == SHIZUKU_REQUEST_CODE) {
-            Shizuku.bindUserService(userServiceArgs, PrivilegedProvider.connection)
-            shouldCheckShizuku = true
-            setupSessionOperationMode()
+            bindShizuku()
         }
         Shizuku.removeRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
+    }
+
+    fun bindShizuku() {
+        Shizuku.bindUserService(userServiceArgs, PrivilegedProvider.connection)
+        shouldCheckShizuku = true
+        setupSessionOperationMode()
     }
 
     //
@@ -110,14 +112,10 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
         }
     }
 
-    private fun setupRootAIDL() {
-        val e = Intent(this, PrivilegedRootService::class.java)
-        RootService.bind(e, PrivilegedProvider.connection)
-    }
-
     private fun setupService() {
         if (session.isRoot()) {
-            setupRootAIDL()
+            val privRootService = Intent(this, PrivilegedRootService::class.java)
+            RootService.bind(privRootService, PrivilegedProvider.connection)
             return
         }
 
@@ -141,8 +139,10 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
             }
         }
 
-        setupSessionOperationMode()
-        setupService()
+        if (savedInstanceState == null) {
+            setupSessionOperationMode()
+            setupService()
+        }
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -151,17 +151,23 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
     }
 
     override fun onDestroy() {
-        removeShizukuListeners()
+        super.onDestroy()
+        if (isChangingConfigurations)
+            return
         when (session.getOperationMode()) {
             OperationMode.ROOT, OperationMode.SYSTEM_AND_ROOT ->
                 RootService.unbind(PrivilegedProvider.connection)
+
             OperationMode.SYSTEM ->
-                unbindService(PrivilegedProvider.connection)
-            OperationMode.SHIZUKU ->
+                applicationContext.unbindService(PrivilegedProvider.connection)
+
+            OperationMode.SHIZUKU -> {
+                removeShizukuListeners()
                 Shizuku.unbindUserService(userServiceArgs, PrivilegedProvider.connection, true)
+            }
+
             else -> {}
         }
-        super.onDestroy()
     }
 
 }

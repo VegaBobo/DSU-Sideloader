@@ -3,6 +3,7 @@ package vegabobo.dsusideloader.ui.screen.home
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewModelScope
@@ -36,6 +37,8 @@ class HomeViewModel @Inject constructor(
     private val storageManager: StorageManager,
     var session: Session,
 ) : BaseViewModel(dataStore) {
+
+    private val tag = this.javaClass.simpleName
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -87,6 +90,10 @@ class HomeViewModel @Inject constructor(
     // Home startup and checks
     //
 
+    init {
+        initialChecks()
+    }
+
     fun initialChecks() {
         if (checkDynamicPartitions && !DevicePropUtils.hasDynamicPartitions()) {
             updateAdditionalCardState(AdditionalCardState.NO_DYNAMIC_PARTITIONS)
@@ -107,35 +114,41 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             val result = readStringPref(AppPrefs.SAF_PATH)
-            if (!storageManager.arePermissionsGrantedToFolder(result))
+            if (!storageManager.arePermissionsGrantedToFolder(result)) {
                 updateAdditionalCardState(AdditionalCardState.SETUP_STORAGE)
-            else
+            } else {
                 _uiState.update { it.copy(passedInitialChecks = true) }
+            }
         }
 
         // Check if a DSU is already installed
         // Root-only because MANAGE_DYNAMIC_SYSTEM is required
         if (session.isRoot()) {
             PrivilegedProvider.run {
-                if (isInstalled)
+                if (isInstalled) {
                     updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
+                }
             }
         }
     }
 
     fun setupUserPreferences() {
         viewModelScope.launch {
-            _uiState.update { it.copy(shouldKeepScreenOn = readBoolPref(AppPrefs.KEEP_SCREEN_ON)) }
+            val shouldKeepScreenOn = readBoolPref(AppPrefs.KEEP_SCREEN_ON)
+            Log.d(tag, "shouldKeepScreenOn: $shouldKeepScreenOn")
+            _uiState.update { it.copy(shouldKeepScreenOn = shouldKeepScreenOn) }
         }
     }
 
     fun overrideDynamicPartitionCheck() {
         checkDynamicPartitions = false
+        Log.d(tag, "checkDynamicPartitions: $checkDynamicPartitions")
         initialChecks()
     }
 
     fun overrideUnavaiableStorage() {
         checkUnavaiableStorage = false
+        Log.d(tag, "checkUnavaiableStorage: $checkUnavaiableStorage")
         initialChecks()
     }
 
@@ -177,11 +190,13 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun onPreparationFinished(dsuInstallation: DSUInstallationSource) {
+        Log.d(tag, "DSU preparation finished, result: $dsuInstallation")
         session.dsuInstallation = dsuInstallation
         startInstallation()
     }
 
     private fun startInstallation() {
+        Log.d(tag, "startInstallation(), session: \n$session")
         updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
 
         if (session.getOperationMode() == OperationMode.ADB) {
@@ -199,7 +214,8 @@ class HomeViewModel @Inject constructor(
 
     private fun setupAdbInstallation() {
         AdbInstallationHandler(storageManager, session).generate { scriptPath ->
-            session.installationScript = scriptPath
+            Log.d(tag, "Installation script generated: $scriptPath")
+            session.installationScriptPath = scriptPath
             resetInstallationCard()
             updateInstallationCard { it.copy(installationStep = InstallationStep.REQUIRES_ADB_CMD_TO_CONTINUE) }
         }
@@ -223,16 +239,14 @@ class HomeViewModel @Inject constructor(
         updateInstallationCard { it.copy(installationStep = InstallationStep.WAITING_USER_CONFIRMATION) }
         DsuInstallationHandler(session).startInstallation()
         if (session.isRoot() || OperationModeUtils.isReadLogsPermissionGranted(application))
-            viewModelScope.launch { startLogging() }
+            startLogging()
         else
             updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
     }
 
     // Track and diagnose installation by reading logcat
     private fun startLogging() {
-        if (logger != null && logger!!.isLogging.get()) {
-            logger!!.destroy()
-        } else {
+        if (logger == null) {
             logger = LogcatDiagnostic(
                 onInstallationError = this::onInstallationError,
                 onStepUpdate = this::onStepUpdate,
@@ -241,10 +255,13 @@ class HomeViewModel @Inject constructor(
                 onLogLineReceived = this::onLogLineReceived,
             )
         }
-        logger!!.startLogging()
+        viewModelScope.launch(Dispatchers.IO + installationJob) {
+            logger!!.startLogging()
+        }
     }
 
     fun saveLogs(uriToSaveLogs: Uri) {
+        Log.d(tag, "Writing logs to: $uriToSaveLogs")
         storageManager.writeStringToUri(uiState.value.installationLogs, uriToSaveLogs)
     }
 
@@ -254,7 +271,6 @@ class HomeViewModel @Inject constructor(
             && logger != null && logger!!.isLogging.get()
         ) {
             logger!!.destroy()
-            logger = null
             // Since stopping installation requires MANAGE_DYNAMIC_SYSTEM
             // then, we stop installation using other way, not so polite, but works :)))
             PrivilegedProvider.run { forceStopPackage("com.android.dynsystem") }
@@ -298,26 +314,20 @@ class HomeViewModel @Inject constructor(
 
     fun onClickRetryInstallation() {
         updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
-        viewModelScope.launch(Dispatchers.IO + installationJob) {
-            startInstallation()
-            startLogging()
-        }
+        startInstallation()
     }
 
     fun onClickUnmountSdCardAndRetry() {
         updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
-        viewModelScope.launch(Dispatchers.IO + installationJob) {
-            session.preferences.isUnmountSdCard = true
-            startInstallation()
-        }
+        session.preferences.isUnmountSdCard = true
+        startInstallation()
     }
 
     fun onClickSetSeLinuxPermissive() {
         updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
-        viewModelScope.launch(Dispatchers.IO + installationJob) {
+        viewModelScope.launch {
             Shell.cmd("setenforce 0").exec()
             startInstallation()
-            startLogging()
         }
     }
 
@@ -332,11 +342,15 @@ class HomeViewModel @Inject constructor(
 
     fun updateUserdataSize(input: String) {
         val selectedSize = FilenameUtils.getDigits(input)
-        val sizeWithSuffix = FilenameUtils.appendToDigitsStrings(input, "GB")
+        val sizeWithSuffix = FilenameUtils.appendToDigitsToString(input, "GB")
+        Log.d(
+            tag,
+            "selectedSize: $selectedSize, maximumAllowedForAllocation: $maximumAllowedForAllocation"
+        )
 
         if (selectedSize.isNotEmpty() && selectedSize.toInt() > maximumAllowedForAllocation) {
             val fixedSize =
-                FilenameUtils.appendToDigitsStrings("$maximumAllowedForAllocation", "GB")
+                FilenameUtils.appendToDigitsToString("$maximumAllowedForAllocation", "GB")
             updateUserdataCard {
                 it.copy(
                     text = fixedSize,
@@ -367,7 +381,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun updateImageSize(input: String) {
-        val inputWithSuffix = FilenameUtils.appendToDigitsStrings(input, "b")
+        val inputWithSuffix = FilenameUtils.appendToDigitsToString(input, "b")
         updateImageSizeCard { it.copy(text = inputWithSuffix) }
     }
 
@@ -387,8 +401,11 @@ class HomeViewModel @Inject constructor(
 
     fun onFileSelectionResult(uri: Uri) {
         val filename = FilenameUtils.queryName(application.contentResolver, uri)
-        val isFileSupported = arrayOf(".gz", ".xz", ".zip", ".img", ".gzip").contains(filename)
-        if (isFileSupported) {
+        val extension = filename.substringAfterLast(".", "")
+        val isFileSupported = arrayOf("gz", "xz", "zip", "img", "gzip").contains(extension)
+        Log.d(tag, "isFileSupported: $isFileSupported, extension: $extension, filename: $filename")
+
+        if (!isFileSupported) {
             viewModelScope.launch {
                 updateInstallationCard { it.copy(isError = true, isTextFieldEnabled = false) }
                 delay(2000)
@@ -428,6 +445,7 @@ class HomeViewModel @Inject constructor(
 
     fun refuseReadLogs() {
         checkReadLogsPermission = false
+        Log.d(tag, "checkReadLogsPermission: $checkReadLogsPermission")
         initialChecks()
     }
 

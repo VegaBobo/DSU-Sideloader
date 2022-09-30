@@ -2,6 +2,7 @@ package vegabobo.dsusideloader.ui.screen.about
 
 import android.app.Application
 import android.content.Intent
+import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,6 +36,8 @@ class AboutViewModel @Inject constructor(
     val application: Application
 ) : ViewModel() {
 
+    private val tag = this.javaClass.simpleName
+
     private val _uiState = MutableStateFlow(AboutScreenUiState())
     val uiState: StateFlow<AboutScreenUiState> = _uiState.asStateFlow()
     var response = UpdaterResponse()
@@ -43,6 +46,7 @@ class AboutViewModel @Inject constructor(
         _uiState.update { it.copy(updaterCardState = update(it.updaterCardState.copy())) }
 
     fun onClickCheckUpdates() {
+        Log.d(tag, "Fetching updates from: ${AppPrefs.UPDATE_CHECK_URL}")
         updateUpdaterCard { it.copy(updateStatus = UpdateStatus.CHECKING_FOR_UPDATES) }
         viewModelScope.launch(Dispatchers.IO) {
             val apiResponse = try {
@@ -58,6 +62,7 @@ class AboutViewModel @Inject constructor(
             else
                 updateUpdaterCard { it.copy(updateStatus = UpdateStatus.NO_UPDATE_FOUND) }
 
+            Log.d(tag, "$response")
         }
     }
 

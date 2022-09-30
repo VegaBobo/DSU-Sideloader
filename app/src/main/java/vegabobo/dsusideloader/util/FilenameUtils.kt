@@ -17,7 +17,7 @@ class FilenameUtils {
          * @param textToAppend Text that will be appended
          * @return Formatted string, if there is no digits in "input", a empty string will be returned.
          */
-        fun appendToDigitsStrings(input: String, textToAppend: String): String {
+        fun appendToDigitsToString(input: String, textToAppend: String): String {
             var newText = input.filter { it.isDigit() } + textToAppend
             if (newText == textToAppend)
                 newText = ""
@@ -55,7 +55,7 @@ class FilenameUtils {
         }
 
         fun getDigits(input: String): String {
-            return appendToDigitsStrings(input, "")
+            return appendToDigitsToString(input, "")
         }
 
         fun getLengthFromFile(context: Context, uri: Uri): Long {

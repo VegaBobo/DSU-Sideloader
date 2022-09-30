@@ -1,5 +1,6 @@
 package vegabobo.dsusideloader.installer.privileged
 
+import android.util.Log
 import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.util.CmdRunner
 import java.util.concurrent.atomic.AtomicBoolean
@@ -12,12 +13,16 @@ class LogcatDiagnostic(
     private val onLogLineReceived: () -> Unit
 ) {
 
+    private val tag = this.javaClass.simpleName
     var logs = ""
     val isLogging = AtomicBoolean(false)
 
     fun startLogging() {
+        if (isLogging.get())
+            destroy()
         logs = ""
         isLogging.set(true)
+        Log.d(tag, "startLogging(), isLogging: ${isLogging.get()}")
         CmdRunner.run("logcat -c")
         CmdRunner.runReadEachLine("logcat --format brief | grep -e gsid -e DynamicSystem | grep -v OUT") {
 
@@ -140,10 +145,9 @@ class LogcatDiagnostic(
     }
 
     fun destroy() {
-        if (isLogging.get()) {
-            CmdRunner.destroy()
-            isLogging.set(false)
-        }
+        CmdRunner.destroy()
+        isLogging.set(false)
+        Log.d(tag, "destroy(), isLogging: ${isLogging.get()}")
     }
 
 }

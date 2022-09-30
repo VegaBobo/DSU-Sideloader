@@ -53,9 +53,6 @@ fun Home(
 
     LaunchedEffect(Unit) {
         homeViewModel.setupUserPreferences()
-        homeViewModel.session.operationMode.collectLatest {
-            homeViewModel.initialChecks()
-        }
     }
 
     ApplicationScreen(

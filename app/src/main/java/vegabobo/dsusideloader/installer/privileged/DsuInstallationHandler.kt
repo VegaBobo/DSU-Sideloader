@@ -2,6 +2,7 @@ package vegabobo.dsusideloader.installer.privileged
 
 import android.content.Intent
 import android.os.storage.VolumeInfo
+import android.util.Log
 import kotlinx.coroutines.*
 import vegabobo.dsusideloader.model.Session
 import vegabobo.dsusideloader.service.PrivilegedProvider
@@ -14,6 +15,8 @@ open class DsuInstallationHandler(
     private val session: Session
 ) {
 
+    private val tag = this.javaClass.simpleName
+
     fun startInstallation() {
         if (session.preferences.isUnmountSdCard)
             unmountSdTemporary()
@@ -23,7 +26,7 @@ open class DsuInstallationHandler(
     private fun forwardInstallationToDSU() {
         val userdataSize = session.userSelection.userSelectedUserdata
         val fileUri = session.dsuInstallation.uri
-        val length = session.dsuInstallation.fileLength
+        val length = session.dsuInstallation.fileSize
 
         PrivilegedProvider.getService().forceStopPackage("com.android.dynsystem")
 
@@ -38,6 +41,7 @@ open class DsuInstallationHandler(
         dynIntent.putExtra("KEY_USERDATA_SIZE", userdataSize)
         dynIntent.putExtra("KEY_SYSTEM_SIZE", length)
 
+        Log.d(tag, "Starting DSU VerificationActivity: $dynIntent")
         PrivilegedProvider.getService().startActivity(dynIntent)
     }
 
@@ -49,12 +53,16 @@ open class DsuInstallationHandler(
             if (volume.id.contains("public")) {
                 PrivilegedProvider.getService().unmount(volume.id)
                 volumesUnmount.add(volume.id)
+                Log.d(tag, "Volume unmounted: ${volume.id}")
             }
-        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
-            delay(30 * 1000)
-            for (volume in volumesUnmount)
-                PrivilegedProvider.getService().mount(volume)
-        }
+        if (volumesUnmount.size > 0)
+            CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+                delay(30 * 1000)
+                for (volume in volumesUnmount) {
+                    Log.d(tag, "Volume remounted: $volume")
+                    PrivilegedProvider.getService().mount(volume)
+                }
+            }
     }
 
 }

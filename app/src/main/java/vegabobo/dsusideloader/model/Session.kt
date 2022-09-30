@@ -17,9 +17,7 @@ class UserSelection(
     var selectedFileName: String = "",
 ) {
 
-    fun getUserDataSizeAsGB(): String {
-        return "${(this.userSelectedUserdata / 1024L / 1024L / 1024L)}"
-    }
+    fun getUserDataSizeAsGB(): String = "${(this.userSelectedUserdata / 1024L / 1024L / 1024L)}"
 
     fun setUserDataSize(size: String) {
         userSelectedUserdata =
@@ -39,6 +37,13 @@ class UserSelection(
 
     fun isCustomImageSize(): Boolean {
         return userSelectedImageSize != DSUConstants.DEFAULT_IMAGE_SIZE
+    }
+
+    override fun toString(): String {
+        return "UserSelection(userSelectedUserdata=$userSelectedUserdata, " +
+                "userSelectedImageSize=$userSelectedImageSize, " +
+                "selectedFileUri=$selectedFileUri, " +
+                "selectedFileName=$selectedFileName)"
     }
 }
 
@@ -60,16 +65,19 @@ class Session(
     }
 
     // Only populated on UNROOTED mode
-    var installationScript = ""
+    var installationScriptPath = ""
 
     fun getInstallationParameters(): Triple<Long, String, Long> {
         val userdataSize = userSelection.userSelectedUserdata
         val absoluteFilePath = FilenameUtils.getFilePath(dsuInstallation.uri, true)
 
-        var imageSize = dsuInstallation.fileLength
+        var imageSize = dsuInstallation.fileSize
         if (userSelection.isCustomImageSize())
             imageSize = userSelection.userSelectedImageSize
-
         return Triple(userdataSize, absoluteFilePath, imageSize)
+    }
+
+    override fun toString(): String {
+        return "$userSelection\n$dsuInstallation\n$preferences\noperationMode: ${operationMode.value}"
     }
 }

@@ -6,8 +6,6 @@ import vegabobo.dsusideloader.core.StorageManager
 import vegabobo.dsusideloader.model.DSUConstants
 import vegabobo.dsusideloader.model.DSUInstallationSource
 import vegabobo.dsusideloader.model.Session
-import vegabobo.dsusideloader.service.PrivilegedProvider
-import vegabobo.dsusideloader.util.OperationMode
 
 class Preparation(
     private val storageManager: StorageManager,
@@ -23,14 +21,11 @@ class Preparation(
     private val userSelectedFileUri = session.userSelection.selectedFileUri
 
     override fun invoke() {
-        if (session.getOperationMode() != OperationMode.ADB &&
-            session.preferences.useBuiltinInstaller && PrivilegedProvider.isRoot()
-        ) {
+        if (session.preferences.useBuiltinInstaller && session.isRoot()) {
             prepareRooted()
             return
-        } else {
-            prepareForDSU()
         }
+        prepareForDSU()
     }
 
     private fun prepareRooted() {
@@ -64,17 +59,15 @@ class Preparation(
             when (fileExtension) {
                 "xz" -> prepareXz(userSelectedFileUri)
                 "img" -> prepareImage(userSelectedFileUri)
-                "gz" -> prepareGz(userSelectedFileUri)
+                "gz", "gzip" -> prepareGz(userSelectedFileUri)
                 "zip" -> prepareZip(userSelectedFileUri)
                 else -> throw Exception("Unsupported filetype")
             }
 
-        val source: DSUInstallationSource
-
         val preparedUri = preparedFilePair.first
         val preparedFileSize = preparedFilePair.second
 
-        source = if (fileExtension == "zip")
+        val source = if (fileExtension == "zip")
             DSUInstallationSource.DsuPackage(preparedUri)
         else
             DSUInstallationSource.SingleSystemImage(preparedUri, preparedFileSize)

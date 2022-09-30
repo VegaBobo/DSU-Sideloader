@@ -7,7 +7,6 @@ import android.os.SharedMemory
 import android.util.Log
 import kotlinx.coroutines.*
 import org.lsposed.hiddenapibypass.HiddenApiBypass
-import vegabobo.dsusideloader.BuildConfig
 import vegabobo.dsusideloader.model.DSUInstallationSource
 import vegabobo.dsusideloader.model.ImagePartition
 import vegabobo.dsusideloader.model.Type
@@ -45,6 +44,8 @@ class DSUInstaller(
     private val onInstallationSuccess: () -> Unit,
 ) : () -> Unit, DynamicSystemImpl() {
 
+    private val tag = this.javaClass.simpleName
+
     object Constants {
         const val DEFAULT_SLOT = "dsu"
         const val SHARED_MEM_SIZE: Int = 524288
@@ -80,7 +81,7 @@ class DSUInstaller(
         if (!name.endsWith(".img")) {
             return false
         }
-        val partitionName = name.substring(0, name.length - 4)
+        val partitionName = name.substringAfterLast(".")
         return isPartitionSupported(partitionName)
     }
 
@@ -91,15 +92,19 @@ class DSUInstaller(
         onInstallationProgressUpdate(progress, partition)
     }
 
-    private fun installWritablePartition(partition: String, partitionSize: Long) {
+    private fun installWritablePartition(
+        partition: String,
+        partitionSize: Long,
+        readOnly: Boolean = false
+    ) {
         val job = Job()
         CoroutineScope(Dispatchers.IO + job).launch {
-            createPartition(partition, partitionSize, false)
+            createPartition(partition, partitionSize, readOnly)
             job.complete()
         }
         publishProgress(0L, partitionSize, partition)
         var prevInstalledSize = 0L
-        while (job.isCompleted) {
+        while (job.isActive) {
             val installedSize = installationProgress.bytes_processed
             if (installedSize > prevInstalledSize + Constants.MIN_PROGRESS_TO_PUBLISH) {
                 prevInstalledSize = installedSize
@@ -107,36 +112,41 @@ class DSUInstaller(
             }
             runBlocking { delay(100) }
         }
-
-        // Reset installation session and verify that installation completes successfully.
         if (!closePartition()) {
+            Log.e(tag, "Failed to create $partition partition")
             onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, partition)
+            return
         }
 
         // Ensure a 100% mark is published.
         if (prevInstalledSize != partitionSize) {
             publishProgress(partitionSize, partitionSize, partition)
         }
+        Log.d(
+            tag,
+            "Partition $partition installed, readOnly: $readOnly, partitionSize: $partitionSize"
+        )
     }
 
     private fun installImage(
-        partitionName: String,
+        partition: String,
         uncompressedSize: Long,
-        inputStream: InputStream
+        inputStream: InputStream,
+        readOnly: Boolean = true,
     ) {
         val sis = SparseInputStream(
             BufferedInputStream(inputStream)
         )
         val partitionSize = if (sis.unsparseSize != -1L) sis.unsparseSize else uncompressedSize
-        onCreatePartition(partitionName)
-        createPartition(partitionName, partitionSize, true)
+        onCreatePartition(partition)
+        createPartition(partition, partitionSize, readOnly)
         onInstallationStepUpdate(InstallationStep.INSTALLING_ROOTED)
-        SharedMemory.create("dsu_buffer_$partitionName", Constants.SHARED_MEM_SIZE)
+        SharedMemory.create("dsu_buffer_$partition", Constants.SHARED_MEM_SIZE)
             .use { sharedMemory ->
                 MappedMemoryBuffer(sharedMemory.mapReadWrite()).use { mappedBuffer ->
                     val fdDup = getFdDup(sharedMemory)
                     setAshmem(fdDup, sharedMemory.size.toLong())
-                    publishProgress(0L, partitionSize, partitionName)
+                    publishProgress(0L, partitionSize, partition)
                     var installedSize: Long = 0
                     val readBuffer = ByteArray(sharedMemory.size)
                     val buffer = mappedBuffer.mBuffer
@@ -150,27 +160,32 @@ class DSUInstaller(
                         buffer.put(readBuffer, 0, numBytesRead)
                         submitFromAshmem(numBytesRead.toLong())
                         installedSize += numBytesRead.toLong()
-                        publishProgress(installedSize, partitionSize, partitionName)
+                        publishProgress(installedSize, partitionSize, partition)
                     }
-                    publishProgress(partitionSize, partitionSize, partitionName)
+                    publishProgress(partitionSize, partitionSize, partition)
                 }
             }
 
         if (!closePartition()) {
-            onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, partitionName)
+            Log.d(tag, "Failed to create $partition partition")
+            onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, partition)
+            return
         }
+        Log.d(
+            tag,
+            "Partition $partition installed, readOnly: $readOnly, partitionSize: $partitionSize"
+        )
     }
 
     private fun installStreamingZipUpdate(inputStream: InputStream): Boolean {
-        Log.d(BuildConfig.APPLICATION_ID, "To install a streaming ZIP update")
         val zis = ZipInputStream(inputStream)
         var entry: ZipEntry?
         while (zis.nextEntry.also { entry = it } != null) {
-            val name = entry!!.name
-            if (shouldInstallEntry(name)) {
+            val fileName = entry!!.name
+            if (shouldInstallEntry(fileName)) {
                 installImageFromAnEntry(entry!!, zis)
             } else {
-                Log.d(BuildConfig.APPLICATION_ID, "$name installation is not supported, skip it.")
+                Log.d(tag, "$fileName installation is not supported, skip it.")
             }
             if (installationJob.isCancelled) {
                 break
@@ -179,15 +194,15 @@ class DSUInstaller(
         return true
     }
 
-    private fun installImageFromAnEntry(entry: ZipEntry, `is`: InputStream) {
-        val name = entry.name
-        Log.d(BuildConfig.APPLICATION_ID, "ZipEntry: $name")
-        val partitionName = name.substring(0, name.length - 4)
+    private fun installImageFromAnEntry(entry: ZipEntry, inputStream: InputStream) {
+        val fileName = entry.name
+        Log.d(tag, "Installing: $fileName")
+        val partitionName = fileName.substring(0, fileName.length - 4)
         val uncompressedSize = entry.size
-        installImage(partitionName, uncompressedSize, `is`)
+        installImage(partitionName, uncompressedSize, inputStream)
     }
 
-    fun startInstallation() {
+    private fun startInstallation() {
         if (isInstalled) {
             onInstallationError(InstallationStep.ERROR_REQUIRES_DISCARD_DSU, "")
             return
@@ -199,7 +214,7 @@ class DSUInstaller(
             Type.SINGLE_SYSTEM_IMAGE -> {
                 installImage(
                     "system",
-                    dsuInstallation.fileLength,
+                    dsuInstallation.fileSize,
                     dsuInstallation.uri
                 )
             }
@@ -217,6 +232,7 @@ class DSUInstaller(
         }
         if (!installationJob.isCancelled) {
             finishInstallation()
+            Log.d(tag, "Installation finished successfully.")
             onInstallationSuccess()
         }
     }
@@ -224,7 +240,7 @@ class DSUInstaller(
     private fun installImages(images: List<ImagePartition>) {
         for (image in images) {
             if (isPartitionSupported(image.partitionName))
-                installImage(image.partitionName, image.fileLength, image.uri)
+                installImage(image.partitionName, image.fileSize, image.uri)
             if (installationJob.isCancelled) {
                 remove()
             }

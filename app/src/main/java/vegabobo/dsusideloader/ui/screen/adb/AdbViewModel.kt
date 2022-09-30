@@ -10,6 +10,6 @@ class AdbViewModel @Inject constructor(
     private val session: Session
 ) : ViewModel() {
 
-    fun obtainScriptPath(): String = session.installationScript
+    fun obtainScriptPath(): String = session.installationScriptPath
 
 }
