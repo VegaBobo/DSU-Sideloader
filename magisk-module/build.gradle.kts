@@ -1,11 +1,10 @@
 import java.io.FileNotFoundException
 
 plugins {
-    `kotlin-dsl`
+    kotlin("jvm")
 }
 
 tasks.register<Zip>("assembleMagiskModule") {
-
     val id = "dsu_sideloader"
     val name = "DSU Sideloader"
     val author = "VegaBobo"
@@ -13,6 +12,15 @@ tasks.register<Zip>("assembleMagiskModule") {
 
     val versionCode: Int by rootProject.extra
     val versionName: String by rootProject.extra
+    val workDirectory = "${System.getProperty("user.dir")}/${project.name}"
+    val moduleDirectory = "$workDirectory/src/main/resources/module"
+    val outDirectory = "$workDirectory/out"
+
+    val apkPath = "$moduleDirectory/system/priv-app/DSUSideloader/ReleaseDSUSideloader.apk"
+
+    if (!File(apkPath).exists()) {
+        throw FileNotFoundException("File $apkPath not found")
+    }
 
     fun getProps():
             String = "id=$id\n" +
@@ -26,16 +34,6 @@ tasks.register<Zip>("assembleMagiskModule") {
             String = "module_${name.replace(" ", "_")}_$versionCode.zip"
 
     println("Building $id $versionName ($versionCode)")
-    val workDirectory = "${System.getProperty("user.dir")}/${project.name}"
-    val moduleDirectory = "$workDirectory/src/main/resources/module"
-    val outDirectory = "$workDirectory/out"
-
-    val apkPath = "$moduleDirectory/system/priv-app/DSUSideloader/ReleaseDSUSideloader.apk"
-
-    if (!File(apkPath).exists()) {
-        System.err.println("A release build of DSU Sideloader was not found, please build one and move it to right directory")
-        throw FileNotFoundException("File $apkPath not found")
-    }
 
     println("")
     println(getProps())

@@ -8,13 +8,15 @@ plugins {
 }
 
 android {
-    compileSdk = 33
-
     val versionCode: Int by rootProject.extra
     val versionName: String by rootProject.extra
+    val packageName: String by rootProject.extra
+
+    namespace = packageName
+    compileSdk = 33
 
     defaultConfig {
-        this.applicationId = "vegabobo.dsusideloader"
+        this.applicationId = packageName
         this.versionCode = versionCode
         this.versionName = versionName
 
@@ -83,7 +85,7 @@ dependencies {
     implementation(AndroidX.core.ktx)
     implementation(AndroidX.fragment.ktx)
     implementation(AndroidX.preference.ktx)
-    implementation(AndroidX.lifecycle.runtimeKtx)
+    implementation(AndroidX.lifecycle.runtime.ktx)
 
     implementation(Google.dagger.hilt.android)
     implementation(AndroidX.hilt.navigationCompose)

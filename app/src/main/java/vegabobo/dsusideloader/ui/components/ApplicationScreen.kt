@@ -24,8 +24,8 @@ fun ApplicationScreen(
 ) {
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-        decayAnimationSpec,
-        rememberTopAppBarScrollState()
+        flingAnimationSpec = decayAnimationSpec,
+        state = rememberTopAppBarState()
     )
 
     val scrollBehaviorModifier =
@@ -36,9 +36,7 @@ fun ApplicationScreen(
         .only(WindowInsetsSides.Vertical)
         .asPaddingValues()
 
-    Surface(
-        modifier = Modifier.padding(insets)
-    ) {
+    Surface {
         Scaffold(
             modifier = scrollBehaviorModifier
                 .fillMaxSize(),

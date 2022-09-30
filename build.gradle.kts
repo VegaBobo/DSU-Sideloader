@@ -18,6 +18,7 @@ plugins {
 
 val versionCode by extra { 4 }
 val versionName by extra { "1.03" }
+val packageName by extra { "vegabobo.dsusideloader" }
 
 task("clean") {
     delete(project.buildDir)

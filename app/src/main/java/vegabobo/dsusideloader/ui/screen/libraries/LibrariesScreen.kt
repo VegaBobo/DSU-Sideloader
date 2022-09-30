@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarScrollState
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,8 +32,8 @@ fun LibrariesScreen(
     libs.value = Libs.Builder().withContext(context).build()
     val libraries = libs.value!!.libraries
 
-    val appBarState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember { TopAppBarDefaults.enterAlwaysScrollBehavior(appBarState) }
+    val appBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(appBarState)
 
     ApplicationScreen(
         enableDefaultScrollBehavior = false,
@@ -59,7 +59,7 @@ fun LibrariesScreen(
                     title = name,
                     description = licenses,
                     onClick = {
-                        if(urlToOpen.isNotEmpty())
+                        if (urlToOpen.isNotEmpty())
                             uriHandler.openUri(urlToOpen)
                     }
                 )

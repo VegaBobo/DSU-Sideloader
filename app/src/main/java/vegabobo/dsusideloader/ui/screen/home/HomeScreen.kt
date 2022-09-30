@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,6 +39,7 @@ object HomeLinks {
     const val DSU_DOCS = "https://source.android.com/devices/tech/ota/dynamic-system-updates"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
     navController: NavController,
