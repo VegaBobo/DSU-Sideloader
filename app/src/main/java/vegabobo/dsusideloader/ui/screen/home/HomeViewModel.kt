@@ -118,6 +118,7 @@ class HomeViewModel @Inject constructor(
             if (!storageManager.arePermissionsGrantedToFolder(result)) {
                 updateAdditionalCardState(AdditionalCardState.SETUP_STORAGE)
             } else {
+                updateAdditionalCardState(AdditionalCardState.NONE)
                 _uiState.update { it.copy(passedInitialChecks = true) }
             }
         }

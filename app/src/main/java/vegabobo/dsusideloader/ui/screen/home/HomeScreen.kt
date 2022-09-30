@@ -15,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.DsuInfoCard
 import vegabobo.dsusideloader.ui.cards.ImageSizeCard
@@ -70,21 +69,29 @@ fun Home(
             Box(modifier = Modifier.animateContentSize()) {
                 when (uiState.additionalCard) {
                     AdditionalCardState.NO_DYNAMIC_PARTITIONS ->
-                        UnsupportedCard { exitProcess(0) }
+                        UnsupportedCard(
+                            onClickClose = { exitProcess(0) },
+                            onClickContinueAnyway = { homeViewModel.overrideDynamicPartitionCheck() }
+                        )
+
                     AdditionalCardState.SETUP_STORAGE ->
                         SetupStorage { homeViewModel.takeUriPermission(it) }
+
                     AdditionalCardState.UNAVAIABLE_STORAGE ->
                         StorageWarningCard(
                             minPercentageFreeStorage = homeViewModel.allocPercentageInt.toString(),
                             onClick = { homeViewModel.overrideUnavaiableStorage() }
                         )
+
                     AdditionalCardState.MISSING_READ_LOGS_PERMISSION ->
                         RequiresLogPermissionCard(
                             onClickGrant = { homeViewModel.grantReadLogs() },
                             onClickRefuse = { homeViewModel.refuseReadLogs() }
                         )
+
                     AdditionalCardState.GRANTING_READ_LOGS_PERMISSION ->
                         GrantingPermissionCard()
+
                     AdditionalCardState.NONE -> {}
                 }
             }
@@ -134,27 +141,32 @@ fun Home(
                 onClickConfirm = { homeViewModel.onConfirmInstallationSheet() },
                 onClickCancel = { homeViewModel.dismissSheet() }
             )
+
         SheetDisplayState.CANCEL_INSTALLATION ->
             CancelSheet(
                 onClickConfirm = { homeViewModel.onClickCancelInstallationButton() },
                 onClickCancel = { homeViewModel.dismissSheet() },
             )
+
         SheetDisplayState.IMAGESIZE_WARNING ->
             ImageSizeWarningSheet(
                 onClickConfirm = { homeViewModel.dismissSheet() },
                 onClickCancel = { homeViewModel.onCheckImageSizeCard() }
             )
+
         SheetDisplayState.DISCARD_DSU ->
             DiscardDSUSheet(
                 onClickConfirm = { homeViewModel.onClickDiscardGsi() },
                 onClickCancel = { homeViewModel.dismissSheet() }
             )
+
         SheetDisplayState.VIEW_LOGS ->
             ViewLogsBottomSheet(
                 logs = uiState.installationLogs,
                 onClickSaveLogs = { homeViewModel.saveLogs(it) },
                 onDismiss = { homeViewModel.dismissSheet() }
             )
+
         SheetDisplayState.NONE -> {}
     }
 
