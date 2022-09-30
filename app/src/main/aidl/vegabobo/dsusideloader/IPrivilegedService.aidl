@@ -1,6 +1,7 @@
 package vegabobo.dsusideloader;
 
 import android.gsi.GsiProgress;
+import android.os.storage.VolumeInfo;
 
 interface IPrivilegedService {
     void exit() = 1;
@@ -15,7 +16,7 @@ interface IPrivilegedService {
     void grantPermission(String permission) = 2001;
 
     // Storage Manager
-    List getVolumes() = 3001;
+    List<VolumeInfo> getVolumes() = 3001;
     void unmount(String volId) = 3002;
     void mount(String volId) = 3003;
 

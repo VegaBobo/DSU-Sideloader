@@ -47,7 +47,7 @@ open class DsuInstallationHandler(
 
     private fun unmountSdTemporary() {
         val volumes: List<VolumeInfo> =
-            PrivilegedProvider.getService().volumes as List<VolumeInfo>
+            PrivilegedProvider.getService().volumes
         val volumesUnmount: ArrayList<String> = ArrayList()
         for (volume in volumes)
             if (volume.id.contains("public")) {
