@@ -3,6 +3,7 @@ package vegabobo.dsusideloader.ui.screen.home
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -256,8 +257,20 @@ class HomeViewModel @Inject constructor(
             )
         }
         viewModelScope.launch(Dispatchers.IO + installationJob) {
-            logger!!.startLogging()
+            logger!!.startLogging(generateUsefulLogInfo())
         }
+    }
+
+    private fun generateUsefulLogInfo(): String {
+        return "Device: ${Build.MODEL}\n" +
+                "SDK: Android ${Build.VERSION.RELEASE} (${Build.VERSION.SDK_INT})\n" +
+                "$session\n" +
+                "checkDynamicPartitions: $checkDynamicPartitions\n" +
+                "checkUnavaiableStorage: $checkUnavaiableStorage\n" +
+                "checkReadLogsPermission: $checkReadLogsPermission\n" +
+                "allocPercentage: $allocPercentage\n" +
+                "hasAvailableStorage: $hasAvailableStorage\n" +
+                "maximumAllowedForAllocation: $maximumAllowedForAllocation\n"
     }
 
     fun saveLogs(uriToSaveLogs: Uri) {

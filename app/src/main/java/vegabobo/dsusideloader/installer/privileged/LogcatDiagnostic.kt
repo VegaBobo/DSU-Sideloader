@@ -17,7 +17,7 @@ class LogcatDiagnostic(
     var logs = ""
     val isLogging = AtomicBoolean(false)
 
-    fun startLogging() {
+    fun startLogging(prependString: String) {
         if (isLogging.get())
             destroy()
         logs = ""
@@ -27,6 +27,7 @@ class LogcatDiagnostic(
         CmdRunner.runReadEachLine("logcat --format brief | grep -e gsid -e DynamicSystem | grep -v OUT") {
 
             if (logs.isEmpty()) {
+                logs = "$prependString\n"
                 onStepUpdate(InstallationStep.INSTALLING)
                 onInstallationProgressUpdate(0F, "userdata")
             }
