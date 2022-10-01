@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.DSUHelper" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.DSUHelper" parent="Theme.Material3.DayNight">
 
         <item name="colorPrimary">@color/system_accent</item>
         <item name="colorPrimaryDark">@color/system_accent_darker</item>
@@ -14,9 +14,11 @@
         <item name="colorSurface">@color/netrual_color</item>
         <item name="colorSecondaryContainer">@color/system_accent_soft</item>
 
-        <item name="android:navigationBarColor">@color/netrual_color_2</item>
-        <item name="android:statusBarColor">@color/netrual_color</item>
-        <item name="android:colorBackground">@color/netrual_color</item>
+         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:colorBackground">@color/background</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
 
     </style>
 </resources>

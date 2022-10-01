@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<permissions>
+    <privapp-permissions package="vegabobo.dsusideloader">
+
+        <!-- Privileged permissions -->
+        <permission name="android.permission.INSTALL_DYNAMIC_SYSTEM" />
+        <permission name="android.permission.READ_LOGS" />
+        <permission name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+        <permission name="android.permission.FORCE_STOP_PACKAGES" />
+
+        <!-- Updater permissions -->
+        <permission name="android.permission.INTERNET" />
+        <permission name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+        <!--
+            Protection level signature:
+                <permission name="android.permission.MANAGE_DYNAMIC_SYSTEM" />
+         -->
+    </privapp-permissions>
+</permissions>

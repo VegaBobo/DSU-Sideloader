@@ -1,224 +1,133 @@
-package vegabobo.dsusideloader.dsuhelper
+package vegabobo.dsusideloader.preparation
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.net.Uri
-import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.documentfile.provider.DocumentFile
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.topjohnwu.superuser.Shell
+import kotlinx.coroutines.Job
+import vegabobo.dsusideloader.core.StorageManager
+import vegabobo.dsusideloader.model.DSUConstants
+import vegabobo.dsusideloader.model.DSUInstallationSource
+import vegabobo.dsusideloader.model.Session
 import java.math.BigInteger
-import vegabobo.dsusideloader.LogsActivity
-import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.RunOnAdbActivity
-import vegabobo.dsusideloader.checks.OperationMode
-import vegabobo.dsusideloader.util.DeCompressionUtils
-import vegabobo.dsusideloader.util.FilenameUtils
-import vegabobo.dsusideloader.util.SPUtils
-import vegabobo.dsusideloader.util.WorkspaceFilesUtils
 
-class PrepareDsu(
-    private val ctx: Context,
-    private val uri: Uri,
-    private val gsiDsuObject: GsiDsuObject?
-) : Runnable {
+class Preparation(
+    private val storageManager: StorageManager,
+    private val session: Session,
+    private val job: Job,
+    private val onStepUpdate: (step: InstallationStep) -> Unit,
+    private val onPreparationProgressUpdate: (progress: Float) -> Unit,
+    private val onCanceled: () -> Unit,
+    private val onPreparationFinished: (preparedDSU: DSUInstallationSource) -> Unit
+) : () -> Unit {
 
-    private lateinit var dialog: AlertDialog
-    var cleanWorkspace = true
+    private val userSelectedImageSize = session.userSelection.userSelectedImageSize
+    private val userSelectedFileUri = session.userSelection.selectedFileUri
 
-    override fun run() {
-        val builder = MaterialAlertDialogBuilder(ctx)
-        (ctx as Activity).runOnUiThread {
-            builder.setCancelable(false)
-            builder.setView(R.layout.progress)
-            dialog = builder.create()
-            dialog.show()
+    override fun invoke() {
+        if (session.preferences.useBuiltinInstaller && session.isRoot()) {
+            prepareRooted()
+            return
         }
+        prepareForDSU()
+    }
 
-        val file = FilenameUtils.queryName(ctx.contentResolver, uri)
-
-        val dsu: GsiDsuObject? = when (file.substringAfterLast(".")) {
-            "xz" -> {
-                transformFile2Gzip(
-                    uri,
-                    DeCompressionUtils.Constants.XZ_TO_IMG,
-                    gsiDsuObject
-                )
-            }
+    private fun prepareRooted() {
+        val source: DSUInstallationSource = when (getExtension(userSelectedFileUri)) {
             "img" -> {
-                transformFile2Gzip(
-                    uri,
-                    DeCompressionUtils.Constants.IMG_TO_GZ,
-                    gsiDsuObject
+                DSUInstallationSource.SingleSystemImage(
+                    userSelectedFileUri, storageManager.getFilesizeFromUri(userSelectedFileUri)
                 )
             }
-            "gz" -> {
-                var gzUri = uri
-                if (uri.path.toString().contains("msf:")) {
-                    updateText(ctx.getString(R.string.gz_copy))
-                    gzUri = WorkspaceFilesUtils.copyFileToSafFolder(
-                        ctx,
-                        uri,
-                        file,
-                        WorkspaceFilesUtils.getWorkspaceFolder(ctx)
-                    )
-                }
-                if (gsiDsuObject!!.fileSize != -1L) {
-                    gsiDsuObject.absolutePath =
-                        FilenameUtils.getFilePath(gzUri, true)
-                }
 
-                transformFile2Gzip(
-                    gzUri,
-                    DeCompressionUtils.Constants.GZ_TO_GSI_OBJECT,
-                    gsiDsuObject
-                )
+            "xz", "gz", "gzip" -> {
+                val result = extractFile(userSelectedFileUri)
+                DSUInstallationSource.SingleSystemImage(result.first, result.second)
             }
+
             "zip" -> {
-                val dsuPackageUri = if ("msf:" in uri.path.toString()) {
-                    updateText(ctx.getString(R.string.copying_file))
-                    WorkspaceFilesUtils.copyFileToSafFolder(
-                        ctx,
-                        uri,
-                        "dsu.zip",
-                        WorkspaceFilesUtils.getWorkspaceFolder(ctx)
-                    )
-                } else {
-                    uri
-                }
-                cleanWorkspace = false
-                val filePath = FilenameUtils.getFilePath(dsuPackageUri, true)
-
-                // workaround for java.net.URISyntaxException: Illegal character in path at index
-                // com.android.dynsystem.InstallationAsyncTask.verifyAndPrepare(InstallationAsyncTask.java:273)
-                if (filePath.contains(" ")) {
-                    gsiDsuObject!!.absolutePath = filePath.replace(" ", "%20")
-                } else {
-                    gsiDsuObject!!.absolutePath = filePath
-                }
-
-                gsiDsuObject
+                DSUInstallationSource.DsuPackage(userSelectedFileUri)
             }
-            else -> gsiDsuObject
-        }
 
-        ctx.runOnUiThread {
-            dialog.dismiss()
-        }
-
-        if (cleanWorkspace) {
-            WorkspaceFilesUtils.cleanWorkspaceFolder(ctx, false)
-        }
-
-        when (OperationMode.getOperationMode()) {
-            OperationMode.Constants.ROOT_MAGISK, OperationMode.Constants.OTHER_ROOT_SOLUTION -> {
-                val dsuCommand = DSUCommand(dsu!!, ctx, true)
-
-                if (SPUtils.isDebugModeEnabled(ctx)) {
-                    ctx.startActivity(
-                        Intent(ctx, LogsActivity::class.java).putExtra(
-                            "script",
-                            dsuCommand.getInstallScript()
-                        ).putExtra(
-                            "installation_info",
-                            dsuCommand.installationInfoAsString()
-                        )
-                    )
-                } else {
-                    showFinishedDialog()
-                    Shell.cmd(dsuCommand.getInstallScript()).exec()
-                }
-            }
-            OperationMode.Constants.UNROOTED -> {
-                val dsuCommand = DSUCommand(dsu!!, ctx, false)
-                showAdbCommandToDeployGSI(dsuCommand.writeInstallScript())
+            else -> {
+                throw Exception("Unsupported filetype")
             }
         }
+        if (!job.isCancelled)
+            onPreparationFinished(source)
+        else
+            onCanceled()
     }
 
-    private fun transformFile2Gzip(uri: Uri, mode: Int, gsiDsuObject: GsiDsuObject?): GsiDsuObject? {
-        val workspaceFolder = WorkspaceFilesUtils.getWorkspaceFolder(ctx)
-        val outputFilename = FilenameUtils.queryName(ctx.contentResolver, uri)
-
-        return when (mode) {
-            DeCompressionUtils.Constants.GZ_TO_GSI_OBJECT -> {
-                updateText(ctx.getString(R.string.almost_ready))
-                val gsiSize = gsiDsuObject!!.fileSize
-                val gsiAbsPath = gsiDsuObject.absolutePath
-                if (gsiSize == -1L && gsiAbsPath == "") {
-                    transformFile2Gzip(
-                        uri,
-                        DeCompressionUtils.Constants.GZ_TO_IMG,
-                        gsiDsuObject
-                    )
-                } else {
-                    gsiDsuObject
-                }
+    private fun prepareForDSU() {
+        storageManager.cleanWorkspaceFolder(true)
+        val fileExtension = getExtension(userSelectedFileUri)
+        val preparedFilePair =
+            when (fileExtension) {
+                "xz" -> prepareXz(userSelectedFileUri)
+                "img" -> prepareImage(userSelectedFileUri)
+                "gz", "gzip" -> prepareGz(userSelectedFileUri)
+                "zip" -> prepareZip(userSelectedFileUri)
+                else -> throw Exception("Unsupported filetype")
             }
-            DeCompressionUtils.Constants.XZ_TO_IMG -> {
-                updateText(ctx.getString(R.string.extracting_xz))
-                val filenameWithoutExtension =
-                    outputFilename.substringBeforeLast(".")
 
-                val uriFromIMGFile = DeCompressionUtils(
-                    ctx,
-                    uri,
-                    filenameWithoutExtension,
-                    workspaceFolder
-                ).extractXZFile()!!
+        val preparedUri = preparedFilePair.first
+        val preparedFileSize = preparedFilePair.second
 
-                transformFile2Gzip(
-                    uriFromIMGFile,
-                    DeCompressionUtils.Constants.IMG_TO_GZ,
-                    gsiDsuObject
-                )
-            }
-            DeCompressionUtils.Constants.IMG_TO_GZ -> {
-                updateText(ctx.getString(R.string.compressing_img_to_gzip))
-                val uriFromGZFile = DeCompressionUtils(
-                    ctx,
-                    uri,
-                    "$outputFilename.gz",
-                    workspaceFolder
-                ).compressGzip()
-                val absolutePath = FilenameUtils.getFilePath(uriFromGZFile!!, true)
-                val bytesFromImageFile =
-                    DocumentFile.fromSingleUri(ctx, uri)!!.length()
-                gsiDsuObject!!.fileSize = bytesFromImageFile
-                gsiDsuObject.absolutePath = absolutePath
-                transformFile2Gzip(
-                    uriFromGZFile,
-                    DeCompressionUtils.Constants.GZ_TO_GSI_OBJECT,
-                    gsiDsuObject
-                )
-            }
-            DeCompressionUtils.Constants.GZ_TO_IMG -> {
-                val absolutePath = FilenameUtils.getFilePath(uri, true)
-                gsiDsuObject!!.absolutePath = absolutePath
+        val source = if (fileExtension == "zip")
+            DSUInstallationSource.DsuPackage(preparedUri)
+        else
+            DSUInstallationSource.SingleSystemImage(preparedUri, preparedFileSize)
 
-                val bytesFromImageFile = getImageSize(
-                    uri,
-                    workspaceFolder,
-                    outputFilename
-                )
-                gsiDsuObject.fileSize = bytesFromImageFile
+        onStepUpdate(InstallationStep.WAITING_USER_CONFIRMATION)
 
-                transformFile2Gzip(uri, DeCompressionUtils.Constants.GZ_TO_GSI_OBJECT, gsiDsuObject)
-            }
-            else -> null
-        }
+        if (!job.isCancelled)
+            onPreparationFinished(source)
+        else
+            onCanceled()
     }
 
-    private fun getImageSize(uri: Uri, workspace: DocumentFile, output: String): Long {
-        val fileSize = DocumentFile.fromSingleUri(ctx, uri)!!.length()
+    private fun prepareZip(zipFile: Uri): Pair<Uri, Long> {
+        val uri = getSafeUri(zipFile)
+        return Pair(uri, -1)
+    }
+
+    private fun prepareXz(xzFile: Uri): Pair<Uri, Long> {
+        val outputFile = getFileName(xzFile)
+        onStepUpdate(InstallationStep.DECOMPRESSING_XZ)
+        val imgFile = FileUnPacker(
+            storageManager,
+            xzFile,
+            outputFile,
+            job,
+            onPreparationProgressUpdate
+        ).unpack()
+        return prepareImage(imgFile.first)
+    }
+
+    private fun prepareImage(imageFile: Uri): Pair<Uri, Long> {
+        val outputFile = "${getFileName(imageFile)}.img.gz"
+        onStepUpdate(InstallationStep.COMPRESSING_TO_GZ)
+        val compressedFilePair = FileUnPacker(
+            storageManager,
+            imageFile,
+            outputFile,
+            job,
+            onPreparationProgressUpdate
+        ).pack()
+        return Pair(compressedFilePair.first, storageManager.getFilesizeFromUri(imageFile))
+    }
+
+    private fun prepareGz(gzFile: Uri): Pair<Uri, Long> {
+        val uri = getSafeUri(gzFile)
+        if (userSelectedImageSize != DSUConstants.DEFAULT_IMAGE_SIZE)
+            return Pair(uri, userSelectedImageSize)
+
+        onStepUpdate(InstallationStep.PROCESSING)
+        val fileSize = storageManager.getFilesizeFromUri(uri)
         val three_gb = Int.MAX_VALUE.toLong() * 1.5 // 2^32 * 0.75
 
         // If the .gz is smaller than 3gb, then try returning the image size
         // by reading the lasts four bytes.
         if (fileSize < three_gb) {
-            val inputStream = ctx.contentResolver.openInputStream(uri)!!
+            val inputStream = storageManager.openInputStream(uri)
             inputStream.skip(fileSize - 4)
             val bytes = ByteArray(4)
             inputStream.read(bytes)
@@ -227,49 +136,47 @@ class PrepareDsu(
             // If the image size is LOWER than the compressed file, then
             // the image size must be wrong.
             if (imageSize > fileSize) {
-                return imageSize
+                return Pair(uri, imageSize)
             }
         }
         // If the .gz is bigger than 3gb or the fast-way returns a
         // wrong value, we need to decompress the file and calculate
         // the size. SLOWWWWWWWWWWWWWW
-        updateText(ctx.getString(R.string.extracting_gzip))
-        val filenameWithoutExtension = output.substringBeforeLast(".")
+        val outputFile = getFileName(uri)
+        onStepUpdate(InstallationStep.DECOMPRESSING_GZIP)
+        val extractedFilePair =
+            FileUnPacker(storageManager, uri, outputFile, job, onPreparationProgressUpdate).unpack()
+        return Pair(uri, extractedFilePair.second)
+    }
 
-        val decompressedImage = DeCompressionUtils(
-            ctx,
+    private fun extractFile(uri: Uri): Pair<Uri, Long> {
+        return extractFile(uri, "system")
+    }
+
+    private fun extractFile(uri: Uri, partitionName: String): Pair<Uri, Long> {
+        onStepUpdate(InstallationStep.EXTRACTING_FILE)
+        return FileUnPacker(
+            storageManager,
             uri,
-            filenameWithoutExtension,
-            workspace
-        ).decompressGzip()!!
-
-        val image = DocumentFile.fromSingleUri(ctx, decompressedImage)!!
-        return image.length()
+            "${partitionName}.img",
+            job,
+            onPreparationProgressUpdate
+        ).unpack()
     }
 
-    private fun updateText(text: String) {
-        (ctx as Activity).runOnUiThread {
-            val loadingMsg = dialog.findViewById<TextView>(R.id.tv_loadingtext)
-            loadingMsg!!.text = text
-        }
+    private fun getSafeUri(uri: Uri): Uri {
+        onStepUpdate(InstallationStep.COPYING_FILE)
+        return storageManager.getUriSafe(uri)
     }
 
-    private fun showFinishedDialog() {
-        (ctx as Activity).runOnUiThread {
-            MaterialAlertDialogBuilder(ctx)
-                .setTitle(ctx.getString(R.string.done))
-                .setMessage(ctx.getString(R.string.process_finished))
-                .setPositiveButton(ctx.getString(R.string.close_app)) { _, _ -> ctx.finish() }
-                .setCancelable(false)
-                .show()
-        }
+    private fun getFileName(uri: Uri): String {
+        return storageManager.getFilenameFromUri(uri)
+            .substringBeforeLast(".")
     }
 
-    private fun showAdbCommandToDeployGSI(cmdline: String) {
-        (ctx as Activity).runOnUiThread {
-            val myIntent = Intent(ctx, RunOnAdbActivity::class.java)
-            myIntent.putExtra("cmdline", "adb shell sh $cmdline")
-            ctx.startActivity(myIntent)
-        }
+    private fun getExtension(uri: Uri): String {
+        return storageManager.getFilenameFromUri(uri)
+            .substringAfterLast(".", "")
     }
+
 }

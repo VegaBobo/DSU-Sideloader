@@ -1,0 +1,58 @@
+# This file contains latest AOSP gsid policies with some additions
+
+allow gsid vold_service service_manager find
+
+allow gsid dm_device chr_file { getattr open read ioctl lock append write }
+allow gsid dm_device blk_file { getattr open read ioctl lock append write }
+
+allow gsid loop_control_device chr_file { getattr open read ioctl lock append write }
+allow gsid loop_device blk_file { getattr open read ioctl lock append write }
+allowxperm gsid loop_device blk_file ioctl *
+
+allow gsid sysfs_dm dir { getattr open read ioctl lock }
+allow gsid sysfs_fs_f2fs dir { getattr open read ioctl lock }
+
+allow gsid { metadata_file gsi_metadata_file_type } dir search
+allow gsid gsi_public_metadata_file file { getattr open read ioctl lock }
+allow gsid { proc_bootconfig proc_cmdline } file { getattr open read ioctl lock }
+
+allow gsid sysfs_dt_firmware_android dir { open getattr read search ioctl }
+allow gsid sysfs_dt_firmware_android file { getattr open read ioctl lock }
+
+allow gsid block_device dir { open getattr read search ioctl }
+
+allow gsid super_block_device_type blk_file { getattr open read ioctl lock }
+
+allowxperm gsid { block_device userdata_block_device sdcard_block_device super_block_device_type } blk_file ioctl *
+
+allow gsid mnt_media_rw_file dir { open getattr read search ioctl }
+allow gsid mnt_media_rw_stub_file dir { open getattr read search ioctl }
+
+allow gsid vfat dir { create reparent rmdir setattr open getattr read search ioctl open search write add_name remove_name getattr link unlink rename }
+allow gsid vfat file { create setattr open getattr read ioctl open write getattr link unlink rename }
+allow gsid sdcard_block_device blk_file { getattr open read ioctl lock }
+
+allow gsid adbd fd use
+allow gsid adbd unix_stream_socket { ioctl read getattr write setattr lock append bind connect getopt setopt shutdown }
+allow gsid { shell su } fifo_file { getattr open read ioctl lock }
+allow gsid { sdcard_type fuse } file { getattr open read ioctl lock }
+
+allow gsid userdata_block_device blk_file { getattr open read ioctl lock }
+
+allow gsid metadata_file dir { search getattr }
+allow gsid { gsi_metadata_file_type } dir { create reparent rmdir setattr open getattr read search ioctl open search write add_name remove_name getattr link unlink rename }
+
+allow gsid { ota_metadata_file } dir { open getattr read search ioctl open search write add_name remove_name }
+
+allow gsid { gsi_metadata_file_type ota_metadata_file } file { create setattr getattr open read ioctl lock open append write getattr link unlink rename }
+
+allow gsid file_contexts_file file { getattr open read ioctl lock }
+allow gsid gsi_metadata_file file relabelfrom
+allow gsid gsi_public_metadata_file file relabelto
+
+allow gsid { gsi_data_file ota_image_data_file } dir { open getattr read search ioctl open search write add_name remove_name }
+allow gsid { gsi_data_file ota_image_data_file } file { create setattr getattr open read ioctl lock open append write getattr link unlink rename }
+allowxperm gsid { gsi_data_file ota_image_data_file } file ioctl *
+
+allow gsid { block_device sdcard_block_device } blk_file { getattr open read ioctl write lock append write }
+allow gsid mmcblk1_block_device blk_file { getattr open read ioctl write lock append write }

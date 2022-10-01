@@ -1,0 +1,41 @@
+package vegabobo.dsusideloader.preparation
+
+enum class InstallationStep {
+    // Initial value
+    NOT_INSTALLING,
+
+    // When a DSU is detected on app startup
+    DSU_ALREADY_INSTALLED,
+
+    // Preparation steps
+    PROCESSING,
+    COPYING_FILE,
+    DECOMPRESSING_XZ,
+    COMPRESSING_TO_GZ,
+    DECOMPRESSING_GZIP,
+    EXTRACTING_FILE,
+
+    // Installation Steps
+    REQUIRES_ADB_CMD_TO_CONTINUE,
+    DISCARD_CURRENT_GSI,
+    WAITING_USER_CONFIRMATION,
+    INSTALLING,
+    INSTALLING_ROOTED,
+    CREATING_PARTITION,
+
+    // Errors
+    ERROR,
+    ERROR_CANCELED,
+    ERROR_REQUIRES_DISCARD_DSU,
+    ERROR_CREATE_PARTITION,
+    ERROR_EXTERNAL_SDCARD_ALLOC,
+    ERROR_NO_AVAIL_STORAGE,
+    ERROR_F2FS_WRONG_PATH,
+    ERROR_EXTENTS,
+    ERROR_SELINUX,
+    ERROR_SELINUX_ROOTLESS,
+
+    // Once installation is finished
+    INSTALL_SUCCESS,
+    INSTALL_SUCCESS_REBOOT_DYN_OS,
+}
