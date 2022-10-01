@@ -18,7 +18,7 @@ import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.LogcatCard
 import vegabobo.dsusideloader.ui.components.CustomBottomSheet
 import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
-import vegabobo.dsusideloader.ui.util.LauncherAcResult
+import vegabobo.dsusideloader.ui.util.launcherAcResult
 
 @Composable
 fun ViewLogsBottomSheet(
@@ -30,7 +30,7 @@ fun ViewLogsBottomSheet(
     val context = LocalContext.current
     val logsSavedText = stringResource(id = R.string.saved_logs)
 
-    val saveLogsResult = LauncherAcResult {
+    val saveLogsResult = launcherAcResult {
         onClickSaveLogs(it)
         Toast.makeText(context, logsSavedText, Toast.LENGTH_SHORT).show()
     }

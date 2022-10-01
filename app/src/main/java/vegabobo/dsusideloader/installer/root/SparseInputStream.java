@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * SparseInputStream read from upstream and detects the data format. If the upstream is a valid
@@ -47,7 +48,7 @@ public class SparseInputStream extends InputStream {
         public int mTotalSize;
         public byte[] fill;
         public String toString() {
-            return String.format(
+            return String.format(Locale.getDefault(),
                     "type: %x, chunk_size: %d, total_size: %d", mChunkType, mChunkSize, mTotalSize);
         }
     }

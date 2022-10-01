@@ -10,7 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 
 @Composable
-fun LauncherAcResult(
+fun launcherAcResult(
     result: (Uri) -> Unit,
 ): ManagedActivityResultLauncher<Intent, ActivityResult> {
     return rememberLauncherForActivityResult(

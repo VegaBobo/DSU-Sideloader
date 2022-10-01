@@ -103,8 +103,10 @@ fun UpdaterCard(
             when (uiState.updateStatus) {
                 UpdateStatus.NO_UPDATE_FOUND ->
                     stringResource(id = R.string.check_updates_text_updated)
+
                 UpdateStatus.UPDATE_FOUND ->
                     stringResource(R.string.check_updates_text_found, uiState.updateVersion)
+
                 else ->
                     stringResource(id = R.string.check_updates_text_idle)
             },

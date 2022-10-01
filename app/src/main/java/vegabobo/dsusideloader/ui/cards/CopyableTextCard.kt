@@ -29,7 +29,7 @@ fun CopyableTextCard(
             Row {
                 Spacer(modifier = Modifier.weight(1F))
                 PrimaryButton(
-                    text = stringResource(id = R.string.copy),
+                    text = stringResource(id = R.string.copy_text),
                     onClick = {
                         clipboardManager.setText(AnnotatedString(text))
                         if (showToast)

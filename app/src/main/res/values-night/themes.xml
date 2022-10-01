@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.DSUHelper" parent="Theme.Material3.DayNight">
 
@@ -15,7 +15,7 @@
         <item name="colorSecondaryContainer">@color/system_accent_soft</item>
 
          <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:colorBackground">@color/bg</item>
+        <item name="android:colorBackground">@color/background</item>
 
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>

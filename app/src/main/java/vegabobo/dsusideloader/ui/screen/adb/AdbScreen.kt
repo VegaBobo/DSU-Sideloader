@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.CopyableTextCard
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
@@ -19,7 +18,7 @@ import vegabobo.dsusideloader.ui.screen.Destinations
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdbScreen(
-    navController: NavController,
+    navigate: (String) -> Unit,
     adbViewModel: AdbViewModel = hiltViewModel()
 ) {
     val scriptPath = adbViewModel.obtainScriptPath()
@@ -33,8 +32,8 @@ fun AdbScreen(
             TopBar(
                 barTitle = stringResource(id = R.string.installation),
                 scrollBehavior = it,
-                onClickIcon = { navController.navigate(Destinations.Preferences) },
-                onClickBackButton = { navController.navigateUp() }
+                onClickIcon = { navigate(Destinations.Preferences) },
+                onClickBackButton = { navigate(Destinations.Up) }
             )
         },
         content = {

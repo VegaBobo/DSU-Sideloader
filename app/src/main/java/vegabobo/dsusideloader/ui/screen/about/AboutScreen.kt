@@ -9,10 +9,13 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.updater.UpdaterCard
-import vegabobo.dsusideloader.ui.components.*
+import vegabobo.dsusideloader.ui.components.ApplicationScreen
+import vegabobo.dsusideloader.ui.components.PreferenceItem
+import vegabobo.dsusideloader.ui.components.SimpleCard
+import vegabobo.dsusideloader.ui.components.Title
+import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
@@ -24,7 +27,7 @@ object AboutLinks {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutScreen(
-    navController: NavController,
+    navigate: (String) -> Unit,
     aboutViewModel: AboutViewModel = hiltViewModel()
 ) {
 
@@ -37,7 +40,7 @@ fun AboutScreen(
             TopBar(
                 barTitle = stringResource(id = R.string.about),
                 scrollBehavior = it,
-                onClickBackButton = { navController.navigateUp() }
+                onClickBackButton = { navigate(Destinations.Up) }
             )
         }
     ) {
@@ -62,7 +65,7 @@ fun AboutScreen(
             PreferenceItem(
                 title = stringResource(id = R.string.libraries_title),
                 description = stringResource(id = R.string.libraries_description),
-                onClick = { navController.navigate(Destinations.Libraries) }
+                onClick = { navigate(Destinations.Libraries) }
             )
         }
         Title(

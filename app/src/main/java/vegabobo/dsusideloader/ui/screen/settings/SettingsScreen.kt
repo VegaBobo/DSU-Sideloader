@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.ui.components.*
@@ -17,7 +16,7 @@ import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Settings(
-    navController: NavController,
+    navigate: (String) -> Unit,
     settingsViewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
@@ -27,7 +26,7 @@ fun Settings(
             TopBar(
                 barTitle = stringResource(id = R.string.preferences),
                 scrollBehavior = it,
-                onClickBackButton = { navController.navigateUp() }
+                onClickBackButton = { navigate(Destinations.Up) }
             )
         }
     ) {
@@ -67,7 +66,7 @@ fun Settings(
         PreferenceItem(
             title = stringResource(id = R.string.about),
             description = stringResource(id = R.string.about_description),
-            onClick = { navController.navigate(Destinations.About) }
+            onClick = { navigate(Destinations.About) }
         )
     }
 

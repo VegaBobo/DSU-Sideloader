@@ -63,7 +63,7 @@
 
     <!-- No free storage error card -->
     <string name="storage_error">可用存储空间不足</string>
-    <string name="storage_error_description">安卓系统限制至少需要40%以上的可用存储空间以进行DSU安装，请释放足够的空间后再尝试。</string>
+    <string name="storage_error_description">安卓系统限制至少需要%1$s%%以上的可用存储空间以进行DSU安装，请释放足够的空间后再尝试。</string>
 
     <!-- Filesystem features not found error card -->
     <string name="fs_features_error">Filesystem 不可用</string>
@@ -182,7 +182,7 @@
     <string name="adb_how_to_shell">如果您要在没有电脑的情况下运行 adb shell (例如: LADB, Shizuku\'s Rish, WebADB, Bugjaeger..)，您可以去掉 adb shell 前缀，直接运行:</string>
     <string name="adb_how_to_done">安装开始后，您可以通过通知栏查看安装进度，您现在可以关闭 DSU Sideloader。</string>
 
-    <string name="copy">复制文本</string>
+    <string name="copy_text">复制文本</string>
     <string name="copied">复制成功</string>
 
     <string name="return_warning">确定返回么？</string>

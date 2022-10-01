@@ -1,11 +1,11 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.DSUHelper" parent="Theme.Material3.DayNight">
 
         <item name="colorPrimary">@color/system_accent</item>
         <item name="colorPrimaryDark">@color/system_accent_darker</item>
         <item name="colorSecondary">@color/system_accent_2</item>
-        <item name="android:colorBackground">@color/bg</item>
+        <item name="android:colorBackground">@color/background</item>
         <item name="colorError">@color/error</item>
 
         <item name="colorPrimaryVariant">@color/system_accent</item>

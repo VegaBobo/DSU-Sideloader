@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.SimpleCard
 import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
-import vegabobo.dsusideloader.ui.util.LauncherAcResult
+import vegabobo.dsusideloader.ui.util.launcherAcResult
 
 @Composable
 fun SetupStorage(
@@ -19,7 +19,7 @@ fun SetupStorage(
 ) {
 
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-    val launcherSetupStorage = LauncherAcResult {
+    val launcherSetupStorage = launcherAcResult {
         onSetupStorageSuccess(it)
     }
 

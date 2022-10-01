@@ -15,21 +15,24 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.DsuInfoCard
 import vegabobo.dsusideloader.ui.cards.ImageSizeCard
 import vegabobo.dsusideloader.ui.cards.UserdataCard
 import vegabobo.dsusideloader.ui.cards.installation.InstallationCard
-import vegabobo.dsusideloader.ui.cards.warnings.*
+import vegabobo.dsusideloader.ui.cards.warnings.GrantingPermissionCard
+import vegabobo.dsusideloader.ui.cards.warnings.RequiresLogPermissionCard
+import vegabobo.dsusideloader.ui.cards.warnings.SetupStorage
+import vegabobo.dsusideloader.ui.cards.warnings.StorageWarningCard
+import vegabobo.dsusideloader.ui.cards.warnings.UnsupportedCard
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
-import vegabobo.dsusideloader.ui.sdialogs.ViewLogsBottomSheet
+import vegabobo.dsusideloader.ui.screen.Destinations
 import vegabobo.dsusideloader.ui.sdialogs.CancelSheet
 import vegabobo.dsusideloader.ui.sdialogs.ConfirmInstallationSheet
 import vegabobo.dsusideloader.ui.sdialogs.DiscardDSUSheet
 import vegabobo.dsusideloader.ui.sdialogs.ImageSizeWarningSheet
-import vegabobo.dsusideloader.ui.screen.Destinations
+import vegabobo.dsusideloader.ui.sdialogs.ViewLogsBottomSheet
 import vegabobo.dsusideloader.ui.util.KeepScreenOn
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 import kotlin.system.exitProcess
@@ -42,7 +45,7 @@ object HomeLinks {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
-    navController: NavController,
+    navigate: (String) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
 
@@ -64,7 +67,7 @@ fun Home(
                 barTitle = stringResource(id = R.string.app_name),
                 icon = Icons.Outlined.Settings,
                 scrollBehavior = it,
-                onClickIcon = { navController.navigate(Destinations.Preferences) }
+                onClickIcon = { navigate(Destinations.Preferences) }
             )
         },
         content = {
@@ -111,7 +114,7 @@ fun Home(
                     onClickDiscardDsu = { homeViewModel.showDiscardSheet() },
                     onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
                     onClickViewLogs = { homeViewModel.showLogsWarning() },
-                    onClickViewCommands = { navController.navigate(Destinations.ADBInstallation) },
+                    onClickViewCommands = { navigate(Destinations.ADBInstallation) },
                     minPercentageOfFreeStorage = homeViewModel.allocPercentageInt.toString()
                 )
                 UserdataCard(

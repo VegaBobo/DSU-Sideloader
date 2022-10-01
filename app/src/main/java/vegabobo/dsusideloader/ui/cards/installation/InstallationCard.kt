@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.CardBox
 import vegabobo.dsusideloader.ui.screen.home.InstallationCardState
-import vegabobo.dsusideloader.ui.util.LauncherAcResult
+import vegabobo.dsusideloader.ui.util.launcherAcResult
 
 @Composable
 fun InstallationCard(
@@ -44,7 +44,7 @@ fun InstallationCard(
     chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
     chooseFile = Intent.createChooser(chooseFile, "")
 
-    val launcherSelectFile = LauncherAcResult {
+    val launcherSelectFile = launcherAcResult {
         onSelectFileSuccess(it)
     }
 

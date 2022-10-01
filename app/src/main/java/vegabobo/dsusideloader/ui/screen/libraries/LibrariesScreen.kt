@@ -13,18 +13,18 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.util.withContext
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.PreferenceItem
 import vegabobo.dsusideloader.ui.components.TopBar
+import vegabobo.dsusideloader.ui.screen.Destinations
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibrariesScreen(
-    navController: NavController,
+    navigate: (String) -> Unit,
 ) {
     val libs = remember { mutableStateOf<Libs?>(null) }
     val context = LocalContext.current
@@ -43,7 +43,7 @@ fun LibrariesScreen(
             TopBar(
                 barTitle = stringResource(id = R.string.libraries_title),
                 scrollBehavior = scrollBehavior,
-                onClickBackButton = { navController.navigateUp() })
+                onClickBackButton = { navigate(Destinations.Up) })
         }
     ) {
         LazyColumn(Modifier.fillMaxSize()) {

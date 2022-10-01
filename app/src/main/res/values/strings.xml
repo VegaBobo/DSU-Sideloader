@@ -200,7 +200,7 @@
     <string name="adb_how_to_shell">If you\'re running adb shell without PC (eg: LADB, Shizuku\'s Rish, WebADB, Bugjaeger..), you should run this command instead:</string>
     <string name="adb_how_to_done">Once it\'s done, check your notifications to follow installation process, you can also close this app.</string>
 
-    <string name="copy">Copy text</string>
+    <string name="copy_text">Copy text</string>
     <string name="copied">Copied</string>
 
     <!--

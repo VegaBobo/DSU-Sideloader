@@ -1,5 +1,7 @@
 package vegabobo.dsusideloader.util
 
+import org.lsposed.hiddenapibypass.HiddenApiBypass
+
 class DevicePropUtils {
 
     companion object {
@@ -22,8 +24,9 @@ class DevicePropUtils {
         }
 
         private fun getSystemProperty(key: String): String {
-            return Class.forName("android.os.SystemProperties")
-                .getMethod("get", String::class.java).invoke(null, key) as String
+            val systemPropertiesClass = Class.forName("android.os.SystemProperties")
+            val value = HiddenApiBypass.invoke(systemPropertiesClass, null, "get", key)
+            return value.toString()
         }
 
     }

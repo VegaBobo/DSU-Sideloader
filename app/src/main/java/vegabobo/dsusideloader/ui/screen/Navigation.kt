@@ -16,16 +16,25 @@ object Destinations {
     const val ADBInstallation = "adb_installation"
     const val About = "about"
     const val Libraries = "libraries"
+    const val Up = "up"
 }
 
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Destinations.Homepage) {
-        composable(Destinations.Homepage) { Home(navController) }
-        composable(Destinations.Preferences) { Settings(navController) }
-        composable(Destinations.ADBInstallation) { AdbScreen(navController) }
-        composable(Destinations.About) { AboutScreen(navController) }
-        composable(Destinations.Libraries) { LibrariesScreen(navController) }
+
+        fun navigate(destination: String) {
+            if (destination == Destinations.Up)
+                navController.navigateUp()
+            else
+                navController.navigate(destination)
+        }
+
+        composable(Destinations.Homepage) { Home(navigate = { navigate(it) }) }
+        composable(Destinations.Preferences) { Settings(navigate = { navigate(it) }) }
+        composable(Destinations.ADBInstallation) { AdbScreen(navigate = { navigate(it) }) }
+        composable(Destinations.About) { AboutScreen(navigate = { navigate(it) }) }
+        composable(Destinations.Libraries) { LibrariesScreen(navigate = { navigate(it) }) }
     }
 }
