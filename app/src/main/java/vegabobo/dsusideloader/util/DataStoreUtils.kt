@@ -15,7 +15,7 @@ class DataStoreUtils {
         suspend fun readBoolPref(
             dataStore: DataStore<Preferences>,
             key: String,
-            default: Boolean,
+            default: Boolean
         ): Boolean {
             return dataStore.data.map {
                 it[booleanPreferencesKey(key)] ?: default
@@ -25,7 +25,7 @@ class DataStoreUtils {
         suspend fun readStringPref(
             dataStore: DataStore<Preferences>,
             key: String,
-            default: String,
+            default: String
         ): String {
             return dataStore.data.map {
                 it[stringPreferencesKey(key)] ?: default
@@ -67,7 +67,5 @@ class DataStoreUtils {
             }
             onFinish()
         }
-
     }
-
 }

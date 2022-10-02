@@ -7,6 +7,8 @@ import androidx.core.net.toUri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.documentfile.provider.DocumentFile
+import java.io.InputStream
+import java.io.OutputStream
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,8 +16,6 @@ import org.apache.commons.compress.utils.IOUtils
 import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.util.DataStoreUtils
 import vegabobo.dsusideloader.util.FilenameUtils
-import java.io.InputStream
-import java.io.OutputStream
 
 class StorageManager(
     private val appContext: Context,
@@ -43,19 +43,18 @@ class StorageManager(
         for (folder in foldersUriPermissions) {
             val persistedUriString = folder.uri.toString()
             if (path == persistedUriString) {
-
                 // If folder with granted permissions doesn't exists
                 // (eg. user deleted folder, or apk data restored externally from a backup)
                 // then, we should ask user to grant permissions to a folder again
-                if (!DocumentFile.fromTreeUri(appContext, folder.uri)!!.exists())
+                if (!DocumentFile.fromTreeUri(appContext, folder.uri)!!.exists()) {
                     return false
+                }
 
                 // check if uri has r/w permission
                 if (folder.isWritePermission && folder.isReadPermission) {
                     rwPathAllowedByUser = path
                     return true
                 }
-
             } else {
                 // if we have permission in some folder we don't need to, permission to it will be revoked
                 appContext.revokeUriPermission(
@@ -71,11 +70,13 @@ class StorageManager(
     // this path will be used to store images that will be utilized by DSU
     @Throws(Exception::class)
     private fun getWorkspaceFolder(): DocumentFile {
-        if (this::workspaceFolder.isInitialized && workspaceFolder.canRead())
+        if (this::workspaceFolder.isInitialized && workspaceFolder.canRead()) {
             return workspaceFolder
+        }
 
-        if (rwPathAllowedByUser.isEmpty())
+        if (rwPathAllowedByUser.isEmpty()) {
             throw Exception("Allowed path by user is empty, ask user to allow storage permission again.")
+        }
 
         val writeableDir =
             DocumentFile.fromTreeUri(appContext, rwPathAllowedByUser.toUri())
@@ -89,8 +90,9 @@ class StorageManager(
 
     fun cleanWorkspaceFolder(deleteAlsoGzFile: Boolean) {
         for (file in getWorkspaceFolder().listFiles()) {
-            if (deleteAlsoGzFile || !file.name.toString().endsWith("gz"))
+            if (deleteAlsoGzFile || !file.name.toString().endsWith("gz")) {
                 file.delete()
+            }
         }
     }
 
@@ -141,13 +143,13 @@ class StorageManager(
     }
 
     fun getUriSafe(uri: Uri): Uri {
-        if (isPathWrong(uri))
+        if (isPathWrong(uri)) {
             return copyFileToSafFolder(uri)
+        }
         return uri
     }
 
     private fun isPathWrong(uri: Uri): Boolean {
         return uri.path.toString().contains("msf:")
     }
-
 }

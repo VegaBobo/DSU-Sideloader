@@ -23,7 +23,7 @@ fun ConfirmInstallationSheet(
     userdata: String,
     fileSize: Long,
     onClickConfirm: () -> Unit,
-    onClickCancel: () -> Unit,
+    onClickCancel: () -> Unit
 ) {
     DialogLikeBottomSheet(
         title = stringResource(id = R.string.proceed_installation),
@@ -43,16 +43,18 @@ fun ConfirmInstallationSheet(
                 text = "${userdata}GB",
                 textColor = MaterialTheme.colorScheme.onBackground
             )
-            if (fileSize != DSUConstants.DEFAULT_IMAGE_SIZE)
+            if (fileSize != DSUConstants.DEFAULT_IMAGE_SIZE) {
                 DialogItem(
                     icon = Icons.Outlined.Article,
                     title = "${stringResource(id = R.string.image_size)}:",
                     text = "${fileSize}b",
                     textColor = MaterialTheme.colorScheme.onBackground
                 )
+            }
         },
         confirmText = stringResource(id = R.string.proceed),
         cancelText = stringResource(id = R.string.cancel),
         onClickConfirm = { onClickConfirm() },
-        onClickCancel = { onClickCancel() })
+        onClickCancel = { onClickCancel() }
+    )
 }

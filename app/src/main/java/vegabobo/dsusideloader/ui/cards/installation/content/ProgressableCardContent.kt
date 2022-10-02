@@ -29,29 +29,32 @@ fun ProgressableCardContent(
         val progressBarModifier = Modifier
             .fillMaxWidth()
             .padding(top = 12.dp, bottom = 5.dp)
-        if (isIndeterminate)
+        if (isIndeterminate) {
             LinearProgressIndicator(modifier = progressBarModifier)
-        else
+        } else {
             LinearProgressIndicator(
                 modifier = progressBarModifier,
                 progress = progress
             )
+        }
     }
     Spacer(modifier = Modifier.padding(top = 4.dp))
     Row {
         Spacer(modifier = Modifier.weight(1F))
-        if (onClickSecondButton != null)
+        if (onClickSecondButton != null) {
             SecondaryButton(
                 text = textSecondButton,
                 onClick = onClickSecondButton
             )
+        }
         if (onClickFirstButton != null && onClickSecondButton != null) {
             Spacer(modifier = Modifier.padding(end = 6.dp))
         }
-        if (onClickFirstButton != null)
+        if (onClickFirstButton != null) {
             PrimaryButton(
                 text = textFirstButton,
-                onClick = onClickFirstButton,
+                onClick = onClickFirstButton
             )
+        }
     }
 }

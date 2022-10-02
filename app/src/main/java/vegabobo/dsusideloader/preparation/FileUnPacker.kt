@@ -2,13 +2,13 @@ package vegabobo.dsusideloader.preparation
 
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
+import java.io.InputStream
+import java.io.OutputStream
 import kotlinx.coroutines.Job
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
 import vegabobo.dsusideloader.core.StorageManager
-import java.io.InputStream
-import java.io.OutputStream
 
 class FileUnPacker(
     private val storageManager: StorageManager,
@@ -33,7 +33,7 @@ class FileUnPacker(
         var n: Int
         var readed: Long = 0
         while (-1 != inputStr.read(buffer)
-                .also { n = it } && !installationJob.isCancelled
+            .also { n = it } && !installationJob.isCancelled
         ) {
             readed += buffer.size
             onReadedBuffer(readed)
@@ -73,5 +73,4 @@ class FileUnPacker(
         val percent: Float = readed.toFloat() / fileSize.toFloat()
         onProgressChange(percent)
     }
-
 }

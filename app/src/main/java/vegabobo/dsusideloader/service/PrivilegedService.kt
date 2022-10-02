@@ -10,10 +10,10 @@ import android.os.Process
 import android.os.image.IDynamicSystemService
 import android.os.storage.IStorageManager
 import android.os.storage.VolumeInfo
+import kotlin.system.exitProcess
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import vegabobo.dsusideloader.BuildConfig
 import vegabobo.dsusideloader.IPrivilegedService
-import kotlin.system.exitProcess
 
 class PrivilegedService : IPrivilegedService.Stub() {
 
@@ -42,8 +42,9 @@ class PrivilegedService : IPrivilegedService.Stub() {
     private var ACTIVITY_MANAGER: IActivityManager? = null
 
     private fun requiresActivityManager() {
-        if (ACTIVITY_MANAGER == null)
+        if (ACTIVITY_MANAGER == null) {
             ACTIVITY_MANAGER = IActivityManager.Stub.asInterface(getBinder("activity"))
+        }
     }
 
     override fun startActivity(intent: Intent?) {
@@ -78,8 +79,9 @@ class PrivilegedService : IPrivilegedService.Stub() {
     private var PACKAGE_MANAGER: IPackageManager? = null
 
     private fun requiresPackageManager() {
-        if (PACKAGE_MANAGER == null)
+        if (PACKAGE_MANAGER == null) {
             PACKAGE_MANAGER = IPackageManager.Stub.asInterface(getBinder("package"))
+        }
     }
 
     override fun grantPermission(permissionName: String?) {
@@ -94,8 +96,9 @@ class PrivilegedService : IPrivilegedService.Stub() {
     private var STORAGE_MANAGER: IStorageManager? = null
 
     private fun requiresStorageManager() {
-        if (STORAGE_MANAGER == null)
+        if (STORAGE_MANAGER == null) {
             STORAGE_MANAGER = IStorageManager.Stub.asInterface(getBinder("mount"))
+        }
     }
 
     override fun getVolumes(): List<VolumeInfo> {
@@ -130,8 +133,9 @@ class PrivilegedService : IPrivilegedService.Stub() {
     private var DYNAMIC_SYSTEM: IDynamicSystemService? = null
 
     private fun requiresDynamicSystem() {
-        if (DYNAMIC_SYSTEM == null)
+        if (DYNAMIC_SYSTEM == null) {
             DYNAMIC_SYSTEM = IDynamicSystemService.Stub.asInterface(getBinder("dynamic_system"))
+        }
     }
 
     // REQUIRES MANAGE_DYNAMIC_SYSTEM

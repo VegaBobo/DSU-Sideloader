@@ -19,6 +19,6 @@ fun ImageSizeWarningSheet(
         confirmText = stringResource(id = R.string.set_anyway),
         cancelText = stringResource(id = R.string.cancel),
         onClickConfirm = onClickConfirm,
-        onClickCancel = onClickCancel,
+        onClickCancel = onClickCancel
     )
 }

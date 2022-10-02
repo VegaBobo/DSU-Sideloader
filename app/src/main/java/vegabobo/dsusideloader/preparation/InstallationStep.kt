@@ -37,5 +37,5 @@ enum class InstallationStep {
 
     // Once installation is finished
     INSTALL_SUCCESS,
-    INSTALL_SUCCESS_REBOOT_DYN_OS,
+    INSTALL_SUCCESS_REBOOT_DYN_OS
 }

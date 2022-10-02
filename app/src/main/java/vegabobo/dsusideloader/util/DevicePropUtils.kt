@@ -28,7 +28,5 @@ class DevicePropUtils {
             val value = HiddenApiBypass.invoke(systemPropertiesClass, null, "get", key)
             return value.toString()
         }
-
     }
-
 }

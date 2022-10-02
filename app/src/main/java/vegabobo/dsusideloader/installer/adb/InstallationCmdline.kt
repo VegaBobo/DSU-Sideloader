@@ -8,9 +8,9 @@ class InstallationCmdline(
 
     fun getCmd(): String {
         return "am start-activity " +
-                "-n com.android.dynsystem/com.android.dynsystem.VerificationActivity " +
-                "-a android.os.image.action.START_INSTALL " +
-                "" + genInstallationArguments()
+            "-n com.android.dynsystem/com.android.dynsystem.VerificationActivity " +
+            "-a android.os.image.action.START_INSTALL " +
+            "" + genInstallationArguments()
     }
 
     private fun genInstallationArguments(): String {
@@ -22,8 +22,9 @@ class InstallationCmdline(
 
         arguments += addArgument("-d", gsiFileAbsolutePath)
         arguments += addArgument("--el", "KEY_USERDATA_SIZE", userdataSize)
-        if (imageFileSize != DSUConstants.DEFAULT_IMAGE_SIZE)
+        if (imageFileSize != DSUConstants.DEFAULT_IMAGE_SIZE) {
             arguments += addArgument("--el", "KEY_SYSTEM_SIZE", imageFileSize)
+        }
 
         return arguments.trim()
     }
@@ -35,5 +36,4 @@ class InstallationCmdline(
     private fun addArgument(argument: String, value: Any?): String {
         return "$argument $value "
     }
-
 }

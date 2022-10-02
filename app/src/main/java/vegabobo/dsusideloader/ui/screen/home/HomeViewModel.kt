@@ -10,11 +10,15 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewModelScope
 import com.topjohnwu.superuser.Shell
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.BuildConfig
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.core.StorageManager
@@ -28,15 +32,18 @@ import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.preparation.Preparation
 import vegabobo.dsusideloader.service.PrivilegedProvider
-import vegabobo.dsusideloader.util.*
-import javax.inject.Inject
+import vegabobo.dsusideloader.util.DevicePropUtils
+import vegabobo.dsusideloader.util.FilenameUtils
+import vegabobo.dsusideloader.util.OperationMode
+import vegabobo.dsusideloader.util.OperationModeUtils
+import vegabobo.dsusideloader.util.StorageUtils
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val application: Application,
     override val dataStore: DataStore<Preferences>,
     private val storageManager: StorageManager,
-    var session: Session,
+    var session: Session
 ) : BaseViewModel(dataStore) {
 
     private val tag = this.javaClass.simpleName
@@ -106,8 +113,8 @@ class HomeViewModel @Inject constructor(
             return
         }
 
-        if (session.getOperationMode() == OperationMode.SHIZUKU && checkReadLogsPermission
-            && !OperationModeUtils.isReadLogsPermissionGranted(application)
+        if (session.getOperationMode() == OperationMode.SHIZUKU && checkReadLogsPermission &&
+            !OperationModeUtils.isReadLogsPermissionGranted(application)
         ) {
             updateAdditionalCardState(AdditionalCardState.MISSING_READ_LOGS_PERMISSION)
             return
@@ -240,10 +247,11 @@ class HomeViewModel @Inject constructor(
     private fun startPrivilegedInstallation() {
         updateInstallationCard { it.copy(installationStep = InstallationStep.WAITING_USER_CONFIRMATION) }
         DsuInstallationHandler(session).startInstallation()
-        if (session.isRoot() || OperationModeUtils.isReadLogsPermissionGranted(application))
+        if (session.isRoot() || OperationModeUtils.isReadLogsPermissionGranted(application)) {
             startLogging()
-        else
+        } else {
             updateInstallationCard { it.copy(installationStep = InstallationStep.INSTALL_SUCCESS) }
+        }
     }
 
     // Track and diagnose installation by reading logcat
@@ -254,7 +262,7 @@ class HomeViewModel @Inject constructor(
                 onStepUpdate = this::onStepUpdate,
                 onInstallationProgressUpdate = this::onInstallationProgressUpdate,
                 onInstallationSuccess = this::onInstallationSuccess,
-                onLogLineReceived = this::onLogLineReceived,
+                onLogLineReceived = this::onLogLineReceived
             )
         }
         viewModelScope.launch(Dispatchers.IO + installationJob) {
@@ -264,14 +272,14 @@ class HomeViewModel @Inject constructor(
 
     private fun generateUsefulLogInfo(): String {
         return "Device: ${Build.MODEL}\n" +
-                "SDK: Android ${Build.VERSION.RELEASE} (${Build.VERSION.SDK_INT})\n" +
-                "$session\n" +
-                "checkDynamicPartitions: $checkDynamicPartitions\n" +
-                "checkUnavaiableStorage: $checkUnavaiableStorage\n" +
-                "checkReadLogsPermission: $checkReadLogsPermission\n" +
-                "allocPercentage: $allocPercentage\n" +
-                "hasAvailableStorage: $hasAvailableStorage\n" +
-                "maximumAllowedForAllocation: $maximumAllowedForAllocation\n"
+            "SDK: Android ${Build.VERSION.RELEASE} (${Build.VERSION.SDK_INT})\n" +
+            "$session\n" +
+            "checkDynamicPartitions: $checkDynamicPartitions\n" +
+            "checkUnavaiableStorage: $checkUnavaiableStorage\n" +
+            "checkReadLogsPermission: $checkReadLogsPermission\n" +
+            "allocPercentage: $allocPercentage\n" +
+            "hasAvailableStorage: $hasAvailableStorage\n" +
+            "maximumAllowedForAllocation: $maximumAllowedForAllocation\n"
     }
 
     fun saveLogs(uriToSaveLogs: Uri) {
@@ -281,8 +289,8 @@ class HomeViewModel @Inject constructor(
 
     fun onClickCancelInstallationButton() {
         resetInstallationCard()
-        if (session.getOperationMode() != OperationMode.ADB
-            && logger != null && logger!!.isLogging.get()
+        if (session.getOperationMode() != OperationMode.ADB &&
+            logger != null && logger!!.isLogging.get()
         ) {
             logger!!.destroy()
             // Since stopping installation requires MANAGE_DYNAMIC_SYSTEM
@@ -290,8 +298,9 @@ class HomeViewModel @Inject constructor(
             PrivilegedProvider.run { forceStopPackage("com.android.dynsystem") }
         }
 
-        if (installationJob.isActive)
+        if (installationJob.isActive) {
             installationJob.cancel()
+        }
         session.dsuInstallation = DSUInstallationSource()
     }
 
@@ -369,7 +378,7 @@ class HomeViewModel @Inject constructor(
                 it.copy(
                     text = fixedSize,
                     isError = true,
-                    maximumAllowed = maximumAllowedForAllocation,
+                    maximumAllowed = maximumAllowedForAllocation
                 )
             }
             viewModelScope.launch {
@@ -387,10 +396,11 @@ class HomeViewModel @Inject constructor(
     //
 
     fun onCheckImageSizeCard() {
-        if (!uiState.value.imageSizeCard.isSelected)
+        if (!uiState.value.imageSizeCard.isSelected) {
             updateSheetState(SheetDisplayState.IMAGESIZE_WARNING)
-        else
+        } else {
             dismissSheet()
+        }
         updateImageSizeCard { it.copy(isSelected = !it.isSelected, text = "") }
     }
 
@@ -405,11 +415,13 @@ class HomeViewModel @Inject constructor(
 
     fun takeUriPermission(uri: Uri) {
         application.contentResolver.takePersistableUriPermission(
-            uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            uri,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         )
         viewModelScope.launch {
-            if (storageManager.arePermissionsGrantedToFolder(uri.toString()))
+            if (storageManager.arePermissionsGrantedToFolder(uri.toString())) {
                 updateStringPref(AppPrefs.SAF_PATH, uri.toString()) { initialChecks() }
+            }
         }
     }
 

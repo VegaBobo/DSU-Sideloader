@@ -7,6 +7,10 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.io.File
+import java.io.FileOutputStream
+import java.net.URL
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,10 +21,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import vegabobo.dsusideloader.BuildConfig
 import vegabobo.dsusideloader.preferences.AppPrefs
-import java.io.File
-import java.io.FileOutputStream
-import java.net.URL
-import javax.inject.Inject
 
 @Serializable
 data class UpdaterResponse(
@@ -57,18 +57,20 @@ class AboutViewModel @Inject constructor(
             }
             response = Json.decodeFromString(UpdaterResponse.serializer(), apiResponse)
             updateUpdaterCard { it.copy(updateVersion = response.versionName) }
-            if (response.versionCode > BuildConfig.VERSION_CODE)
+            if (response.versionCode > BuildConfig.VERSION_CODE) {
                 updateUpdaterCard { it.copy(updateStatus = UpdateStatus.UPDATE_FOUND) }
-            else
+            } else {
                 updateUpdaterCard { it.copy(updateStatus = UpdateStatus.NO_UPDATE_FOUND) }
+            }
 
             Log.d(tag, "$response")
         }
     }
 
     fun onClickDownloadUpdate() {
-        if (uiState.value.updaterCardState.isDownloading)
+        if (uiState.value.updaterCardState.isDownloading) {
             return
+        }
         updateUpdaterCard { it.copy(isDownloading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             val finalFile = File(application.filesDir.path + "/update.apk")
@@ -90,7 +92,7 @@ class AboutViewModel @Inject constructor(
             var n: Int
             var readed: Long = 0
             while (-1 != input.read(buffer)
-                    .also { n = it }
+                .also { n = it }
             ) {
                 readed += buffer.size
                 output.write(buffer, 0, n)
@@ -112,5 +114,4 @@ class AboutViewModel @Inject constructor(
             application.startActivity(intent)
         }
     }
-
 }

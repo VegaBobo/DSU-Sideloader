@@ -29,9 +29,8 @@ fun InstallationCard(
     onClickRebootToDynOS: () -> Unit,
     onSelectFileSuccess: (Uri) -> Unit,
     onClickViewLogs: () -> Unit,
-    onClickViewCommands: () -> Unit,
+    onClickViewCommands: () -> Unit
 ) {
-
     var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
     chooseFile.type = "*/*"
     val mimetypes = arrayOf(
@@ -50,8 +49,9 @@ fun InstallationCard(
 
     val textFieldInteraction = remember { MutableInteractionSource() }
 
-    if (textFieldInteraction.collectIsPressedAsState().value)
+    if (textFieldInteraction.collectIsPressedAsState().value) {
         launcherSelectFile.launch(chooseFile)
+    }
 
     CardBox(
         cardTitle = stringResource(R.string.installation),

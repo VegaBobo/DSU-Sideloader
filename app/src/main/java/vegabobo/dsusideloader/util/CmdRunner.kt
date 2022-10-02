@@ -62,5 +62,4 @@ object CmdRunner {
             process = null
         }
     }
-
 }

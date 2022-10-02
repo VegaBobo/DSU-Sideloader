@@ -1,6 +1,8 @@
 package vegabobo.dsusideloader.ui.cards
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,9 +15,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.screen.home.UserDataCardState
 import vegabobo.dsusideloader.ui.components.CardBox
 import vegabobo.dsusideloader.ui.components.FileSelectionBox
+import vegabobo.dsusideloader.ui.screen.home.UserDataCardState
 
 @Composable
 fun UserdataCard(
@@ -23,7 +25,7 @@ fun UserdataCard(
     uiState: UserDataCardState,
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
-    onCheckedChange: (Boolean) -> Unit = {},
+    onCheckedChange: (Boolean) -> Unit = {}
 ) {
     CardBox(
         modifier = modifier,

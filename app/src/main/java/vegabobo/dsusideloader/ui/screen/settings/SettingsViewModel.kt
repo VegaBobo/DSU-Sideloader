@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +15,6 @@ import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.model.Session
 import vegabobo.dsusideloader.util.OperationModeUtils
-import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -36,8 +36,9 @@ class SettingsViewModel @Inject constructor(
             }
         }
 
-        if (session.isRoot())
+        if (session.isRoot()) {
             _uiState.update { it.copy(isRoot = true) }
+        }
     }
 
     fun togglePreference(preference: String, value: Boolean) {
@@ -61,5 +62,4 @@ class SettingsViewModel @Inject constructor(
     fun checkOperationMode(): String {
         return OperationModeUtils.getOperationModeAsString(session.getOperationMode())
     }
-
 }

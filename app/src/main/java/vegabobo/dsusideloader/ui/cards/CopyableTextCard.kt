@@ -17,7 +17,7 @@ import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
 @Composable
 fun CopyableTextCard(
     text: String,
-    showToast: Boolean = true,
+    showToast: Boolean = true
 ) {
     val context = LocalContext.current
     val clipboardManager: ClipboardManager = LocalClipboardManager.current
@@ -32,9 +32,10 @@ fun CopyableTextCard(
                     text = stringResource(id = R.string.copy_text),
                     onClick = {
                         clipboardManager.setText(AnnotatedString(text))
-                        if (showToast)
+                        if (showToast) {
                             Toast.makeText(context, copiedText, Toast.LENGTH_SHORT).show()
-                    },
+                        }
+                    }
                 )
             }
         }

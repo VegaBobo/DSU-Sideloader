@@ -14,7 +14,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") apply false
 
     id("com.mikepenz.aboutlibraries.plugin") apply false
-    id("org.jmailen.kotlinter") version "3.9.0" apply false
+    id("org.jmailen.kotlinter") apply false
 }
 
 val versionCode by extra { 4 }

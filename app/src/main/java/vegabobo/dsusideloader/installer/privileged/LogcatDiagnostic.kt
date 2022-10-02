@@ -1,9 +1,9 @@
 package vegabobo.dsusideloader.installer.privileged
 
 import android.util.Log
+import java.util.concurrent.atomic.AtomicBoolean
 import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.util.CmdRunner
-import java.util.concurrent.atomic.AtomicBoolean
 
 class LogcatDiagnostic(
     private val onInstallationError: (error: InstallationStep, errorInfo: String) -> Unit,
@@ -18,22 +18,23 @@ class LogcatDiagnostic(
     val isLogging = AtomicBoolean(false)
 
     fun startLogging(prependString: String) {
-        if (isLogging.get())
+        if (isLogging.get()) {
             destroy()
+        }
         logs = ""
         isLogging.set(true)
         Log.d(tag, "startLogging(), isLogging: ${isLogging.get()}")
         CmdRunner.run("logcat -c")
         CmdRunner.runReadEachLine("logcat --format brief | grep -e gsid -e DynamicSystem | grep -v OUT") {
-
             if (logs.isEmpty()) {
                 logs = "$prependString\n"
                 onStepUpdate(InstallationStep.INSTALLING)
                 onInstallationProgressUpdate(0F, "userdata")
             }
 
-            if (!isLogging.get())
+            if (!isLogging.get()) {
                 return@runReadEachLine
+            }
 
             logs += "$it\n"
             onLogLineReceived()
@@ -45,8 +46,8 @@ class LogcatDiagnostic(
              * E gsid    : realpath failed: /mnt/media_rw/AE5C-6D79/dsu: Permission denied
              * Solutions -> install Magisk module (which may include sepolicy rules to fix that) or temporary unmount sdcard
              */
-            if (it.contains("realpath failed")
-                && it.contains("Permission denied")
+            if (it.contains("realpath failed") &&
+                it.contains("Permission denied")
             ) {
                 onInstallationError(InstallationStep.ERROR_EXTERNAL_SDCARD_ALLOC, it)
                 destroy()
@@ -70,9 +71,9 @@ class LogcatDiagnostic(
              * E gsid    : read failed: /sys/fs/f2fs/dm-4/features: No such file or directory
              * Solutions -> install Magisk module (which include custom gsid binary, that checks f2fs_dev before failing) or fix kernel
              */
-            if (it.contains("read failed")
-                && it.contains("No such file or directory")
-                && it.contains("f2fs")
+            if (it.contains("read failed") &&
+                it.contains("No such file or directory") &&
+                it.contains("f2fs")
             ) {
                 onInstallationError(InstallationStep.ERROR_F2FS_WRONG_PATH, it)
                 destroy()
@@ -86,8 +87,8 @@ class LogcatDiagnostic(
              * E gsid    : Failed to get stat for block device: /dev/block/mmcblk0p42: Permission denied
              * Solutions -> install Magisk module (which may include sepolicy rules to fix that) or setenforce 0
              */
-            if (it.contains("Failed to get stat for block device")
-                && it.contains("Permission denied")
+            if (it.contains("Failed to get stat for block device") &&
+                it.contains("Permission denied")
             ) {
                 onInstallationError(InstallationStep.ERROR_SELINUX, it)
                 destroy()
@@ -109,10 +110,11 @@ class LogcatDiagnostic(
              * DynamicSystemInstallationService: status: NOT_STARTED, cause: INSTALL_CANCELLED
              */
             if (it.contains("NOT_STARTED")) {
-                if (it.contains("INSTALL_CANCELLED"))
+                if (it.contains("INSTALL_CANCELLED")) {
                     onInstallationError(InstallationStep.ERROR_CANCELED, it)
-                else
+                } else {
                     onInstallationError(InstallationStep.ERROR, it)
+                }
                 destroy()
                 return@runReadEachLine
             }
@@ -141,7 +143,6 @@ class LogcatDiagnostic(
                 destroy()
                 return@runReadEachLine
             }
-
         }
     }
 
@@ -150,5 +151,4 @@ class LogcatDiagnostic(
         isLogging.set(false)
         Log.d(tag, "destroy(), isLogging: ${isLogging.get()}")
     }
-
 }

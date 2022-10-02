@@ -8,12 +8,12 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
-    isEnabled: Boolean = true,
+    isEnabled: Boolean = true
 ) {
     ActionButton(
         modifier = modifier,
         text = text,
         onClick = onClick,
-        isEnabled = isEnabled,
+        isEnabled = isEnabled
     )
 }

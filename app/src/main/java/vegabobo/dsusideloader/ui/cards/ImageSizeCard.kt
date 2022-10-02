@@ -15,9 +15,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import vegabobo.dsusideloader.R
-import vegabobo.dsusideloader.ui.screen.home.ImageSizeCardState
 import vegabobo.dsusideloader.ui.components.CardBox
 import vegabobo.dsusideloader.ui.components.FileSelectionBox
+import vegabobo.dsusideloader.ui.screen.home.ImageSizeCardState
 
 @Composable
 fun ImageSizeCard(
@@ -25,7 +25,7 @@ fun ImageSizeCard(
     uiState: ImageSizeCardState,
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
-    onCheckedChange: ((Boolean) -> Unit) = {},
+    onCheckedChange: ((Boolean) -> Unit) = {}
 ) {
     CardBox(
         modifier = modifier,

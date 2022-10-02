@@ -1,7 +1,13 @@
 package vegabobo.dsusideloader.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -22,7 +28,7 @@ fun CardBox(
     addPadding: Boolean = true,
     cardColor: Color = MaterialTheme.colorScheme.inverseOnSurface,
     onCheckedChange: ((Boolean) -> Unit) = {},
-    content: @Composable (ColumnScope) -> Unit,
+    content: @Composable (ColumnScope) -> Unit
 ) {
     Box(
         modifier = if (addPadding) {
@@ -41,7 +47,7 @@ fun CardBox(
     ) {
         Column(modifier = modifier) {
             if (cardTitle.isNotEmpty()) {
-                if (addToggle)
+                if (addToggle) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         CardTitle(cardTitle = cardTitle)
                         Spacer(modifier = Modifier.weight(1F))
@@ -51,11 +57,12 @@ fun CardBox(
                             enabled = isToggleEnabled
                         )
                     }
-                else
+                } else {
                     CardTitle(
                         cardTitle = cardTitle,
                         modifier = Modifier.padding(top = 9.5.dp, bottom = 9.5.dp)
                     )
+                }
             }
             content(this)
         }

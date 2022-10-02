@@ -33,5 +33,6 @@ fun FileSelectionBox(
         readOnly = isReadOnly,
         keyboardOptions = keyboardOptions,
         interactionSource = textFieldInteraction,
-        label = { Text(text = textFieldTitle) })
+        label = { Text(text = textFieldTitle) }
+    )
 }

@@ -1,7 +1,10 @@
 package vegabobo.dsusideloader.service
 
 import android.util.Log
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.IPrivilegedService
 
 object PrivilegedProvider {
@@ -12,7 +15,7 @@ object PrivilegedProvider {
 
     fun run(
         onFail: () -> Unit = {},
-        onConnected: suspend IPrivilegedService. () -> Unit,
+        onConnected: suspend IPrivilegedService.() -> Unit
     ) {
         fun service() = this.connection.SERVICE!!
         CoroutineScope(Dispatchers.IO).launch {
@@ -57,5 +60,4 @@ object PrivilegedProvider {
     fun isConnected(): Boolean {
         return this.connection.SERVICE != null
     }
-
 }

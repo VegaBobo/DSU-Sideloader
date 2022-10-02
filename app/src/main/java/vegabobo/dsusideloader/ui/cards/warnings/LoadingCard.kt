@@ -11,8 +11,7 @@ import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.SimpleCard
 
 @Composable
-fun GrantingPermissionCard(
-) {
+fun GrantingPermissionCard() {
     SimpleCard(
         modifier = Modifier.fillMaxWidth(),
         cardTitle = stringResource(id = R.string.missing_permission),
@@ -20,7 +19,7 @@ fun GrantingPermissionCard(
     ) {
         LinearProgressIndicator(
             modifier = Modifier.fillMaxWidth()
-            .padding(top = 10.dp, bottom = 10.dp)
+                .padding(top = 10.dp, bottom = 10.dp)
         )
     }
 }

@@ -15,7 +15,7 @@ class AdbInstallationHandler(
         val installationScriptPath = GenerateInstallationScript(
             storageManager,
             session.getInstallationParameters(),
-            session.preferences,
+            session.preferences
         ).writeToFile()
         onGenerated(installationScriptPath)
     }

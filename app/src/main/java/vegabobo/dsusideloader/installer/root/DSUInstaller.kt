@@ -5,18 +5,23 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.os.SharedMemory
 import android.util.Log
-import kotlinx.coroutines.*
-import org.lsposed.hiddenapibypass.HiddenApiBypass
-import vegabobo.dsusideloader.model.DSUInstallationSource
-import vegabobo.dsusideloader.model.ImagePartition
-import vegabobo.dsusideloader.model.Type
-import vegabobo.dsusideloader.preparation.InstallationStep
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.net.URL
 import java.nio.ByteBuffer
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.lsposed.hiddenapibypass.HiddenApiBypass
+import vegabobo.dsusideloader.model.DSUInstallationSource
+import vegabobo.dsusideloader.model.ImagePartition
+import vegabobo.dsusideloader.model.Type
+import vegabobo.dsusideloader.preparation.InstallationStep
 
 /**
  * DSU Installer implementation using Android APIs
@@ -41,7 +46,7 @@ class DSUInstaller(
     private val onInstallationProgressUpdate: (progress: Float, partition: String) -> Unit,
     private val onCreatePartition: (partition: String) -> Unit,
     private val onInstallationStepUpdate: (step: InstallationStep) -> Unit,
-    private val onInstallationSuccess: () -> Unit,
+    private val onInstallationSuccess: () -> Unit
 ) : () -> Unit, DynamicSystemImpl() {
 
     private val tag = this.javaClass.simpleName
@@ -63,7 +68,13 @@ class DSUInstaller(
     }
 
     private val UNSUPPORTED_PARTITIONS: List<String> = listOf(
-        "vbmeta", "boot", "userdata", "dtbo", "super_empty", "system_other", "scratch"
+        "vbmeta",
+        "boot",
+        "userdata",
+        "dtbo",
+        "super_empty",
+        "system_other",
+        "scratch"
     )
 
     private fun isPartitionSupported(partitionName: String): Boolean =
@@ -87,8 +98,9 @@ class DSUInstaller(
 
     private fun publishProgress(bytesRead: Long, totalBytes: Long, partition: String) {
         var progress = 0F
-        if (totalBytes != 0L && bytesRead != 0L)
+        if (totalBytes != 0L && bytesRead != 0L) {
             progress = (bytesRead.toFloat() / totalBytes.toFloat())
+        }
         onInstallationProgressUpdate(progress, partition)
     }
 
@@ -132,7 +144,7 @@ class DSUInstaller(
         partition: String,
         uncompressedSize: Long,
         inputStream: InputStream,
-        readOnly: Boolean = true,
+        readOnly: Boolean = true
     ) {
         val sis = SparseInputStream(
             BufferedInputStream(inputStream)
@@ -152,10 +164,11 @@ class DSUInstaller(
                     val buffer = mappedBuffer.mBuffer
                     var numBytesRead: Int
                     while (0 < sis.read(readBuffer, 0, readBuffer.size)
-                            .also { numBytesRead = it }
+                        .also { numBytesRead = it }
                     ) {
-                        if (installationJob.isCancelled)
+                        if (installationJob.isCancelled) {
                             return
+                        }
                         buffer!!.position(0)
                         buffer.put(readBuffer, 0, numBytesRead)
                         submitFromAshmem(numBytesRead.toLong())
@@ -239,8 +252,9 @@ class DSUInstaller(
 
     private fun installImages(images: List<ImagePartition>) {
         for (image in images) {
-            if (isPartitionSupported(image.partitionName))
+            if (isPartitionSupported(image.partitionName)) {
                 installImage(image.partitionName, image.fileSize, image.uri)
+            }
             if (installationJob.isCancelled) {
                 remove()
             }
@@ -265,5 +279,4 @@ class DSUInstaller(
     override fun invoke() {
         startInstallation()
     }
-
 }

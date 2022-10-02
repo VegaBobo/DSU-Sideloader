@@ -19,7 +19,7 @@ import vegabobo.dsusideloader.ui.components.buttons.SecondaryButton
 @Composable
 fun UnsupportedCard(
     onClickClose: () -> Unit = {},
-    onClickContinueAnyway: () -> Unit,
+    onClickContinueAnyway: () -> Unit
 ) {
     SimpleCard(
         modifier = Modifier.fillMaxWidth(),
@@ -41,5 +41,4 @@ fun UnsupportedCard(
             }
         }
     }
-
 }

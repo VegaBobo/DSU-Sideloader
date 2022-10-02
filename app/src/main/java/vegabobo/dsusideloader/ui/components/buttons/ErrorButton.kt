@@ -9,7 +9,7 @@ fun ErrorButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
-    isEnabled: Boolean = true,
+    isEnabled: Boolean = true
 ) {
     ActionButton(
         modifier = modifier,

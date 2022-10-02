@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlin.system.exitProcess
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.DsuInfoCard
 import vegabobo.dsusideloader.ui.cards.ImageSizeCard
@@ -35,7 +36,6 @@ import vegabobo.dsusideloader.ui.sdialogs.ImageSizeWarningSheet
 import vegabobo.dsusideloader.ui.sdialogs.ViewLogsBottomSheet
 import vegabobo.dsusideloader.ui.util.KeepScreenOn
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
-import kotlin.system.exitProcess
 
 object HomeLinks {
     const val DSU_LEARN_MORE = "https://developer.android.com/topic/dsu"
@@ -46,14 +46,14 @@ object HomeLinks {
 @Composable
 fun Home(
     navigate: (String) -> Unit,
-    homeViewModel: HomeViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
 
-    if (uiState.shouldKeepScreenOn)
+    if (uiState.shouldKeepScreenOn) {
         KeepScreenOn()
+    }
 
     LaunchedEffect(Unit) {
         homeViewModel.setupUserPreferences()
@@ -121,7 +121,7 @@ fun Home(
                     isEnabled = uiState.isInstalling(),
                     uiState = uiState.userDataCard,
                     onCheckedChange = { homeViewModel.onCheckUserdataCard() },
-                    onValueChange = { homeViewModel.updateUserdataSize(it) },
+                    onValueChange = { homeViewModel.updateUserdataSize(it) }
                 )
                 ImageSizeCard(
                     isEnabled = uiState.isInstalling(),
@@ -131,7 +131,7 @@ fun Home(
                 )
                 DsuInfoCard(
                     onClickViewDocs = { uriHandler.openUri(HomeLinks.DSU_DOCS) },
-                    onClickLearnMore = { uriHandler.openUri(HomeLinks.DSU_LEARN_MORE) },
+                    onClickLearnMore = { uriHandler.openUri(HomeLinks.DSU_LEARN_MORE) }
                 )
             }
         }
@@ -150,7 +150,7 @@ fun Home(
         SheetDisplayState.CANCEL_INSTALLATION ->
             CancelSheet(
                 onClickConfirm = { homeViewModel.onClickCancelInstallationButton() },
-                onClickCancel = { homeViewModel.dismissSheet() },
+                onClickCancel = { homeViewModel.dismissSheet() }
             )
 
         SheetDisplayState.IMAGESIZE_WARNING ->
@@ -174,5 +174,4 @@ fun Home(
 
         SheetDisplayState.NONE -> {}
     }
-
 }

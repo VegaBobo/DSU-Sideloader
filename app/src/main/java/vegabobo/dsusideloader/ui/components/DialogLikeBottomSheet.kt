@@ -1,6 +1,10 @@
 package vegabobo.dsusideloader.ui.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +36,7 @@ fun DialogLikeBottomSheet(
         modifier = modifier,
         title = title,
         icon = icon,
-        onDismiss = onDismiss,
+        onDismiss = onDismiss
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -45,11 +49,13 @@ fun DialogLikeBottomSheet(
             Spacer(modifier = Modifier.weight(1F))
             SecondaryButton(
                 text = cancelText,
-                onClick = { coroutineScope.launch { it() /* Hide Sheet before cancelling */; onClickCancel() } })
+                onClick = { coroutineScope.launch { it() /* Hide Sheet before cancelling */; onClickCancel() } }
+            )
             Spacer(modifier = Modifier.padding(4.dp))
             PrimaryButton(
                 text = confirmText,
-                onClick = { coroutineScope.launch { it() /* Hide Sheet before confirming */; onClickConfirm() } })
+                onClick = { coroutineScope.launch { it() /* Hide Sheet before confirming */; onClickConfirm() } }
+            )
         }
     }
 }

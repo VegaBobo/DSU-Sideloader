@@ -1,10 +1,24 @@
 package vegabobo.dsusideloader.ui.components
 
 import androidx.compose.animation.rememberSplineBasedDecay
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -20,7 +34,7 @@ fun ApplicationScreen(
     topBar: @Composable (TopAppBarScrollBehavior) -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     outsideContent: @Composable (PaddingValues) -> Unit = {},
-    content: @Composable () -> Unit = {},
+    content: @Composable () -> Unit = {}
 ) {
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
@@ -45,24 +59,23 @@ fun ApplicationScreen(
             content = { innerPadding ->
                 val scrollModifier =
                     if (enableDefaultScrollBehavior) Modifier.verticalScroll(rememberScrollState()) else Modifier
-                if (columnContent)
+                if (columnContent) {
                     Column(
                         modifier = modifier
                             .padding(innerPadding)
                             .then(scrollModifier),
-                        verticalArrangement = verticalArrangement,
+                        verticalArrangement = verticalArrangement
                     ) {
                         content()
                     }
-                else
+                } else {
                     Surface(modifier = modifier.padding(innerPadding)) {
                         content()
                     }
+                }
             }
         )
     }
 
     outsideContent(insets)
-
 }
-

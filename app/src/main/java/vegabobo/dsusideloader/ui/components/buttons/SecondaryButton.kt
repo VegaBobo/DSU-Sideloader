@@ -15,9 +15,8 @@ fun SecondaryButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
-    isEnabled: Boolean = true,
+    isEnabled: Boolean = true
 ) {
-
     fun addAlpha(c: Int, a: Float): Color =
         Color(
             android.graphics.Color.argb(

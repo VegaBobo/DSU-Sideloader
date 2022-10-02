@@ -19,6 +19,5 @@ class StorageUtils {
                 ((availableSize / 1024L / 1024L / 1024L) * allowedPercentage).toInt()
             return Pair(hasAvailableStorage, maximumAllowedForAllocation)
         }
-
     }
 }

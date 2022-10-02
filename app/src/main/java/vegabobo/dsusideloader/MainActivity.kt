@@ -12,6 +12,7 @@ import androidx.core.view.WindowCompat
 import com.topjohnwu.superuser.Shell
 import com.topjohnwu.superuser.ipc.RootService
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.Shizuku
 import rikka.shizuku.ShizukuProvider
@@ -24,7 +25,6 @@ import vegabobo.dsusideloader.ui.screen.Navigation
 import vegabobo.dsusideloader.ui.theme.DSUHelperTheme
 import vegabobo.dsusideloader.util.OperationMode
 import vegabobo.dsusideloader.util.OperationModeUtils
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListener {
@@ -152,8 +152,9 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isChangingConfigurations)
+        if (isChangingConfigurations) {
             return
+        }
         when (session.getOperationMode()) {
             OperationMode.ROOT, OperationMode.SYSTEM_AND_ROOT ->
                 RootService.unbind(PrivilegedProvider.connection)
@@ -169,5 +170,4 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
             else -> {}
         }
     }
-
 }

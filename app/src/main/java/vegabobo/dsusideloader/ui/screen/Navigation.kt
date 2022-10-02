@@ -23,12 +23,12 @@ object Destinations {
 fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Destinations.Homepage) {
-
         fun navigate(destination: String) {
-            if (destination == Destinations.Up)
+            if (destination == Destinations.Up) {
                 navController.navigateUp()
-            else
+            } else {
                 navController.navigate(destination)
+            }
         }
 
         composable(Destinations.Homepage) { Home(navigate = { navigate(it) }) }

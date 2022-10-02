@@ -41,12 +41,12 @@ import rikka.shizuku.ShizukuProvider
  *
  */
 enum class OperationMode {
-    /////////////////// priority
+    // ///////////////// priority
     SYSTEM_AND_ROOT, // #1
-    SYSTEM,          // #2
-    ROOT,            // #3
-    SHIZUKU,         // #4
-    ADB,             // #5
+    SYSTEM, // #2
+    ROOT, // #3
+    SHIZUKU, // #4
+    ADB // #5
 }
 
 class OperationModeUtils {
@@ -55,16 +55,19 @@ class OperationModeUtils {
 
         fun getOperationMode(context: Context, checkShizuku: Boolean): OperationMode {
             if (isDsuPermissionGranted(context)) {
-                if (Shell.getShell().isRoot)
+                if (Shell.getShell().isRoot) {
                     return OperationMode.SYSTEM_AND_ROOT
+                }
                 return OperationMode.SYSTEM
             }
 
-            if (Shell.getShell().isRoot)
+            if (Shell.getShell().isRoot) {
                 return OperationMode.ROOT
+            }
 
-            if (checkShizuku && isShizukuPermissionGranted(context))
+            if (checkShizuku && isShizukuPermissionGranted(context)) {
                 return OperationMode.SHIZUKU
+            }
 
             return OperationMode.ADB
         }
@@ -100,7 +103,5 @@ class OperationModeUtils {
                 Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
             }
         }
-
     }
-
 }

@@ -30,7 +30,6 @@ fun AboutScreen(
     navigate: (String) -> Unit,
     aboutViewModel: AboutViewModel = hiltViewModel()
 ) {
-
     val uiState by aboutViewModel.uiState.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
 
@@ -85,11 +84,12 @@ fun AboutScreen(
                 description = stringResource(id = R.string.role_design_icon),
                 onClick = {}
             )
-            if (stringResource(id = R.string.translators_list).isNotEmpty())
+            if (stringResource(id = R.string.translators_list).isNotEmpty()) {
                 PreferenceItem(
                     title = stringResource(id = R.string.translators_title),
                     description = stringResource(id = R.string.translators_list)
                 )
+            }
             PreferenceItem(
                 title = stringResource(id = R.string.contributors_title),
                 description = stringResource(id = R.string.contributors_text),

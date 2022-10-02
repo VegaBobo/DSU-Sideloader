@@ -3,7 +3,11 @@ package vegabobo.dsusideloader.installer.privileged
 import android.content.Intent
 import android.os.storage.VolumeInfo
 import android.util.Log
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.model.Session
 import vegabobo.dsusideloader.service.PrivilegedProvider
 
@@ -18,8 +22,9 @@ open class DsuInstallationHandler(
     private val tag = this.javaClass.simpleName
 
     fun startInstallation() {
-        if (session.preferences.isUnmountSdCard)
+        if (session.preferences.isUnmountSdCard) {
             unmountSdTemporary()
+        }
         forwardInstallationToDSU()
     }
 
@@ -55,7 +60,7 @@ open class DsuInstallationHandler(
                 volumesUnmount.add(volume.id)
                 Log.d(tag, "Volume unmounted: ${volume.id}")
             }
-        if (volumesUnmount.size > 0)
+        if (volumesUnmount.size > 0) {
             CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
                 delay(30 * 1000)
                 for (volume in volumesUnmount) {
@@ -63,6 +68,6 @@ open class DsuInstallationHandler(
                     PrivilegedProvider.getService().mount(volume)
                 }
             }
+        }
     }
-
 }

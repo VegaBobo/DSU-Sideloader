@@ -9,5 +9,5 @@ data class SettingsUiState(
         AppPrefs.UMOUNT_SD to false
     ),
     val isShowingBuiltinInstallerSheet: Boolean = false,
-    val isRoot: Boolean = false,
+    val isRoot: Boolean = false
 )

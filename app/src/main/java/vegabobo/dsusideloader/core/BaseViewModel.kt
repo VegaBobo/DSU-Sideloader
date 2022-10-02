@@ -10,7 +10,7 @@ open class BaseViewModel(
 ) : ViewModel() {
 
     suspend fun readStringPref(
-        key: String,
+        key: String
     ): String {
         return DataStoreUtils.readStringPref(dataStore, key, "")
     }
@@ -40,5 +40,4 @@ open class BaseViewModel(
             onRead(value)
         }
     }
-
 }

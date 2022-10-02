@@ -3,7 +3,14 @@ package vegabobo.dsusideloader.ui.cards.updater
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -32,9 +39,8 @@ fun UpdaterCard(
     uiState: UpdaterCardState,
     onClickCheckUpdates: () -> Unit,
     onClickDownloadUpdate: () -> Unit,
-    onClickViewChangelog: () -> Unit,
+    onClickViewChangelog: () -> Unit
 ) {
-
     fun isDownloading(): Boolean =
         uiState.isDownloading || uiState.updateStatus == UpdateStatus.CHECKING_FOR_UPDATES
 
@@ -57,19 +63,21 @@ fun UpdaterCard(
                 modifier = Modifier
                     .padding(10.dp)
                     .padding(top = 16.dp),
-                color = MaterialTheme.colorScheme.inverseOnSurface,
+                color = MaterialTheme.colorScheme.inverseOnSurface
             ) {
                 Box {
                     val progressBarModifier = Modifier
                         .size(100.dp)
                         .align(Alignment.Center)
-                    if (isCheckingForUpdates())
+                    if (isCheckingForUpdates()) {
                         CircularProgressIndicator(modifier = progressBarModifier)
-                    if (uiState.isDownloading)
+                    }
+                    if (uiState.isDownloading) {
                         CircularProgressIndicator(
                             progress = uiState.progressBar,
                             modifier = progressBarModifier
                         )
+                    }
                     Image(
                         modifier = Modifier
                             .size(if (isDownloading()) 76.dp else 100.dp)
@@ -77,7 +85,7 @@ fun UpdaterCard(
                             .animateContentSize()
                             .align(Alignment.Center),
                         painter = painterResource(id = R.drawable.app_icon_mini),
-                        contentDescription = "App icon",
+                        contentDescription = "App icon"
                     )
                 }
             }
@@ -126,7 +134,7 @@ fun UpdaterCard(
                 )
                 PrimaryButton(
                     text = stringResource(id = R.string.download),
-                    onClick = { onClickDownloadUpdate() },
+                    onClick = { onClickDownloadUpdate() }
                 )
             }
         }

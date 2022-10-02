@@ -24,7 +24,7 @@ fun InstallationCardStep(
     onClickDiscardDsu: () -> Unit,
     onClickRebootToDynOS: () -> Unit,
     onClickViewLogs: () -> Unit,
-    onClickViewCommands: () -> Unit,
+    onClickViewCommands: () -> Unit
 ) {
     when (uiState.installationStep) {
         InstallationStep.NOT_INSTALLING ->

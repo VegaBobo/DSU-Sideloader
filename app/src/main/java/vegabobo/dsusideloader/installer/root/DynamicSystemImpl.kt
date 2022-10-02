@@ -68,7 +68,7 @@ open class DynamicSystemImpl : IDynamicSystemService {
         return PrivilegedProvider.getService().suggestScratchSize()
     }
 
-    fun forceStopDSU(){
+    fun forceStopDSU() {
         PrivilegedProvider.getService().forceStopPackage("com.android.dynsystem")
     }
 }

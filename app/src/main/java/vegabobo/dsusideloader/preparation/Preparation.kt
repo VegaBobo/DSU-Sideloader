@@ -1,12 +1,12 @@
 package vegabobo.dsusideloader.preparation
 
 import android.net.Uri
+import java.math.BigInteger
 import kotlinx.coroutines.Job
 import vegabobo.dsusideloader.core.StorageManager
 import vegabobo.dsusideloader.model.DSUConstants
 import vegabobo.dsusideloader.model.DSUInstallationSource
 import vegabobo.dsusideloader.model.Session
-import java.math.BigInteger
 
 class Preparation(
     private val storageManager: StorageManager,
@@ -33,7 +33,8 @@ class Preparation(
         val source: DSUInstallationSource = when (getExtension(userSelectedFileUri)) {
             "img" -> {
                 DSUInstallationSource.SingleSystemImage(
-                    userSelectedFileUri, storageManager.getFilesizeFromUri(userSelectedFileUri)
+                    userSelectedFileUri,
+                    storageManager.getFilesizeFromUri(userSelectedFileUri)
                 )
             }
 
@@ -50,10 +51,11 @@ class Preparation(
                 throw Exception("Unsupported filetype")
             }
         }
-        if (!job.isCancelled)
+        if (!job.isCancelled) {
             onPreparationFinished(source)
-        else
+        } else {
             onCanceled()
+        }
     }
 
     private fun prepareForDSU() {
@@ -71,17 +73,19 @@ class Preparation(
         val preparedUri = preparedFilePair.first
         val preparedFileSize = preparedFilePair.second
 
-        val source = if (fileExtension == "zip")
+        val source = if (fileExtension == "zip") {
             DSUInstallationSource.DsuPackage(preparedUri)
-        else
+        } else {
             DSUInstallationSource.SingleSystemImage(preparedUri, preparedFileSize)
+        }
 
         onStepUpdate(InstallationStep.WAITING_USER_CONFIRMATION)
 
-        if (!job.isCancelled)
+        if (!job.isCancelled) {
             onPreparationFinished(source)
-        else
+        } else {
             onCanceled()
+        }
     }
 
     private fun prepareZip(zipFile: Uri): Pair<Uri, Long> {
@@ -117,8 +121,9 @@ class Preparation(
 
     private fun prepareGz(gzFile: Uri): Pair<Uri, Long> {
         val uri = getSafeUri(gzFile)
-        if (userSelectedImageSize != DSUConstants.DEFAULT_IMAGE_SIZE)
+        if (userSelectedImageSize != DSUConstants.DEFAULT_IMAGE_SIZE) {
             return Pair(uri, userSelectedImageSize)
+        }
 
         onStepUpdate(InstallationStep.PROCESSING)
         val fileSize = storageManager.getFilesizeFromUri(uri)
@@ -158,7 +163,7 @@ class Preparation(
         return FileUnPacker(
             storageManager,
             uri,
-            "${partitionName}.img",
+            "$partitionName.img",
             job,
             onPreparationProgressUpdate
         ).unpack()
@@ -178,5 +183,4 @@ class Preparation(
         return storageManager.getFilenameFromUri(uri)
             .substringAfterLast(".", "")
     }
-
 }
