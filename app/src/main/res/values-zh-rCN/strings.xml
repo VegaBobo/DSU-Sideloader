@@ -49,6 +49,10 @@
     <string name="creating_partition">创建 %1$s 分区</string>
     <string name="installing">正在处理 %1$s 分区…</string>
 
+    <!-- ADB install -->
+    <string name="require_adb_cmd_to_continue">准备工作已完成，您需要输入一个命令以继续安装。</string>
+    <string name="see_commands">查看命令</string>
+
     <!-- Installation errors -->
 
     <!-- Already installed DSU card -->
@@ -92,12 +96,12 @@
 
     <!-- Installation finished card -->
     <string name="installation_finished_rootless">DSU 安装成功，请检查通知栏提示并重启到动态系统</string>
-    <string name="installation_finished">安装以完成</string>
+    <string name="installation_finished">安装已完成</string>
     <string name="reboot_into_dsu">重启到 DSU</string>
 
     <!-- Userdata card -->
     <string name="userdata_size">DSU 用户空间大小</string>
-    <string name="userdata_size_info">单位：GigaBytes</string>
+    <string name="userdata_size_info">单位：GB</string>
     <string name="allowed_userdata_allocation">可分配用户空间大小: %1$s GB</string>
 
     <!-- Image size card -->
@@ -184,9 +188,6 @@
 
     <string name="copy_text">复制文本</string>
     <string name="copied">复制成功</string>
-
-    <string name="return_warning">确定返回么？</string>
-    <string name="return_warning_description">安装指令将被取消…</string>
 
     <!-- View logs screen -->
 
