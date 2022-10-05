@@ -62,7 +62,7 @@
 
     <!-- Allocation error card -->
     <string name="allocation_error">配置错误</string>
-    <string name="allocation_error_description">GSI daemon 尝试在外部 SD 卡分配空间，但由于某些原因失败了。您可以尝试安装 DSU Sideloader 的 Magisk 模块解决这个问题，或者安装时临时弹出 SD 卡来避免 (您可以在设置中修改这个选项)。</string>
+    <string name="allocation_error_description">在外置 sdcard 上分配空间不起作用，您可以尝试以下修复：\n - 安装 DSU Sideloader 的 Magisk 模块。\n - 卸载外置 sdcard（您可以在设置中修改这个选项）。</string>
     <string name="allocation_error_action">弹出 SD 卡并重试</string>
 
     <!-- No free storage error card -->
@@ -71,16 +71,16 @@
 
     <!-- Filesystem features not found error card -->
     <string name="fs_features_error">Filesystem 不可用</string>
-    <string name="fs_features_error_description">您设备的内核可能在其他的位置注册了 F2fs 而不是在 GSI daemon 所期望的位置/n您可以尝试安装 DSU Sideloader 的 Magisk 模块解决这个问题，或者更换您设备的内核。</string>
+    <string name="fs_features_error_description">您设备的内核可能在其他的位置注册了 F2fs 而不是在 GSI daemon 所期望的位置，您可以尝试以下修复：\n - 安装 DSU Sideloader 的 Magisk 模块。\n - 更换您设备的内核。</string>
 
     <!-- SELinux error card -->
-    <string name="selinux_error">SELinux 拒绝</string>
-    <string name="selinux_error_description">SELinux 拒绝了 GSI daemon 程序的工作，该错误在 Android 10 的设备上很常见。您可以尝试安装 DSU Sideloader 的 Magisk 模块解决这个问题，或者将 SELinux 设置为宽容模式(permissive)。\n**宽容模式会极大降低您设备的安全性。</string>
+    <string name="selinux_error">SELinux 错误</string>
+    <string name="selinux_error_description">SELinux 拒绝了 GSI daemon 程序的工作，您可以尝试以下修复：\n - 安装 DSU Sideloader 的 Magisk 模块。\n - 如果您使用了外置 sdcard，请尝试卸载它（在设置部分有该选项）。\n - 将 SELinux 设置为宽容模式(permissive)（不推荐，会极大降低您设备的安全性）。</string>
     <string name="selinux_error_action">在宽容模式下重试</string>
 
     <!-- Extents error card -->
     <string name="extents_error_title">Extents 问题</string>
-    <string name="extents_error_description">在 Android 10 设备上，Images/Filesystem 需要至少 512 Extents。您可以尝试安装 DSU Sideloader 的 Magisk 模块解决这个问题。</string>
+    <string name="extents_error_description">在 Android 10 设备上，镜像/文件系统(Images/Filesystem) 需要至少 512 extents。您可以尝试以下修复：\n - 安装 DSU Sideloader 的 Magisk 模块。</string>
 
     <!-- Other errors card -->
     <string name="failed_create_partition">创建 %1$s 分区失败</string>
