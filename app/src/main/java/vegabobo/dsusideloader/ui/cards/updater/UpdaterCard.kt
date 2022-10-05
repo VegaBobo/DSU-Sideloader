@@ -1,7 +1,7 @@
 package vegabobo.dsusideloader.ui.cards.updater
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,14 +17,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import vegabobo.dsusideloader.BuildConfig
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.components.PreferenceItem
@@ -78,11 +82,15 @@ fun UpdaterCard(
                             modifier = progressBarModifier
                         )
                     }
+
+                    val selected = remember { mutableStateOf(false) }
+                    val scale = animateFloatAsState(if (selected.value) 0.75f else 1f)
+                    selected.value = isDownloading()
                     Image(
                         modifier = Modifier
-                            .size(if (isDownloading()) 76.dp else 100.dp)
+                            .size(96.dp)
+                            .scale(scale.value)
                             .clip(CircleShape)
-                            .animateContentSize()
                             .align(Alignment.Center),
                         painter = painterResource(id = R.drawable.app_icon_mini),
                         contentDescription = "App icon"
@@ -91,6 +99,7 @@ fun UpdaterCard(
             }
             Text(
                 text = stringResource(id = R.string.app_name),
+                fontSize = 22.sp,
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center
             )
@@ -100,11 +109,12 @@ fun UpdaterCard(
                     BuildConfig.VERSION_NAME,
                     BuildConfig.VERSION_CODE
                 ),
+                fontSize = 16.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.alpha(0.75f)
             )
         }
-        Spacer(modifier = Modifier.padding(10.dp))
+        Spacer(modifier = Modifier.padding(4.dp))
         PreferenceItem(
             title = stringResource(id = R.string.check_updates_title),
             description =

@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/system_accent</item>
         <item name="colorPrimaryDark">@color/system_accent_darker</item>
         <item name="colorSecondary">@color/system_accent</item>
+
         <item name="colorError">@color/error</item>
 
         <item name="colorPrimaryVariant">@color/system_accent</item>
@@ -14,11 +15,10 @@
         <item name="colorSurface">@color/netrual_color</item>
         <item name="colorSecondaryContainer">@color/system_accent_soft</item>
 
-         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:colorBackground">@color/background</item>
-
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightStatusBar">true</item>
 
     </style>
 </resources>

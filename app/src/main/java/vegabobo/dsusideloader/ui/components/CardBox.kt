@@ -28,19 +28,20 @@ fun CardBox(
     addPadding: Boolean = true,
     cardColor: Color = MaterialTheme.colorScheme.inverseOnSurface,
     onCheckedChange: ((Boolean) -> Unit) = {},
+    roundedCornerShape: RoundedCornerShape = RoundedCornerShape(10.dp),
     content: @Composable (ColumnScope) -> Unit
 ) {
     Box(
         modifier = if (addPadding) {
             Modifier
-                .clip(RoundedCornerShape(10.dp))
+                .clip(roundedCornerShape)
                 .background(cardColor)
                 .padding(all = 10.dp)
                 .padding(end = 4.dp, start = 4.dp)
                 .fillMaxWidth()
         } else {
             Modifier
-                .clip(RoundedCornerShape(10.dp))
+                .clip(roundedCornerShape)
                 .background(cardColor)
                 .fillMaxWidth()
         }

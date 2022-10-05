@@ -60,7 +60,7 @@ fun Home(
     }
 
     ApplicationScreen(
-        modifier = Modifier.padding(start = 18.dp, end = 18.dp),
+        modifier = Modifier.padding(start = 10.dp, end = 10.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         topBar = {
             TopBar(

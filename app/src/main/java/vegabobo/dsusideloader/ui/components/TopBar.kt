@@ -6,9 +6,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -24,8 +22,7 @@ fun TopBar(
     onClickBackButton: (() -> Unit)? = null
 ) {
     LargeTopAppBar(
-        colors = TopAppBarDefaults.largeTopAppBarColors(scrolledContainerColor = MaterialTheme.colorScheme.background),
-        title = { Text(text = barTitle, style = MaterialTheme.typography.headlineMedium) },
+        title = { Text(text = barTitle) },
         navigationIcon = {
             if (onClickBackButton != null) {
                 IconButton(onClickBackButton) {

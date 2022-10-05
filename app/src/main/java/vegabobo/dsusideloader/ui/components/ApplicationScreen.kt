@@ -4,6 +4,7 @@ import androidx.compose.animation.rememberSplineBasedDecay
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
@@ -62,15 +63,17 @@ fun ApplicationScreen(
                 if (columnContent) {
                     Column(
                         modifier = modifier
-                            .padding(innerPadding)
+                            .padding(top = innerPadding.calculateTopPadding())
                             .then(scrollModifier),
                         verticalArrangement = verticalArrangement
                     ) {
                         content()
+                        Spacer(modifier = Modifier.padding(innerPadding.calculateBottomPadding()))
                     }
                 } else {
-                    Surface(modifier = modifier.padding(innerPadding)) {
+                    Surface(modifier = modifier.padding(top = innerPadding.calculateTopPadding())) {
                         content()
+                        Spacer(modifier = Modifier.padding(innerPadding.calculateBottomPadding()))
                     }
                 }
             }

@@ -28,7 +28,7 @@ fun Settings(
     ApplicationScreen(
         topBar = {
             TopBar(
-                barTitle = stringResource(id = R.string.preferences),
+                barTitle = stringResource(id = R.string.settings),
                 scrollBehavior = it,
                 onClickBackButton = { navigate(Destinations.Up) }
             )

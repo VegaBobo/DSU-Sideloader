@@ -122,7 +122,7 @@
 
     <!-- Preferences screen -->
 
-    <string name="preferences">设置</string>
+    <string name="settings">设置</string>
 
     <string name="experimental_feature">实验性功能</string>
     <string name="experimental_feature_description">该功能还在测试，可能不稳定，确定启用吗？</string>

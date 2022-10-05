@@ -67,7 +67,7 @@
     <!-- Allocation error card -->
     <string name="allocation_error">Allocation error</string>
 <!--    <string name="allocation_error_description">GSI daemon is trying to allocate in external SD, but it fails for some reason.\nTo fix that, you can install DSU Sideloader Magisk\'s module, or by temporary ejecting sd (you can set this option permanently in preferences).</string>-->
-    <string name="allocation_error_description">Allocation on sdcard isn\'t working, there are some fixes you can try:\n - Install DSU Sideloader Magisk\'s module.\n - Unmount sdcard (you can set this option permanently in preferences).</string>
+    <string name="allocation_error_description">Allocation on sdcard isn\'t working, there are some fixes you can try:\n - Install DSU Sideloader Magisk\'s module.\n - Unmount sdcard (you can set this option permanently in settings).</string>
     <string name="allocation_error_action">Unmount SD and retry</string>
 
     <!-- No free storage error card -->
@@ -82,7 +82,7 @@
     <!-- SELinux error card -->
     <string name="selinux_error">SELinux error</string>
     <!--    <string name="selinux_error_description">Looks like SELinux is blocking GSI daemon to work due denials, this error is common devices running Android 10.\nTo fix that, you can try to install DSU Sideloader Magisk\'s module, or by setting SELinux to permissive.\n\n** Changing to permissive will weakens your device security.</string>-->
-    <string name="selinux_error_description">Looks like SELinux denials are preventing DSU installation, there are some fixes you can try:\n - Install DSU Sideloader Magisk\'s module.\n - If you\'re using a sdcard, try to unmount it (there is a option for that in preferences section).\n - Change your SELinux to permissive (not recommended, weakens your device security).</string>
+    <string name="selinux_error_description">Looks like SELinux denials are preventing DSU installation, there are some fixes you can try:\n - Install DSU Sideloader Magisk\'s module.\n - If you\'re using a sdcard, try to unmount it (there is a option for that in settings section).\n - Change your SELinux to permissive (not recommended, weakens your device security).</string>
     <string name="selinux_error_action">Retry with permissive</string>
 
     <!-- Extents error card -->
@@ -129,10 +129,10 @@
     <string name="learn_more">Learn more</string>
 
     <!--
-        Preferences screen
+        Settings screen
     -->
 
-    <string name="preferences">Preferences</string>
+    <string name="settings">Settings</string>
 
     <string name="experimental_feature">Experimental feature</string>
     <string name="experimental_feature_description">This feature is under testing and may be unstable, are you sure?</string>

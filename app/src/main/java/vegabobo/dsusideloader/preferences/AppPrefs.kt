@@ -2,7 +2,7 @@ package vegabobo.dsusideloader.preferences
 
 object AppPrefs {
     const val UPDATE_CHECK_URL =
-        "https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/v2_rewrite/other/updater.json"
+        "https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/updater.json"
     const val USER_PREFERENCES = "user_preferences"
     const val SAF_PATH = "writable_path"
     const val USE_BUILTIN_INSTALLER = "builtin_installer"

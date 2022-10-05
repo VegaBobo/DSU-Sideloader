@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun PreferenceItem(
@@ -54,7 +55,8 @@ fun PreferenceItem(
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleLarge
+                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.headlineMedium
                 )
                 if (description.isNotEmpty()) {
                     Spacer(Modifier.height(2.dp))
