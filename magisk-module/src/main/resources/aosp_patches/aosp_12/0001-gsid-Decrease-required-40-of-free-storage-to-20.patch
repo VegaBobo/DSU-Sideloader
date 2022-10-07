@@ -1,0 +1,28 @@
+From 1a492814659dfcbde04c279622b58775a9d32ffb Mon Sep 17 00:00:00 2001
+From: VegaBobo <42748890+VegaBobo@users.noreply.github.com>
+Date: Sat, 3 Sep 2022 18:12:53 -0300
+Subject: [PATCH 1/1] gsid: Decrease required 40% of free storage to 20%
+
+Change-Id: Ic85d827c130b30476cb5f8fc2424d7667891b05b
+---
+ libgsi_private.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libgsi_private.h b/libgsi_private.h
+index 82814a9..81b2501 100644
+--- a/libgsi_private.h
++++ b/libgsi_private.h
+@@ -28,8 +28,8 @@ static constexpr char kInstallStatusOk[] = "ok";
+ static constexpr char kInstallStatusWipe[] = "wipe";
+ static constexpr char kInstallStatusDisabled[] = "disabled";
+ 
+-// We are looking for /data to have at least 40% free space.
+-static constexpr uint32_t kMinimumFreeSpaceThreshold = 40;
++// We are looking for /data to have at least 20% free space.
++static constexpr uint32_t kMinimumFreeSpaceThreshold = 20;
+ 
+ }  // namespace gsi
+ }  // namespace android
+-- 
+2.25.1
+
