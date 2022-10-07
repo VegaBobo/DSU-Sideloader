@@ -54,12 +54,6 @@ android {
         }
     }
 
-    // Temporary till we fix translations
-    lint {
-        checkReleaseBuilds = false
-        abortOnError = false
-    }
-
     buildTypes {
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
