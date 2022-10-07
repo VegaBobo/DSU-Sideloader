@@ -14,11 +14,15 @@ tasks.register<Zip>("assembleMagiskModule") {
     val moduleDirectory = "$workDirectory/src/main/resources/module"
     val outDirectory = "$workDirectory/out"
 
-    val apkPath = "$moduleDirectory/system/priv-app/DSUSideloader/ReleaseDSUSideloader.apk"
+    val releaseApk = File("${System.getProperty("user.dir")}/app/build/outputs/apk/release/app-release.apk")
 
-    if (!File(apkPath).exists()) {
+    if (!releaseApk.exists()) {
         return@register
     }
+
+    val apkPath = File("$moduleDirectory/system/priv-app/DSUSideloader/ReleaseDSUSideloader.apk")
+    if (apkPath.exists()) apkPath.delete()
+    releaseApk.copyTo(apkPath)
 
     fun getProps():
             String = "id=$id\n" +
