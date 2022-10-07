@@ -24,10 +24,10 @@ jobs:
       run: chmod +x gradlew
       
     - name: Build with Gradle
-      run: ./gradlew assembleDebug
+      run: ./gradlew assembleMiniDebug
       
     - name: Archive artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: outputs-apk-debug
-        path: app/build/outputs/apk/debug
+        name: outputs-apk-minidebug
+        path: app/build/outputs/apk/miniDebug
