@@ -81,6 +81,8 @@ class Preparation(
 
         onStepUpdate(InstallationStep.WAITING_USER_CONFIRMATION)
 
+        storageManager.cleanWorkspaceFolder(job.isCancelled)
+
         if (!job.isCancelled) {
             onPreparationFinished(source)
         } else {
