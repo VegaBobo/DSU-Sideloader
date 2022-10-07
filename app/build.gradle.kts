@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -29,6 +31,29 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+
+            /**
+             * .sign/dsu_sideloader.prop
+             *
+             * keystore=some/path/keystore.jks
+             * keystore_pw=keystore_password
+             * alias=alias
+             * alias_pw=alias_password
+             *
+             */
+
+            val props = Properties()
+            props.load(File(".sign/dsu_sideloader.prop").inputStream())
+
+            storeFile = File(props.getProperty("keystore"))
+            storePassword = props.getProperty("keystore_pw")
+            keyAlias = props.getProperty("alias")
+            keyPassword = props.getProperty("alias_pw")
+        }
+    }
+
     // Temporary till we fix translations
     lint {
         checkReleaseBuilds = false
@@ -37,6 +62,17 @@ android {
 
     buildTypes {
         getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        create("miniDebug") {
+            signingConfig = signingConfigs.getByName("debug")
+            isDebuggable = true
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

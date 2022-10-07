@@ -17,6 +17,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildTypes {
+        create("miniDebug"){}
+    }
 }
 
 dependencies {

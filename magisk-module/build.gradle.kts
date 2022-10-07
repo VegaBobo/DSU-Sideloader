@@ -1,5 +1,3 @@
-import java.io.FileNotFoundException
-
 plugins {
     kotlin("jvm")
 }
@@ -19,7 +17,7 @@ tasks.register<Zip>("assembleMagiskModule") {
     val apkPath = "$moduleDirectory/system/priv-app/DSUSideloader/ReleaseDSUSideloader.apk"
 
     if (!File(apkPath).exists()) {
-        throw FileNotFoundException("File $apkPath not found")
+        return@register
     }
 
     fun getProps():
