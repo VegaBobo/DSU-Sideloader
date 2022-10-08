@@ -25,7 +25,9 @@ class LogcatDiagnostic(
         isLogging.set(true)
         Log.d(tag, "startLogging(), isLogging: ${isLogging.get()}")
         CmdRunner.run("logcat -c")
-        CmdRunner.runReadEachLine("logcat --format brief | grep -e gsid -e DynamicSystem | grep -v OUT") {
+        CmdRunner.runReadEachLine(
+            "logcat -v tag gsid:* *:S DynamicSystemService:* *:S DynamicSystemInstallationService:* *:S DynSystemInstallationService:* *:S"
+        ) {
             if (logs.isEmpty()) {
                 logs = "$prependString\n"
                 onStepUpdate(InstallationStep.INSTALLING)
@@ -140,6 +142,40 @@ class LogcatDiagnostic(
              */
             if (it.contains("READY") && it.contains("INSTALL_COMPLETED")) {
                 onInstallationSuccess()
+                destroy()
+                return@runReadEachLine
+            }
+
+            /**
+             * When cancelling, Android 10 only
+             * D/DynSystemInstallationService: onStartCommand(): action=com.android.dynsystem.ACTION_CANCEL_INSTALL
+             */
+            if (it.contains("ACTION_CANCEL_INSTALL")) {
+                onInstallationError(InstallationStep.ERROR_CANCELED, it)
+                destroy()
+                return@runReadEachLine
+            }
+
+            /**
+             * When installing, Android 10 only
+             * D/DynSystemInstallationService: postStatus(): statusCode=2, causeCode=0
+             */
+            if (it.contains("postStatus(): statusCode=2" /* STATUS_IN_PROGRESS */)) {
+                onStepUpdate(InstallationStep.PROCESSING_LOG_READABLE)
+            }
+
+            /**
+             * When installation succeed, Android 10 only
+             * D/DynSystemInstallationService: postStatus(): statusCode=3, causeCode=1
+             */
+            if (it.contains("postStatus(): statusCode=3" /* STATUS_READY */)) {
+                onInstallationSuccess()
+                destroy()
+                return@runReadEachLine
+            }
+
+            if (it.contains("postStatus(): statusCode=1" /* STATUS_NOT_STARTED */)) {
+                onInstallationError(InstallationStep.ERROR, it)
                 destroy()
                 return@runReadEachLine
             }

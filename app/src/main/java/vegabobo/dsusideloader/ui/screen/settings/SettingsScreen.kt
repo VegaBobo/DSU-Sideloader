@@ -38,13 +38,15 @@ fun Settings(
         PreferenceItem(
             title = stringResource(id = R.string.builtin_installer),
             description =
-            if (uiState.isRoot) {
+            if (settingsViewModel.isAndroidQ()) {
+                stringResource(id = R.string.unsupported)
+            } else if (uiState.isRoot) {
                 stringResource(id = R.string.builtin_installer_description)
             } else {
                 stringResource(R.string.requires_root)
             },
             showToggle = true,
-            isEnabled = uiState.isRoot,
+            isEnabled = uiState.isRoot && !settingsViewModel.isAndroidQ(),
             isChecked = uiState.preferences[AppPrefs.USE_BUILTIN_INSTALLER]!!,
             onClick = {
                 settingsViewModel.updateInstallerSheetState(!it)

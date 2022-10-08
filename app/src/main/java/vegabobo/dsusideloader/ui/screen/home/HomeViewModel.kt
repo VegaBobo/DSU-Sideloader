@@ -350,6 +350,7 @@ class HomeViewModel @Inject constructor(
         updateInstallationCard { it.copy(installationStep = InstallationStep.PROCESSING) }
         viewModelScope.launch {
             Shell.cmd("setenforce 0").exec()
+            delay(5000)
             startInstallation()
         }
     }

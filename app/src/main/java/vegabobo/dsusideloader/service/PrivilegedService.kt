@@ -4,6 +4,7 @@ import android.app.IActivityManager
 import android.content.Intent
 import android.content.pm.IPackageManager
 import android.gsi.GsiProgress
+import android.os.Build
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.os.Process
@@ -51,20 +52,37 @@ class PrivilegedService : IPrivilegedService.Stub() {
         requiresActivityManager()
         val callerPackage =
             if (uid == 2000 || uid == 0) "com.android.shell" else BuildConfig.APPLICATION_ID
-        ACTIVITY_MANAGER!!.startActivityAsUserWithFeature(
-            null,
-            callerPackage,
-            null,
-            intent,
-            null,
-            null,
-            null,
-            0,
-            0,
-            null,
-            null,
-            0
-        )
+
+        if (Build.VERSION.SDK_INT > 29) {
+            ACTIVITY_MANAGER!!.startActivityAsUserWithFeature(
+                null,
+                callerPackage,
+                null,
+                intent,
+                null,
+                null,
+                null,
+                0,
+                0,
+                null,
+                null,
+                0
+            )
+        } else {
+            ACTIVITY_MANAGER!!.startActivityAsUser(
+                null,
+                callerPackage,
+                intent,
+                null,
+                null,
+                null,
+                0,
+                0,
+                null,
+                null,
+                0
+            )
+        }
     }
 
     override fun forceStopPackage(packageName: String?) {

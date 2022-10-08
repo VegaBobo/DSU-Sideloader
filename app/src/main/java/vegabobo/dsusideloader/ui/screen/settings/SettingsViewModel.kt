@@ -1,6 +1,7 @@
 package vegabobo.dsusideloader.ui.screen.settings
 
 import android.app.Application
+import android.os.Build
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -54,6 +55,8 @@ class SettingsViewModel @Inject constructor(
             }
         }
     }
+
+    fun isAndroidQ(): Boolean = Build.VERSION.SDK_INT == 29
 
     fun updateInstallerSheetState(isShowing: Boolean) {
         _uiState.update { it.copy(isShowingBuiltinInstallerSheet = isShowing) }
