@@ -47,7 +47,7 @@
     <string name="installation_prompt">DSU 安装弹窗已被调起，等待用户确认后继续。</string>
 
     <string name="creating_partition">创建 %1$s 分区</string>
-    <string name="installing">正在处理 %1$s 分区…</string>
+    <string name="installing_partition">正在处理 %1$s 分区…</string>
 
     <!-- ADB install -->
     <string name="require_adb_cmd_to_continue">准备工作已完成，您需要输入一个命令以继续安装。</string>

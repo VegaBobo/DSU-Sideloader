@@ -111,7 +111,7 @@ fun InstallationCardStep(
         }
         InstallationStep.PROCESSING_LOG_READABLE ->
             ProgressableCardContent(
-                text = stringResource(R.string.processing),
+                text = stringResource(R.string.installing),
                 textFirstButton = stringResource(id = R.string.cancel),
                 onClickFirstButton = onClickCancelInstallation,
                 textSecondButton = stringResource(id = R.string.view_logs),
@@ -121,7 +121,7 @@ fun InstallationCardStep(
             )
         InstallationStep.INSTALLING -> {
             ProgressableCardContent(
-                text = stringResource(R.string.installing, uiState.currentPartitionText),
+                text = stringResource(R.string.installing_partition, uiState.currentPartitionText),
                 textFirstButton = stringResource(id = R.string.cancel),
                 onClickFirstButton = onClickCancelInstallation,
                 textSecondButton = stringResource(id = R.string.view_logs),
@@ -132,7 +132,7 @@ fun InstallationCardStep(
         }
         InstallationStep.INSTALLING_ROOTED -> {
             ProgressableCardContent(
-                text = stringResource(R.string.installing, uiState.currentPartitionText),
+                text = stringResource(R.string.installing_partition, uiState.currentPartitionText),
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation,
                 showProgressBar = true,

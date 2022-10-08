@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlin.system.exitProcess
+import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.DsuInfoCard
 import vegabobo.dsusideloader.ui.cards.ImageSizeCard
@@ -57,6 +58,9 @@ fun Home(
 
     LaunchedEffect(Unit) {
         homeViewModel.setupUserPreferences()
+        homeViewModel.session.operationMode.collectLatest {
+            homeViewModel.initialChecks()
+        }
     }
 
     ApplicationScreen(

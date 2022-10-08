@@ -98,10 +98,6 @@ class HomeViewModel @Inject constructor(
     // Home startup and checks
     //
 
-    init {
-        initialChecks()
-    }
-
     fun initialChecks() {
         if (checkDynamicPartitions && !DevicePropUtils.hasDynamicPartitions()) {
             updateAdditionalCardState(AdditionalCardState.NO_DYNAMIC_PARTITIONS)
@@ -113,12 +109,7 @@ class HomeViewModel @Inject constructor(
             return
         }
 
-        if (session.getOperationMode() == OperationMode.SHIZUKU && checkReadLogsPermission &&
-            !OperationModeUtils.isReadLogsPermissionGranted(application)
-        ) {
-            updateAdditionalCardState(AdditionalCardState.MISSING_READ_LOGS_PERMISSION)
-            return
-        }
+        checkShizukuReadLogsPermission()
 
         viewModelScope.launch {
             val result = readStringPref(AppPrefs.SAF_PATH)
@@ -138,6 +129,16 @@ class HomeViewModel @Inject constructor(
                     updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
                 }
             }
+        }
+    }
+
+    fun checkShizukuReadLogsPermission() {
+        if (session.getOperationMode() == OperationMode.SHIZUKU && checkReadLogsPermission &&
+            !OperationModeUtils.isReadLogsPermissionGranted(application)
+        ) {
+            _uiState.update { it.copy(passedInitialChecks = false) }
+            updateAdditionalCardState(AdditionalCardState.MISSING_READ_LOGS_PERMISSION)
+            return
         }
     }
 
@@ -466,6 +467,9 @@ class HomeViewModel @Inject constructor(
         intent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
         PrivilegedProvider.run {
             grantPermission("android.permission.READ_LOGS")
+            if (Build.VERSION.SDK_INT == 29) {
+                forceStopPackage(BuildConfig.APPLICATION_ID)
+            }
             startActivity(intent)
         }
     }

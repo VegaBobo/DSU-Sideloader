@@ -51,7 +51,8 @@
     <string name="installation_prompt">Installation prompt invoked, waiting user confirmation to proceed..</string>
 
     <string name="creating_partition">Creating %1$s partition</string>
-    <string name="installing">Processing %1$s partition…</string>
+    <string name="installing_partition">Processing %1$s partition…</string>
+    <string name="installing">Installing…</string>
 
     <!-- ADB install -->
     <string name="require_adb_cmd_to_continue">Preparation done, a command is required to proceed with installation.</string>

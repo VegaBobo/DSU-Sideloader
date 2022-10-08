@@ -158,6 +158,11 @@ class PrivilegedService : IPrivilegedService.Stub() {
 
     // REQUIRES MANAGE_DYNAMIC_SYSTEM
     override fun closePartition(): Boolean {
+        if (Build.VERSION.SDK_INT <= 30) {
+            // Android R does not seem to close partition?
+            // closePartition() was implemented on S
+            return true
+        }
         requiresDynamicSystem()
         return DYNAMIC_SYSTEM!!.closePartition()
     }

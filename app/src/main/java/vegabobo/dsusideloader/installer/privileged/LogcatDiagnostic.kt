@@ -126,15 +126,23 @@ class LogcatDiagnostic(
              * DynamicSystemInstallationService: status: IN_PROGRESS, cause: CAUSE_NOT_SPECIFIED, partition name: system, progress: 1879162880/1891233792
              */
             if (it.contains("IN_PROGRESS")) {
-                val progressRgx = "(progress: )([\\d+/]+)".toRegex()
-                val partitionRgx = "(partition name: ([a-z+_]+))".toRegex()
+                if (it.contains("progress:") && it.contains("partition name:")) {
+                    try {
+                        val progressRgx = "(progress: )([\\d+/]+)".toRegex()
+                        val partitionRgx = "(partition name: ([a-z+_]+))".toRegex()
 
-                val progressText = progressRgx.find(it)!!.groupValues[2].split("/")
-                val progress = (progressText[0].toFloat() / progressText[1].toFloat())
+                        val progressText = progressRgx.find(it)!!.groupValues[2].split("/")
+                        val progress = (progressText[0].toFloat() / progressText[1].toFloat())
 
-                val partitionText = partitionRgx.find(it)!!.groupValues[2]
+                        val partitionText = partitionRgx.find(it)!!.groupValues[2]
 
-                onInstallationProgressUpdate(progress, partitionText)
+                        onInstallationProgressUpdate(progress, partitionText)
+                    } catch (_: Exception) {
+                        onStepUpdate(InstallationStep.PROCESSING_LOG_READABLE)
+                    }
+                } else {
+                    onStepUpdate(InstallationStep.PROCESSING_LOG_READABLE)
+                }
             }
 
             /**
