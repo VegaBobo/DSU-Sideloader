@@ -98,6 +98,18 @@ class HomeViewModel @Inject constructor(
     // Home startup and checks
     //
 
+    init {
+        // Check if a DSU is already installed
+        // Root-only because MANAGE_DYNAMIC_SYSTEM is required
+        if (session.isRoot()) {
+            PrivilegedProvider.run {
+                if (isInstalled) {
+                    updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
+                }
+            }
+        }
+    }
+
     fun initialChecks() {
         if (checkDynamicPartitions && !DevicePropUtils.hasDynamicPartitions()) {
             updateAdditionalCardState(AdditionalCardState.NO_DYNAMIC_PARTITIONS)
@@ -118,16 +130,6 @@ class HomeViewModel @Inject constructor(
             } else {
                 updateAdditionalCardState(AdditionalCardState.NONE)
                 _uiState.update { it.copy(passedInitialChecks = true) }
-            }
-        }
-
-        // Check if a DSU is already installed
-        // Root-only because MANAGE_DYNAMIC_SYSTEM is required
-        if (session.isRoot()) {
-            PrivilegedProvider.run {
-                if (isInstalled) {
-                    updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
-                }
             }
         }
     }
