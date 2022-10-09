@@ -33,21 +33,23 @@ open class DsuInstallationHandler(
         val fileUri = session.dsuInstallation.uri
         val length = session.dsuInstallation.fileSize
 
-        PrivilegedProvider.getService().forceStopPackage("com.android.dynsystem")
+        PrivilegedProvider.run {
+            forceStopPackage("com.android.dynsystem")
 
-        val dynIntent = Intent()
-        dynIntent.setClassName(
-            "com.android.dynsystem",
-            "com.android.dynsystem.VerificationActivity"
-        )
-        dynIntent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
-        dynIntent.action = "android.os.image.action.START_INSTALL"
-        dynIntent.data = fileUri
-        dynIntent.putExtra("KEY_USERDATA_SIZE", userdataSize)
-        dynIntent.putExtra("KEY_SYSTEM_SIZE", length)
+            val dynIntent = Intent()
+            dynIntent.setClassName(
+                "com.android.dynsystem",
+                "com.android.dynsystem.VerificationActivity"
+            )
+            dynIntent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
+            dynIntent.action = "android.os.image.action.START_INSTALL"
+            dynIntent.data = fileUri
+            dynIntent.putExtra("KEY_USERDATA_SIZE", userdataSize)
+            dynIntent.putExtra("KEY_SYSTEM_SIZE", length)
 
-        Log.d(tag, "Starting DSU VerificationActivity: $dynIntent")
-        PrivilegedProvider.getService().startActivity(dynIntent)
+            Log.d(tag, "Starting DSU VerificationActivity: $dynIntent")
+            startActivity(dynIntent)
+        }
     }
 
     private fun unmountSdTemporary() {
@@ -56,7 +58,7 @@ open class DsuInstallationHandler(
         val volumesUnmount: ArrayList<String> = ArrayList()
         for (volume in volumes)
             if (volume.id.contains("public")) {
-                PrivilegedProvider.getService().unmount(volume.id)
+                PrivilegedProvider.run { unmount(volume.id) }
                 volumesUnmount.add(volume.id)
                 Log.d(tag, "Volume unmounted: ${volume.id}")
             }
@@ -65,7 +67,7 @@ open class DsuInstallationHandler(
                 delay(30 * 1000)
                 for (volume in volumesUnmount) {
                     Log.d(tag, "Volume remounted: $volume")
-                    PrivilegedProvider.getService().mount(volume)
+                    PrivilegedProvider.run { mount(volume) }
                 }
             }
         }
