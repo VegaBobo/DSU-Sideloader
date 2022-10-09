@@ -121,26 +121,23 @@ class HomeViewModel @Inject constructor(
             return
         }
 
-        checkShizukuReadLogsPermission()
-
         viewModelScope.launch {
             val result = readStringPref(AppPrefs.SAF_PATH)
             if (!storageManager.arePermissionsGrantedToFolder(result)) {
                 updateAdditionalCardState(AdditionalCardState.SETUP_STORAGE)
-            } else {
-                updateAdditionalCardState(AdditionalCardState.NONE)
-                _uiState.update { it.copy(passedInitialChecks = true) }
+                return@launch
             }
-        }
-    }
 
-    fun checkShizukuReadLogsPermission() {
-        if (session.getOperationMode() == OperationMode.SHIZUKU && checkReadLogsPermission &&
-            !OperationModeUtils.isReadLogsPermissionGranted(application)
-        ) {
-            _uiState.update { it.copy(passedInitialChecks = false) }
-            updateAdditionalCardState(AdditionalCardState.MISSING_READ_LOGS_PERMISSION)
-            return
+            if (session.getOperationMode() == OperationMode.SHIZUKU && checkReadLogsPermission &&
+                !OperationModeUtils.isReadLogsPermissionGranted(application)
+            ) {
+                _uiState.update { it.copy(passedInitialChecks = false) }
+                updateAdditionalCardState(AdditionalCardState.MISSING_READ_LOGS_PERMISSION)
+                return@launch
+            }
+
+            updateAdditionalCardState(AdditionalCardState.NONE)
+            _uiState.update { it.copy(passedInitialChecks = true) }
         }
     }
 
