@@ -9,14 +9,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.ui.components.buttons.PrimaryButton
 import vegabobo.dsusideloader.ui.components.buttons.SecondaryButton
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DialogLikeBottomSheet(
     modifier: Modifier = Modifier,
@@ -25,12 +29,18 @@ fun DialogLikeBottomSheet(
     text: String = "",
     confirmText: String = "",
     cancelText: String = "",
+    hideKeyboard: Boolean = true,
     onClickConfirm: () -> Unit = {},
     onClickCancel: () -> Unit = {},
     onDismiss: () -> Unit = onClickCancel,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
+
+    if (hideKeyboard) {
+        LocalSoftwareKeyboardController.current?.hide()
+        LocalFocusManager.current.clearFocus()
+    }
 
     CustomBottomSheet(
         modifier = modifier,
