@@ -26,7 +26,7 @@ public interface IDynamicSystemService extends IInterface {
 
     boolean startInstallation(String dsuSlot);
 
-    boolean createPartition(String name, long size, boolean readOnly);
+    int createPartition(String name, long size, boolean readOnly);
 
     boolean closePartition();
 

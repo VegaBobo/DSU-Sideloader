@@ -4,6 +4,7 @@ import android.app.IActivityManager
 import android.content.Intent
 import android.content.pm.IPackageManager
 import android.gsi.GsiProgress
+import android.gsi.IGsiService
 import android.os.Build
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
@@ -210,8 +211,20 @@ class PrivilegedService : IPrivilegedService.Stub() {
     }
 
     // REQUIRES MANAGE_DYNAMIC_SYSTEM
-    override fun createPartition(name: String?, size: Long, readOnly: Boolean): Boolean {
+    override fun createPartition(name: String?, size: Long, readOnly: Boolean): Int {
         requiresDynamicSystem()
+        // Below T, createPartition returns boolean
+        if (Build.VERSION.SDK_INT < 33) {
+            val result = HiddenApiBypass.invoke(
+                DYNAMIC_SYSTEM!!.javaClass,
+                DYNAMIC_SYSTEM!!,
+                "createPartition",
+                name,
+                size,
+                readOnly
+            )
+            return if (result as Boolean) IGsiService.INSTALL_OK else IGsiService.INSTALL_ERROR_GENERIC
+        }
         return DYNAMIC_SYSTEM!!.createPartition(name, size, readOnly)
     }
 

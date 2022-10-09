@@ -48,7 +48,7 @@ open class DynamicSystemImpl : IDynamicSystemService {
         return PrivilegedProvider.getService().startInstallation(dsuSlot)
     }
 
-    override fun createPartition(name: String, size: Long, readOnly: Boolean): Boolean {
+    override fun createPartition(name: String, size: Long, readOnly: Boolean): Int {
         return PrivilegedProvider.getService().createPartition(name, size, readOnly)
     }
 
