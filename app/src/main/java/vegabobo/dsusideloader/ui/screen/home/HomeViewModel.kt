@@ -466,7 +466,7 @@ class HomeViewModel @Inject constructor(
         intent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
         PrivilegedProvider.run {
             grantPermission("android.permission.READ_LOGS")
-            if (Build.VERSION.SDK_INT == 29) {
+            if (Build.VERSION.SDK_INT <= 30) {
                 forceStopPackage(BuildConfig.APPLICATION_ID)
             }
             startActivity(intent)
