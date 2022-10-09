@@ -23,8 +23,8 @@ fun AdbScreen(
 ) {
     val scriptPath = adbViewModel.obtainScriptPath()
 
-    val startInstallationCommand = "sh $scriptPath"
-    val startInstallationCommandAdb = "adb shell $startInstallationCommand"
+    val startInstallationCommand = "sh \"$scriptPath\""
+    val startInstallationCommandAdb = "adb shell ' $startInstallationCommand '"
     ApplicationScreen(
         modifier = Modifier.padding(start = 18.dp, end = 18.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
