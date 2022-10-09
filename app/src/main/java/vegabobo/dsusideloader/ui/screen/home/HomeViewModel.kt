@@ -429,7 +429,13 @@ class HomeViewModel @Inject constructor(
     fun onFileSelectionResult(uri: Uri) {
         val filename = FilenameUtils.queryName(application.contentResolver, uri)
         val extension = filename.substringAfterLast(".", "")
-        val isFileSupported = arrayOf("gz", "xz", "zip", "img", "gzip").contains(extension)
+        val supportedFiles = arrayListOf("gz", "xz", "img", "gzip")
+
+        // DSU packages (zip files), are only supported in R+
+        if (Build.VERSION.SDK_INT > 29) {
+            supportedFiles.add("zip")
+        }
+        val isFileSupported = supportedFiles.contains(extension)
         Log.d(tag, "isFileSupported: $isFileSupported, extension: $extension, filename: $filename")
 
         if (!isFileSupported) {
