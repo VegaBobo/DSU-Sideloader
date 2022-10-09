@@ -67,7 +67,6 @@
 
     <!-- Allocation error card -->
     <string name="allocation_error">Allocation error</string>
-<!--    <string name="allocation_error_description">GSI daemon is trying to allocate in external SD, but it fails for some reason.\nTo fix that, you can install DSU Sideloader Magisk\'s module, or by temporary ejecting sd (you can set this option permanently in preferences).</string>-->
     <string name="allocation_error_description">Allocation on sdcard isn\'t working, there are some fixes you can try:\n - Install DSU Sideloader Magisk\'s module.\n - Unmount sdcard (you can set this option permanently in settings).</string>
     <string name="allocation_error_action">Unmount SD and retry</string>
 
@@ -77,18 +76,15 @@
 
     <!-- Filesystem features not found error card -->
     <string name="fs_features_error">FS features unavailable</string>
-    <!--    <string name="fs_features_error_description">Your kernel is likely to be registering f2fs in different path that one expected from GSI daemon.\nTo fix that, you can try to install DSU Sideloader Magisk\'s module, or change kernel.</string>-->
     <string name="fs_features_error_description">Your kernel is likely to be registering f2fs in different path that one expected from GSI daemon, there are some fixes you can try:\n - Install DSU Sideloader Magisk\'s module.\n - Changing kernel.</string>
 
     <!-- SELinux error card -->
     <string name="selinux_error">SELinux error</string>
-    <!--    <string name="selinux_error_description">Looks like SELinux is blocking GSI daemon to work due denials, this error is common devices running Android 10.\nTo fix that, you can try to install DSU Sideloader Magisk\'s module, or by setting SELinux to permissive.\n\n** Changing to permissive will weakens your device security.</string>-->
     <string name="selinux_error_description">Looks like SELinux denials are preventing DSU installation, there are some fixes you can try:\n - Install DSU Sideloader Magisk\'s module.\n - If you\'re using a sdcard, try to unmount it (there is a option for that in settings section).\n - Change your SELinux to permissive (not recommended, weakens your device security).</string>
     <string name="selinux_error_action">Retry with permissive</string>
 
     <!-- Extents error card -->
     <string name="extents_error_title">Extents error</string>
-    <!--    <string name="extents_error_description">On Android 10 devices, images/filesystem needs to have more than 512 extents.\nTo fix that, you can try to install DSU Sideloader Magisk\'s module.</string>-->
     <string name="extents_error_description">On Android 10 devices, images/filesystem needs to have more than 512 extents, there are some fixes you can try:\n - Install DSU Sideloader Magisk\'s module.</string>
 
     <!-- Other errors card -->
@@ -186,7 +182,7 @@
         feel free to put your name inside "translators_list", it will be shown on about screen.
 
         If there is more than one translator, append names and separate each one by using a comma, like:
-        <string name="translators_list">Collaborator 1, Collaborator 2, Collaborator 3</string>
+        Collaborator 1, Collaborator 2, Collaborator 3
     -->
     <string name="translators_list"></string>
 
