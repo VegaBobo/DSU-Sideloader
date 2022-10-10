@@ -3,8 +3,13 @@ package vegabobo.dsusideloader.ui.components
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
@@ -76,10 +81,14 @@ fun CustomBottomSheet(
                 title = title,
                 icon = icon
             ) {
+                val insets = WindowInsets
+                    .systemBars
+                    .only(WindowInsetsSides.Vertical)
+                    .asPaddingValues()
                 Column(
                     modifier = Modifier
                         .align(Alignment.End)
-                        .padding(end = 18.dp, start = 18.dp, bottom = 14.dp, top = 14.dp)
+                        .padding(end = 18.dp, start = 18.dp, bottom = insets.calculateBottomPadding() + 14.dp, top = 14.dp)
                 ) {
                     // Shortcut used to hide sheet by event
                     content { sheetState.hide(); shouldCallOnDismiss.value = false; }
