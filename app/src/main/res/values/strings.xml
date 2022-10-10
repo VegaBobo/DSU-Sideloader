@@ -60,6 +60,9 @@
 
     <!-- Installation errors -->
 
+    <!-- Already running a installed DSU -->
+    <string name="already_running_dsu">Installing a DSU when running an installed DSU is not supported, please reboot your device to default OS.</string>
+
     <!-- Already installed DSU card -->
     <string name="discard_dsu_otg">A DSU installation is already present, discard to continue?\n\n**All data stored in DSU installation will be deleted.</string>
     <string name="discarding">Discarding…</string>

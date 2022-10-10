@@ -217,6 +217,10 @@ class DSUInstaller(
     }
 
     private fun startInstallation() {
+        if (isInUse) {
+            onInstallationError(InstallationStep.ERROR_ALREADY_RUNNING_DYN_OS, "")
+            return
+        }
         if (isInstalled) {
             onInstallationError(InstallationStep.ERROR_REQUIRES_DISCARD_DSU, "")
             return

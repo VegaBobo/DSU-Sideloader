@@ -6,6 +6,7 @@ enum class InstallationStep {
 
     // When a DSU is detected on app startup
     DSU_ALREADY_INSTALLED,
+    DSU_ALREADY_RUNNING_DYN_OS,
 
     // Preparation steps
     PROCESSING,
@@ -28,6 +29,7 @@ enum class InstallationStep {
     ERROR,
     ERROR_CANCELED,
     ERROR_REQUIRES_DISCARD_DSU,
+    ERROR_ALREADY_RUNNING_DYN_OS,
     ERROR_CREATE_PARTITION,
     ERROR_EXTERNAL_SDCARD_ALLOC,
     ERROR_NO_AVAIL_STORAGE,

@@ -103,8 +103,13 @@ class HomeViewModel @Inject constructor(
         // Root-only because MANAGE_DYNAMIC_SYSTEM is required
         if (session.isRoot()) {
             PrivilegedProvider.run {
+                if (isInUse) {
+                    updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_RUNNING_DYN_OS) }
+                    return@run
+                }
                 if (isInstalled) {
                     updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
+                    return@run
                 }
             }
         }

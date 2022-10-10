@@ -42,6 +42,14 @@ class LogcatDiagnostic(
             onLogLineReceived()
 
             /**
+             * Cannot install DSU when running a installed DSU.
+             */
+            if (it.contains("We are already running in DynamicSystem")) {
+                onInstallationError(InstallationStep.ERROR_ALREADY_RUNNING_DYN_OS, it)
+                destroy()
+            }
+
+            /**
              * When realpath fails with permission denied reason
              * probably gsid is trying to allocate into external sdcard
              * however it throws error, likely due selinux denial

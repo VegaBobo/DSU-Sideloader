@@ -42,6 +42,10 @@ fun InstallationCardStep(
                 textSecondButton = stringResource(id = R.string.discard),
                 onClickSecondButton = onClickDiscardDsu
             )
+        InstallationStep.DSU_ALREADY_RUNNING_DYN_OS ->
+            ProgressableCardContent(
+                text = stringResource(R.string.already_running_dsu)
+            )
         InstallationStep.PROCESSING ->
             ProgressableCardContent(
                 text = stringResource(R.string.processing),
@@ -170,6 +174,12 @@ fun InstallationCardStep(
                 onClickFirstButton = onClickDiscardInstalledGsiAndInstall,
                 textSecondButton = stringResource(id = R.string.cancel),
                 onClickSecondButton = onClickCancelInstallation
+            )
+        InstallationStep.ERROR_ALREADY_RUNNING_DYN_OS ->
+            ProgressableCardContent(
+                text = stringResource(R.string.already_running_dsu),
+                textSecondButton = stringResource(id = R.string.mreturn),
+                onClickSecondButton = onClickClear
             )
         InstallationStep.ERROR_CREATE_PARTITION ->
             ProgressableCardContent(
