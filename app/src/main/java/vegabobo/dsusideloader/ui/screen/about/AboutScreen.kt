@@ -22,6 +22,8 @@ import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 object AboutLinks {
     const val CONTRIBUTORS_URL = "https://github.com/VegaBobo/DSU-Sideloader/graphs/contributors"
     const val REPOSITORY_URL = "https://github.com/VegaBobo/DSU-Sideloader"
+    const val WSTXDA_GITHUB = "https://github.com/WSTxda"
+    const val VEGABOBO_GITHUB = "https://github.com/VegaBobo"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,12 +79,12 @@ fun AboutScreen(
             PreferenceItem(
                 title = "VegaBobo",
                 description = stringResource(id = R.string.role_developer),
-                onClick = {}
+                onClick = { uriHandler.openUri(AboutLinks.VEGABOBO_GITHUB) }
             )
             PreferenceItem(
                 title = "WSTxda",
                 description = stringResource(id = R.string.role_design_icon),
-                onClick = {}
+                onClick = { uriHandler.openUri(AboutLinks.WSTXDA_GITHUB) }
             )
             if (stringResource(id = R.string.translators_list).isNotEmpty()) {
                 PreferenceItem(
