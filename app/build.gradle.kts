@@ -44,13 +44,15 @@ android {
              *
              */
 
-            val props = Properties()
-            props.load(File(".sign/dsu_sideloader.prop").inputStream())
+            if (File(".sign/dsu_sideloader.prop").exists()) {
+                val props = Properties()
+                props.load(File(".sign/dsu_sideloader.prop").inputStream())
 
-            storeFile = File(props.getProperty("keystore"))
-            storePassword = props.getProperty("keystore_pw")
-            keyAlias = props.getProperty("alias")
-            keyPassword = props.getProperty("alias_pw")
+                storeFile = File(props.getProperty("keystore"))
+                storePassword = props.getProperty("keystore_pw")
+                keyAlias = props.getProperty("alias")
+                keyPassword = props.getProperty("alias_pw")
+            }
         }
     }
 
