@@ -2,8 +2,8 @@
 
 A simple app made to help users easily install GSIs via DSU's Android feature.
 <div>
-<img src="https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/preview_1.jpg" alt="preview" width="200"/>  
-<img src="https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/preview_2.jpg" alt="preview" width="200"/>  
+<img src="https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/preview_1.png" alt="preview" width="200"/>  
+<img src="https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/preview_2.png" alt="preview" width="200"/>  
 </div>
 
 ## Requirements
