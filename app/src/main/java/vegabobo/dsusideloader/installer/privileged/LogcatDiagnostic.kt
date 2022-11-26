@@ -2,6 +2,7 @@ package vegabobo.dsusideloader.installer.privileged
 
 import android.util.Log
 import java.util.concurrent.atomic.AtomicBoolean
+import vegabobo.dsusideloader.BuildConfig
 import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.util.CmdRunner
 
@@ -25,11 +26,18 @@ class LogcatDiagnostic(
         isLogging.set(true)
         Log.d(tag, "startLogging(), isLogging: ${isLogging.get()}")
         CmdRunner.run("logcat -c")
-        CmdRunner.runReadEachLine(
-            "logcat -v tag gsid:* *:S DynamicSystemService:* *:S DynamicSystemInstallationService:* *:S DynSystemInstallationService:* *:S"
-        ) {
+        val logCmd =
+            if (BuildConfig.LOG_EVERYTHING) {
+                "logcat"
+            } else {
+                "logcat -v tag gsid:* *:S DynamicSystemService:* *:S DynamicSystemInstallationService:* *:S DynSystemInstallationService:* *:S"
+            }
+        CmdRunner.runReadEachLine(logCmd) {
             if (logs.isEmpty()) {
                 logs = "$prependString\n"
+            }
+
+            if (it.contains("DynamicSystemService") && it.contains("startInstallation")) {
                 onStepUpdate(InstallationStep.INSTALLING)
                 onInstallationProgressUpdate(0F, "userdata")
             }

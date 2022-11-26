@@ -1,4 +1,5 @@
 import java.util.Properties
+import java.io.ByteArrayOutputStream
 
 plugins {
     id("com.android.application")
@@ -57,6 +58,15 @@ android {
         }
     }
 
+    val gitDescribe: String by lazy {
+        val stdout = ByteArrayOutputStream()
+        rootProject.exec {
+            commandLine("git", "describe", "--tags")
+            standardOutput = stdout
+        }
+        stdout.toString().trim()
+    }
+
     buildTypes {
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
@@ -76,6 +86,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        buildTypes.forEach {
+            it.buildConfigField("String", "GITHASH", "\"$gitDescribe\"")
+
+            // Enables full logging on LogcatDiagnostic.kt
+            // not recommended, may decrease app performance
+            // used only for diagnostic unknown problems
+            var enhancedLogcatLogging = it.name == "miniDebug"
+            it.buildConfigField("Boolean", "LOG_EVERYTHING", "$enhancedLogcatLogging")
         }
     }
     compileOptions {
