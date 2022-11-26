@@ -44,9 +44,10 @@ android {
              *
              */
 
-            if (File(".sign/dsu_sideloader.prop").exists()) {
+            val signingConfigProp = File(".sign/dsu_sideloader.prop")
+            if (signingConfigProp.exists()) {
                 val props = Properties()
-                props.load(File(".sign/dsu_sideloader.prop").inputStream())
+                props.load(signingConfigProp.inputStream())
 
                 storeFile = File(props.getProperty("keystore"))
                 storePassword = props.getProperty("keystore_pw")
