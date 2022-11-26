@@ -49,9 +49,9 @@ fun CardBox(
         Column(modifier = modifier) {
             if (cardTitle.isNotEmpty()) {
                 if (addToggle) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        CardTitle(cardTitle = cardTitle)
-                        Spacer(modifier = Modifier.weight(1F))
+                    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        CardTitle(modifier.weight(1F), cardTitle = cardTitle)
+                        Spacer(modifier = Modifier.padding(4.dp))
                         Switch(
                             checked = isToggleChecked,
                             onCheckedChange = onCheckedChange,
