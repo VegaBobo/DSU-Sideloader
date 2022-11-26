@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Home screen
+     -->
+    <!-- Warning cards -->
+    <string name="device_unsupported_description">Twoje urządzenie nie obsługuje dynamicznych partycji (DSU wymaga dynamicznych partycji).</string>
+    <string name="setup_storage">Ustaw pamięć</string>
+    <string name="setup_storage_description">Musisz wybrać folder, który ma być używany jako pamięć aplikacji (wymagany do przechowywania plików tymczasowych)\n\nWybierz lub utwórz nowy folder i zezwól na dostęp do niego.</string>
+    <string name="setup">Konfiguracja</string>
+    <string name="storage_warning">Ostrzeżenie o pamięci</string>
+    <string name="continue_anyway">Kontynuuj mimo to</string>
+    <string name="missing_permission">Brakujące uprawnienia</string>
+    <string name="missing_permission_description">DSU Sideloader wymaga uprawnienia READ_LOGS (co pozwala na odczyt logcatu).\nTo uprawnienie jest używane do uzyskania postępu instalacji i diagnozowania błędów w instalacji DSU.\n\n** Udzielenie tego uprawnienia może wymagać ponownego uruchomienia aplikacji.</string>
+    <string name="granting_permission">Oczekiwanie na uprawnienia, proszę czekać…</string>
+    <!-- Installation card -->
+    <string name="select_gsi_info">Wybierz plik do instalacji</string>
+    <string name="dsu_already_installed">Instalacja DSU już istnieje.</string>
+    <string name="selected_file">Zaznaczony plik</string>
+    <string name="file_unsupported">Nieobsługiwany plik</string>
+    <string name="clear">Wyczyść</string>
+    <string name="install">Zainstaluj</string>
+    <!-- Installation dialog -->
+    <string name="proceed_installation">Kontynuować instalację?</string>
+    <string name="proceed_installation_description">Instalacja zostanie przeprowadzona przy użyciu poniższych parametrów:</string>
+    <!-- Discard installed DSU dialog -->
+    <string name="discard_dsu_question">Odrzucić instalację?</string>
+    <string name="dsu_already_installed_warning">Wszystkie dane znajdujące się w zainstalowanym DSU zostaną USUNIĘTE po odrzuceniu, czy jesteś pewny?</string>
+    <!-- Preparation -->
+    <string name="decompressing_gz">Wypakowywanie pliku gz…</string>
+    <string name="decompressing_xz">Rozpakowywanie pliku xz…</string>
+    <string name="compressing_to_gz">Przygotowywanie pliku obrazu…</string>
+    <string name="extracting_file">Rozpakowywanie pliku…</string>
+    <string name="copying_file">Kopiowanie pliku…</string>
+    <string name="processing">Przetwarzanie…</string>
+    <!-- Installation -->
+    <string name="installation_prompt">Wywołano monit instalacji, oczekiwanie na potwierdzenie użytkownika..</string>
+    <string name="creating_partition">Tworzenie partycji %1$s</string>
+    <string name="installing_partition">Przetwarzanie partycji %1$s…</string>
+    <string name="installing">Instalowanie…</string>
+    <!-- ADB install -->
+    <string name="require_adb_cmd_to_continue">Przygotowanie zakończone, polecenie jest wymagane do dalszej instalacji.</string>
+    <string name="see_commands">Zobacz polecenia</string>
+    <!-- Installation errors -->
+    <!-- Already running a installed DSU -->
+    <string name="already_running_dsu">Instalowanie DSU podczas uruchamiania zainstalowanego DSU nie jest obsługiwane, uruchom ponownie urządzenie do domyślnego systemu operacyjnego.</string>
+    <!-- Already installed DSU card -->
+    <string name="discard_dsu_otg">Instalacja DSU już istnieje, odrzucić aby kontynuować?\n\n**Wszystkie dane przechowywane w instalacji DSU zostaną usunięte.</string>
+    <string name="discarding">Anulowanie…</string>
+    <string name="discard_dsu">Odrzuć DSU</string>
+    <!-- Allocation error card -->
+    <string name="allocation_error">Błąd alokacji</string>
+    <string name="allocation_error_description">Przydział na karcie sd nie działa, istnieją pewne poprawki, które możesz spróbować:\n - Zainstaluj moduł DSU Sideloader Magisk.\n - Odłącz kartę SD (możesz ustawić tę opcję na stałe w ustawieniach).</string>
+    <string name="allocation_error_action">Odłącz SD i spróbuj ponownie</string>
+    <!-- No free storage error card -->
+    <string name="storage_error">Błąd pamięci</string>
+    <string name="storage_error_description">Android wymaga co najmniej %1$s%% wolnego miejsca, aby kontynuować instalację, zwolnij trochę miejsca i spróbować ponownie.</string>
+    <!-- Filesystem features not found error card -->
+    <string name="fs_features_error">Funkcje FS niedostępne</string>
+    <string name="fs_features_error_description">Twój kernel prawdopodobnie rejestruje się f2f w innej ścieżce niż oczekiwana od daemona GSI, istnieją pewne poprawki, które możesz wypróbować:\n - Zainstaluj moduł DSU Sideloader Magisk.\n - Zmiana kernel.</string>
+    <!-- SELinux error card -->
+    <string name="selinux_error">Błąd SELinux</string>
+    <string name="selinux_error_description">Wygląda na to, że odmowy SELinux uniemożliwiają instalację DSU, istnieją pewne poprawki, które możesz wypróbować:\n - Zainstaluj moduł DSU Sideloader Magisk.\n - Jeśli używasz karty sd, spróbuj ją odłączyć (jest taka opcja w sekcji ustawień).\n - Zmień SELinux na permissive (nie zalecane, osłabia bezpieczeństwo urządzenia).</string>
+    <string name="selinux_error_action">Spróbuj ponownie z permissive</string>
+    <!-- Extents error card -->
+    <string name="extents_error_title">Błąd zakresu</string>
+    <string name="extents_error_description">Na urządzeniach z Androidem 10 zdjęcia/system plików musi mieć więcej niż 512 rozmiarów, istnieją poprawki które możesz wypróbować:\n - Zainstaluj moduł DSU Sideloader Magisk.</string>
+    <!-- Other errors card -->
+    <string name="failed_create_partition">Nie udało się utworzyć partycji %1$s.</string>
+    <string name="unknown_error">Nieznany błąd,</string>
+    <string name="error">Blad</string>
+    <string name="try_again">Ponów</string>
+    <string name="view_logs">Wyświetl logi</string>
+    <string name="installation_canceled">Instalacja anulowana</string>
+    <!-- Cancel installation dialog -->
+    <string name="cancel_installation_question">Anulować instalację ?</string>
+    <string name="cancel_installation_description">Cały postep zostanie utracony, czy jesteś pewien?</string>
+    <!-- Installation finished card -->
+    <string name="installation_finished_rootless">Obraz zainstalowany pomyślnie, sprawdź powiadomienia aby uruchomić dynamiczny system.</string>
+    <string name="installation_finished">Instalacja zakończona</string>
+    <string name="reboot_into_dsu">Uruchom ponownie DSU</string>
+    <!-- Userdata card -->
+    <string name="userdata_size">Wielkość partycji userdata</string>
+    <string name="userdata_size_info">Rozmiar w gigabajtach</string>
+    <string name="allowed_userdata_allocation">Maksymalna dostępna alokacja %1$sGB</string>
+    <!-- Image size card -->
+    <string name="image_size">Rozmiar obrazu</string>
+    <string name="image_size_info">Rozmiar w bajtach</string>
+    <string name="not_recommended_option">Ta opcja jest zdecydowanie niewskazana!</string>
+    <!-- Image size dialog -->
+    <string name="dialog_image_size">Ustaw rozmiar obrazu?</string>
+    <string name="dialog_image_size_description">DSU Sideloader ustawiy ten parametr automatycznie, ustawienie rozmiaru obrazu ręcznie jest zdecydowanie niewskazane.</string>
+    <string name="set_anyway">Ustaw mimo to</string>
+    <!-- What is DSU card -->
+    <string name="what_is_dsu">Co to jest DSU?</string>
+    <string name="what_is_dsu_description">DSU (Dynamic System Updates) jest funkcją wprowadzoną w Android 10, która umożliwia programistom testowanie obrazów systemowych Androida bez dotykania partycji urządzenia, z Androidem 11, DSU może również zastąpić wiele partycji.</string>
+    <string name="view_docs">Zobacz dokumenty</string>
+    <string name="learn_more">Więcej informacji</string>
+    <!--
+        Settings screen
+    -->
+    <string name="settings">Ustawienia</string>
+    <string name="experimental_feature">Funkcja eksperymentalna</string>
+    <string name="experimental_feature_description">Ta funkcja jest w trakcie testowania i może być niestabilna, czy jesteś pewien?</string>
+    <string name="builtin_installer">Wbudowany instalator</string>
+    <string name="builtin_installer_description">Szybszy, używa wewnętrznych API do bezpośredniej instalacji obrazów</string>
+    <string name="requires_root">Wymaga root\'a</string>
+    <string name="unmount_sd_title">Odłącz SD</string>
+    <string name="unmount_sd_description">Tymczasowo odłącz kartę sd podczas instalacji</string>
+    <string name="keep_screen_on">Pozostaw włączony ekran</string>
+    <string name="other">Inne</string>
+    <string name="operation_mode">Tryb pracy</string>
+    <string name="about">O programie</string>
+    <string name="about_description">Credits, biblioteki i więcej…</string>
+    <!--
+        About screen
+    -->
+    <string name="version_info">wersja %1$s (%2$d)</string>
+    <string name="check_updates_title">Sprawdź aktualizację</string>
+    <string name="check_updates_text_idle">Kliknij, aby sprawdzić</string>
+    <string name="check_updates_text_found">Znaleziono nową wersję %1$s</string>
+    <string name="check_updates_text_updated">Uruchomiono najnowszą wersję</string>
+    <string name="changelog">Lista zmian</string>
+    <string name="download">Pobierz</string>
+    <string name="application">Aplikacja</string>
+    <string name="github_repo">Repozytorium GitHub</string>
+    <string name="github_repo_description">Kod źródłowy na GitHubie</string>
+    <string name="collaborators">Współtwórcy</string>
+    <string name="libraries_title">Biblioteki</string>
+    <string name="libraries_description">Biblioteki użyte w tej aplikacji</string>
+    <string name="role_developer">Deweloper</string>
+    <string name="role_design_icon">Referencje projektu, ikona aplikacji</string>
+    <string name="translators_title">Tłumacze</string>
+    <string name="contributors_title">Współautorzy</string>
+    <string name="contributors_text">Osoby, które pomogły w tym projekcie</string>
+    <!--
+        ADB screen
+    -->
+    <string name="adb_how_to_adb_shell">Aby rozpocząć instalację na niezrootowanych urządzeniach, musisz uruchomić tę komendę w adb shell:</string>
+    <string name="adb_how_to_shell">Jeśli używasz adb shell bez PC (np. LADB, Shizuku\'s Rish, WebADB, Bugjaeger..), powinieneś użyć tej komendy:</string>
+    <string name="adb_how_to_done">Po zakończeniu sprawdź powiadomienia, aby śledzić proces instalacji, możesz także zamknąć tę aplikację.</string>
+    <string name="copy_text">Kopiuj tekst</string>
+    <string name="copied">Skopiowano</string>
+    <!--
+        View logs screen
+    -->
+    <string name="installation_logs">Logi instalacji</string>
+    <string name="save_logs">Zapisz logi</string>
+    <string name="saved_logs">Logi zapisane!</string>
+    <!--
+        Generic and multipurpose strings
+     -->
+    <string name="no">Nie</string>
+    <string name="yes">Tak</string>
+    <string name="ok">Ok</string>
+    <string name="grant">Przyznanie</string>
+    <string name="refuse">Odmowa</string>
+    <string name="proceed">Kontynuuj</string>
+    <string name="cancel">Anuluj</string>
+    <string name="close">Zamknij</string>
+    <string name="mreturn">Wróć</string>
+    <string name="installation">Instalacja</string>
+    <string name="discard">Odrzuć</string>
+    <string name="close_app">Zamknij aplikację</string>
+    <string name="close_app_question">Zamknąć aplikację?</string>
+
+    <!--
+        Hello translator, since you have translated our app
+        feel free to put your name inside "translators_list", it will be shown on about screen.
+
+        If there is more than one translator, append names and separate each one by using a comma, like:
+        Collaborator 1, Collaborator 2, Collaborator 3
+    -->
+    <string name="translators_list" comment="translators_list&#10;Hello translator, since you have translated our app, feel free to put your name inside &quot;translators_list&quot;, it will be shown on about screen.&#10;If there is more than one translator, append names and separate each one by using a comma, like:&#10;Collaborator 1, Collaborator 2, Collaborator 3">senisditron</string>
+</resources>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Home screen
+     -->
+    <!-- Warning cards -->
+    <string name="device_unsupported_description">Thiết bị của bạn không hỗ trợ phân vùng động (DSU yêu cầu phân vùng động).</string>
+    <string name="setup_storage">Thiết lập bộ nhớ</string>
+    <string name="setup_storage_description">Bạn cần chọn một thư mục để sử dụng làm nơi lưu trữ ứng dụng (bắt buộc để lưu trữ các tệp tạm thời).\n\nVui lòng chọn hoặc tạo một thư mục mới và cho phép truy cập vào nó.</string>
+    <string name="setup">Thiết lập</string>
+    <string name="storage_warning">Cảnh báo lưu trữ</string>
+    <string name="continue_anyway">Vẫn tiếp tục</string>
+    <string name="missing_permission">Thiếu quyền</string>
+    <string name="missing_permission_description">DSU Sideloader yêu cầu quyền READ_LOGS (cho phép đọc logcat).\nQuyền này được sử dụng để lấy tiến độ cài đặt và chẩn đoán lỗi trong cài đặt DSU.\n\n**Việc cấp quyền này có thể yêu cầu khởi động lại ứng dụng.</string>
+    <string name="granting_permission">Đang chờ dịch vụ cấp quyền, vui lòng đợi…</string>
+    <!-- Installation card -->
+    <string name="select_gsi_info">Chọn một tệp sẽ được cài đặt</string>
+    <string name="dsu_already_installed">Đã có cài đặt DSU.</string>
+    <string name="selected_file">Tệp đã chọn</string>
+    <string name="file_unsupported">Tệp không được hỗ trợ</string>
+    <string name="clear">Xóa</string>
+    <string name="install">Cài đặt</string>
+    <!-- Installation dialog -->
+    <string name="proceed_installation">Tiến hành cài đặt?</string>
+    <string name="proceed_installation_description">Cài đặt sẽ được thực hiện bằng cách sử dụng các thông số hiển thị bên dưới:</string>
+    <!-- Discard installed DSU dialog -->
+    <string name="discard_dsu_question">Hủy cài đặt?</string>
+    <string name="dsu_already_installed_warning">Tất cả dữ liệu hiện có trong DSU đã cài đặt sẽ bị XÓA sau khi loại bỏ, bạn có chắc chắn không?</string>
+    <!-- Preparation -->
+    <string name="decompressing_gz">Đang giải nén tệp gz…</string>
+    <string name="decompressing_xz">Đang giải nén tệp xz…</string>
+    <string name="compressing_to_gz">Đang chuẩn bị tệp hình ảnh…</string>
+    <string name="extracting_file">Đang giải nén tập tin…</string>
+    <string name="copying_file">Đang sao chép tệp…</string>
+    <string name="processing">Đang xử lý…</string>
+    <!-- Installation -->
+    <string name="installation_prompt">Đã nhắc cài đặt, đang đợi xác nhận của người dùng để tiếp tục..</string>
+    <string name="creating_partition">Tạo phân vùng %1$s</string>
+    <string name="installing_partition">Đang xử lý phân vùng %1$s…</string>
+    <string name="installing">Đang cài đặt…</string>
+    <!-- ADB install -->
+    <string name="require_adb_cmd_to_continue">Chuẩn bị xong, cần có lệnh để tiến hành cài đặt.</string>
+    <string name="see_commands">Xem các lệnh</string>
+    <!-- Installation errors -->
+    <!-- Already running a installed DSU -->
+    <string name="already_running_dsu">Cài đặt DSU khi chạy DSU đã cài đặt không được hỗ trợ, vui lòng khởi động lại thiết bị của bạn về HĐH mặc định.</string>
+    <!-- Already installed DSU card -->
+    <string name="discard_dsu_otg">Đã có cài đặt DSU, hủy để tiếp tục?\n\n**Tất cả dữ liệu được lưu trữ trong cài đặt DSU sẽ bị xóa.</string>
+    <string name="discarding">Đang loại bỏ…</string>
+    <string name="discard_dsu">Hủy DSU</string>
+    <!-- Allocation error card -->
+    <string name="allocation_error">Lỗi phân bổ</string>
+    <string name="allocation_error_description">Phân bổ trên thẻ sd không hoạt động, có một số bản sửa lỗi bạn có thể thử:\n - Cài đặt mô-đun của DSU Sideloader Magisk.\n - Ngắt kết nối thẻ sd (bạn có thể đặt tùy chọn này vĩnh viễn trong cài đặt).</string>
+    <string name="allocation_error_action">Ngắt kết nối SD và thử lại</string>
+    <!-- No free storage error card -->
+    <string name="storage_error">Lỗi lưu trữ</string>
+    <string name="storage_error_description">Android yêu cầu ít nhất %1$s%% bộ nhớ miễn phí để tiến hành cài đặt, hãy giải phóng một số dung lượng và thử lại.</string>
+    <!-- Filesystem features not found error card -->
+    <string name="fs_features_error">Tính năng FS không khả dụng</string>
+    <string name="fs_features_error_description">Kernel của bạn có thể đang đăng ký f2fs theo đường dẫn khác mà bạn mong đợi từ daemon GSI, có một số bản sửa lỗi bạn có thể thử:\n - Cài đặt mô-đun DSU Sideloader Magisk.\n - Thay đổi nhân.</string>
+    <!-- SELinux error card -->
+    <string name="selinux_error">Lỗi SELinux</string>
+    <string name="selinux_error_description">Có vẻ như những lời từ chối của SELinux đang ngăn quá trình cài đặt DSU, có một số bản sửa lỗi bạn có thể thử:\n - Cài đặt mô-đun của DSU Sideloader Magisk.\n - Nếu bạn đang sử dụng sdcard, hãy thử ngắt kết nối nó (có một tùy chọn cho điều đó trong cài đặt).\n - Thay đổi SELinux của bạn thành dễ dãi (không được khuyến nghị, làm yếu bảo mật thiết bị của bạn).</string>
+    <string name="selinux_error_action">Thử lại với permissive</string>
+    <!-- Extents error card -->
+    <string name="extents_error_title">Phạm vi lỗi</string>
+    <string name="extents_error_description">Trên thiết bị Android 10, Image/hệ thống tệp cần có nhiều hơn 512 phạm vi, có một số bản sửa lỗi bạn có thể thử:\n - Cài đặt mô-đun của DSU Sideloader Magisk.</string>
+    <!-- Other errors card -->
+    <string name="failed_create_partition">Không thể tạo phân vùng %1$s.</string>
+    <string name="unknown_error">Lỗi không xác định.</string>
+    <string name="error">Lỗi</string>
+    <string name="try_again">Thử lại</string>
+    <string name="view_logs">Xem các bản ghi</string>
+    <string name="installation_canceled">Đã hủy cài đặt.</string>
+    <!-- Cancel installation dialog -->
+    <string name="cancel_installation_question">Hủy cài đặt?</string>
+    <string name="cancel_installation_description">Tất cả những tiến độ đã đạt được sẽ bị mất, bạn có chắc không?</string>
+    <!-- Installation finished card -->
+    <string name="installation_finished_rootless">Đã cài đặt hình ảnh thành công, hãy kiểm tra thông báo của bạn để khởi động vào hệ thống động.</string>
+    <string name="installation_finished">Đã cài đặt xong.</string>
+    <string name="reboot_into_dsu">Khởi động lại vào DSU</string>
+    <!-- Userdata card -->
+    <string name="userdata_size">Kích thước dữ liệu người dùng</string>
+    <string name="userdata_size_info">Kích thước tính bằng gigabyte</string>
+    <string name="allowed_userdata_allocation">Tối đa có sẵn để phân bổ: %1$sGB</string>
+    <!-- Image size card -->
+    <string name="image_size">Kích cỡ hình ảnh</string>
+    <string name="image_size_info">Kích thước tính bằng byte</string>
+    <string name="not_recommended_option">Tùy chọn này thực sự không thể sử dụng được!</string>
+    <!-- Image size dialog -->
+    <string name="dialog_image_size">Đặt kích thước hình ảnh?</string>
+    <string name="dialog_image_size_description">DSU Sideloader sẽ tự động đặt thông số này cho bạn, việc thiết lập kích thước hình ảnh theo cách thủ công là điều không thể tránh khỏi.</string>
+    <string name="set_anyway">Vẫn đặt</string>
+    <!-- What is DSU card -->
+    <string name="what_is_dsu">DSU là gì?</string>
+    <string name="what_is_dsu_description">DSU (Dynamic System Updates) là một tính năng được giới thiệu trong Android 10 cho phép các nhà phát triển kiểm tra hình ảnh hệ thống Android mà không cần chạm vào phân vùng thiết bị, với Android 11, DSU cũng có thể thay thế nhiều phân vùng.</string>
+    <string name="view_docs">Xem tài liệu</string>
+    <string name="learn_more">Tìm hiểu thêm</string>
+    <!--
+        Settings screen
+    -->
+    <string name="settings">Tùy chọn</string>
+    <string name="experimental_feature">Tính năng thử nghiệm</string>
+    <string name="experimental_feature_description">Tính năng này đang được thử nghiệm và có thể không ổn định, bạn có chắc chắn không?</string>
+    <string name="builtin_installer">Trình cài đặt tích hợp</string>
+    <string name="builtin_installer_description">Nhanh hơn, sử dụng các API nội bộ để cài đặt hình ảnh trực tiếp</string>
+    <string name="requires_root">Yêu cầu root</string>
+    <string name="unmount_sd_title">Ngắt kết nối SD</string>
+    <string name="unmount_sd_description">Tạm thời ngắt kết nối sd khi cài đặt</string>
+    <string name="keep_screen_on">Luôn bật màn hình</string>
+    <string name="other">Khác</string>
+    <string name="operation_mode">Chế độ hoạt động</string>
+    <string name="about">Về</string>
+    <string name="about_description">Tín dụng, thư viện và hơn thế nữa…</string>
+    <!--
+        About screen
+    -->
+    <string name="version_info">phiên bản %1$s (%2$d)</string>
+    <string name="check_updates_title">Kiểm tra cập nhật</string>
+    <string name="check_updates_text_idle">Nhấn để kiểm tra</string>
+    <string name="check_updates_text_found">Đã tìm thấy phiên bản %1$s mới</string>
+    <string name="check_updates_text_updated">Đang chạy phiên bản mới nhất</string>
+    <string name="changelog">Changelog</string>
+    <string name="download">Tải xuống</string>
+    <string name="application">Phần mềm</string>
+    <string name="github_repo">Kho lưu trữ GitHub</string>
+    <string name="github_repo_description">Mã nguồn trên GitHub</string>
+    <string name="collaborators">Cộng tác viên</string>
+    <string name="libraries_title">Thư viện</string>
+    <string name="libraries_description">Các thư viện được sử dụng trong ứng dụng này</string>
+    <string name="role_developer">Nhà phát triển</string>
+    <string name="role_design_icon">Tham chiếu thiết kế, biểu tượng ứng dụng</string>
+    <string name="translators_title">Người dịch</string>
+    <string name="contributors_title">Người đóng góp</string>
+    <string name="contributors_text">Những người đã giúp đỡ với dự án này</string>
+    <!--
+        ADB screen
+    -->
+    <string name="adb_how_to_adb_shell">Để bắt đầu cài đặt trên các thiết bị chưa root, bạn cần chạy lệnh này trên adb shell:</string>
+    <string name="adb_how_to_shell">Nếu bạn đang chạy adb shell mà không có PC (ví dụ: LADB, Shizuku\'s Rish, WebADB, Bugjaeger..), bạn nên chạy lệnh này thay thế:</string>
+    <string name="adb_how_to_done">Sau khi hoàn tất, hãy kiểm tra thông báo của bạn để theo dõi quá trình cài đặt, bạn cũng có thể đóng ứng dụng này.</string>
+    <string name="copy_text">Sao chép văn bản</string>
+    <string name="copied">Đã sao chép</string>
+    <!--
+        View logs screen
+    -->
+    <string name="installation_logs">Nhật ký cài đặt</string>
+    <string name="save_logs">Lưu nhật ký</string>
+    <string name="saved_logs">Nhật ký đã được lưu!</string>
+    <!--
+        Generic and multipurpose strings
+     -->
+    <string name="no">Không</string>
+    <string name="yes">Có</string>
+    <string name="ok">OK</string>
+    <string name="grant">Cho phép</string>
+    <string name="refuse">Từ chối</string>
+    <string name="proceed">Tiếp tục</string>
+    <string name="cancel">Hủy</string>
+    <string name="close">Đóng</string>
+    <string name="mreturn">Trở về</string>
+    <string name="installation">Cài đặt</string>
+    <string name="discard">Bỏ</string>
+    <string name="close_app">Đóng ứng dụng</string>
+    <string name="close_app_question">Đóng ứng dụng?</string>
+
+    <!--
+        Hello translator, since you have translated our app
+        feel free to put your name inside "translators_list", it will be shown on about screen.
+
+        If there is more than one translator, append names and separate each one by using a comma, like:
+        Collaborator 1, Collaborator 2, Collaborator 3
+    -->
+    <string name="translators_list" comment="translators_list&#10;Hello translator, since you have translated our app, feel free to put your name inside &quot;translators_list&quot;, it will be shown on about screen.&#10;If there is more than one translator, append names and separate each one by using a comma, like:&#10;Collaborator 1, Collaborator 2, Collaborator 3">Nguyễn Viết Thắng</string>
+</resources>

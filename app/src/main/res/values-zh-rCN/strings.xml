@@ -48,6 +48,7 @@
 
     <string name="creating_partition">创建 %1$s 分区</string>
     <string name="installing_partition">正在处理 %1$s 分区…</string>
+    <string name="installing">正在安装…</string>
 
     <!-- ADB install -->
     <string name="require_adb_cmd_to_continue">准备工作已完成，您需要输入一个命令以继续安装。</string>
@@ -56,6 +57,7 @@
     <!-- Installation errors -->
 
     <!-- Already installed DSU card -->
+    <string name="already_running_dsu">不支持在运行已安装的 DSU 上安装 DSU ，请重启您的设备回到默认操作系统。</string>
     <string name="discard_dsu_otg">已经安装了一个 DSU，是否要移除并继续安装？\n\n**已安装 DSU 中的所有数据将在移除时删除。</string>
     <string name="discarding">正在移除…</string>
     <string name="discard_dsu">移除 DSU</string>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Home screen
+     -->
+    <!-- Warning cards -->
+    <string name="device_unsupported_description">جهازك لا يدعم الأقسام الديناميكية (DSU يتطلب الأقسام الديناميكية).</string>
+    <string name="setup_storage">إعداد وحدة التخزين</string>
+    <string name="setup_storage_description">تحتاج إلى تحديد مجلد لاستخدامه كمخزن للتطبيق (مطلوب لتخزين الملفات المؤقتة).\n\nالرجاء تحديد أو إنشاء مجلد جديد والسماح بالوصول إليه.</string>
+    <string name="setup">إعداد</string>
+    <string name="storage_warning">إنذار سعة التخزين</string>
+    <string name="continue_anyway">إستمر على أي حال</string>
+    <string name="missing_permission">إذن مفقود</string>
+    <string name="missing_permission_description">DSU Sideloader يتطلب إذن READ_LOGS (الذي يسمح بقراءة logcat).\n يتم استخدام هذا الإذن للحصول على تقدم التثبيت وتشخيص الأخطاء في تثبيت.\n\n** قد يتطلب منح هذا الإذن إعادة تشغيل التطبيق.</string>
+    <string name="granting_permission">في انتظار الخدمة لمنح الإذن، يرجى الانتظار…</string>
+    <!-- Installation card -->
+    <string name="select_gsi_info">حدد ملفاً ليتم تثبيته</string>
+    <string name="dsu_already_installed">عملية تثبيت DSU موجودة بالفعل.</string>
+    <string name="selected_file">اختر ملفاً</string>
+    <string name="file_unsupported">ملف غير مدعوم</string>
+    <string name="clear">تنظيف</string>
+    <string name="install">تثبيت</string>
+    <!-- Installation dialog -->
+    <string name="proceed_installation">متابعة التثبيت؟</string>
+    <string name="proceed_installation_description">سيتم التثبيت باستخدام المعاملات الموضحة أدناه:</string>
+    <!-- Discard installed DSU dialog -->
+    <string name="discard_dsu_question">تجاهل التثبيت؟</string>
+    <string name="dsu_already_installed_warning">سيتم حذف جميع البيانات الموجودة في DSU المثبت بعد الاستبعاد، هل أنت متأكد؟</string>
+    <!-- Preparation -->
+    <string name="decompressing_gz">جارٍ استخراج ملف xz…</string>
+    <string name="decompressing_xz">جارٍ استخراج ملف xz…</string>
+    <string name="compressing_to_gz">جارٍ إعداد ملف الصورة…</string>
+    <string name="extracting_file">جارٍ استخراج الملف…</string>
+    <string name="copying_file">جارٍ نسخ الملف…</string>
+    <string name="processing">جارٍ المعالجة…</string>
+    <!-- Installation -->
+    <string name="installation_prompt">تم استدعاء طلب التثبيت، بانتظار تأكيد المستخدم للمتابعة..</string>
+    <string name="creating_partition">جارٍ إنشاء %1$s قسم…</string>
+    <string name="installing_partition">جارٍ معالجة %1$s قسم…</string>
+    <string name="installing">جارٍ التثبيت…</string>
+    <!-- ADB install -->
+    <string name="require_adb_cmd_to_continue">تم التحضير، مطلوب أمر لمتابعة التثبيت.</string>
+    <string name="see_commands">أنظر للأوامر</string>
+    <!-- Installation errors -->
+    <!-- Already running a installed DSU -->
+    <string name="already_running_dsu">لا يتم دعم تثبيت DSU عند تشغيل DSU مثبت، يرجى إعادة تشغيل جهازك إلى نظام التشغيل الافتراضي.</string>
+    <!-- Already installed DSU card -->
+    <string name="discard_dsu_otg">تثبيت DSU موجود بالفعل، هل تريد الإلغاء للمتابعة؟\n\n**سيتم حذف كافة البيانات المخزنة في تثبيت DSU.</string>
+    <string name="discarding">تجاهل…</string>
+    <string name="discard_dsu">تجاهل DSU</string>
+    <!-- Allocation error card -->
+    <string name="allocation_error">خطأ في التخصيص</string>
+    <string name="allocation_error_description">التخصيص على sdcard لا يعمل، هناك بعض الإصلاحات التي يمكنك محاولتها:\n - تثبيت DSU Sideloader Magisk.\n - إلغاء تحميل sdcard (يمكنك تعيين هذا الخيار بشكل دائم في الإعدادات).</string>
+    <string name="allocation_error_action">إلغاء تحميل SD وإعادة المحاولة</string>
+    <!-- No free storage error card -->
+    <string name="storage_error">خطأ في وحدة التخزين</string>
+    <string name="storage_error_description">يتطلب أندرويد على الأقل %1$s%% من مساحة التخزين المجانية لمتابعة التثبيت، قم بتفريغ بعض المساحة وحاول مرة أخرى.</string>
+    <!-- Filesystem features not found error card -->
+    <string name="fs_features_error">ميزات FS غير متوفرة</string>
+    <string name="fs_features_error_description">قد تكون النواة الخاصة بك تسجيل f2fs في مسار مختلف الذي توقعه من GSI daemon، هناك بعض الإصلاحات التي يمكنك تجربتها:\n - تثبيت وحدة DSU Sideloader Magisk.\n - تغيير النواة.</string>
+    <!-- SELinux error card -->
+    <string name="selinux_error">خطأ SELinux</string>
+    <!-- Other errors card -->
+    <string name="failed_create_partition">فشل في إنشاء قسم %1$s.</string>
+    <!--
+        About screen
+    -->
+    <string name="collaborators">المتعاونون</string>
+    <string name="libraries_title">المكتبات</string>
+    <string name="libraries_description">المكتبات المستخدمة في هذا التطبيق</string>
+    <string name="role_developer">المطور</string>
+    <string name="role_design_icon">مرجع التصميم، أيقونة التطبيق</string>
+    <string name="translators_title">المترجمون</string>
+    <string name="contributors_title">المساهمون</string>
+    <string name="contributors_text">الأشخاص الذين ساعدوا في هذا المشروع</string>
+    <!--
+        ADB screen
+    -->
+    <string name="adb_how_to_adb_shell">لبدء التثبيت على الأجهزة التي ليس بها روت، تحتاج إلى تشغيل هذا الأمر على شاشة adb:</string>
+    <string name="adb_how_to_shell">إذا كنت تقوم بتشغيل adb shell بدون جهاز كمبيوتر (مثال: LADB, Shizuku, WebADB, Bugjaeger..)، يجب عليك إستخدام هذا الأمر بدلاً من ذلك:</string>
+    <string name="adb_how_to_done">بمجرد الانتهاء من ذلك، تحقق من الإشعارات لمتابعة عملية التثبيت، يمكنك أيضًا إغلاق هذا التطبيق.</string>
+    <string name="copy_text">نسخ النص</string>
+    <string name="copied">تم النسخ</string>
+    <!--
+        View logs screen
+    -->
+    <string name="installation_logs">سجلات التثبيت</string>
+    <string name="save_logs">حفظ السجلات</string>
+    <string name="saved_logs">تم حفظ السجلات!</string>
+    <!--
+        Generic and multipurpose strings
+     -->
+    <string name="no">لا</string>
+    <string name="yes">نعم</string>
+    <string name="ok">حسناً</string>
+    <string name="grant">منح</string>
+    <string name="refuse">رفض</string>
+    <string name="proceed">متابعة</string>
+    <string name="cancel">إلغاء</string>
+    <string name="close">إغلاق</string>
+    <string name="mreturn">العودة</string>
+    <string name="installation">تثبيت</string>
+    <string name="discard">تجاهل</string>
+    <string name="close_app">إغلاق التطبيق</string>
+    <string name="close_app_question">إغلاق التطبيق؟</string>
+
+    <!--
+        Hello translator, since you have translated our app
+        feel free to put your name inside "translators_list", it will be shown on about screen.
+
+        If there is more than one translator, append names and separate each one by using a comma, like:
+        Collaborator 1, Collaborator 2, Collaborator 3
+    -->
+    <string name="translators_list" comment="translators_list&#10;Hello translator, since you have translated our app, feel free to put your name inside &quot;translators_list&quot;, it will be shown on about screen.&#10;If there is more than one translator, append names and separate each one by using a comma, like:&#10;Collaborator 1, Collaborator 2, Collaborator 3">muhammadbahaa2001</string>
+</resources>

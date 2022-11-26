@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Home screen
+     -->
+    <!-- Warning cards -->
+    <string name="device_unsupported_description">お使いのデバイスは動的パーティションに対応していません (DSU は動的パーティションが必須です)。</string>
+    <string name="setup_storage">ストレージの設定</string>
+    <string name="setup_storage_description">一時ファイルを保存するために必要な、アプリのストレージとして使用するフォルダを選択してください。\n\n新しいフォルダを選択または作成し、アクセスを許可してください。</string>
+    <string name="setup">設定</string>
+    <string name="storage_warning">ストレージの警告</string>
+    <string name="continue_anyway">続行する</string>
+    <string name="missing_permission">権限がありません</string>
+    <string name="missing_permission_description">DSU Sideloader は logcat の読み取りを許可するための READ_LOGS 権限が必要です。\nこの権限は、インストールの進行状況を取得し、DSU インストール中のエラーを診断するために使用されます。 \n\n\n** この権限を付与するにはアプリの再起動が必要な場合があります。</string>
+    <string name="granting_permission">権限を付与するためにサービスを待機中です。しばらくお待ちください…</string>
+    <!-- Installation card -->
+    <string name="select_gsi_info">インストールするファイルを選択</string>
+    <string name="dsu_already_installed">DSU は既にインストールされています。</string>
+    <string name="selected_file">選択したファイル</string>
+    <string name="file_unsupported">非対応のファイル</string>
+    <string name="clear">消去</string>
+    <string name="install">インストール</string>
+    <!-- Installation dialog -->
+    <string name="proceed_installation">インストールしますか？</string>
+    <string name="proceed_installation_description">以下のパラメータを使用してインストールします。</string>
+    <!-- Discard installed DSU dialog -->
+    <string name="discard_dsu_question">インストールを破棄しますか？</string>
+    <string name="dsu_already_installed_warning">破棄すると、インストールされた DSU にあるすべてのデータは削除されます。よろしいですか？</string>
+    <!-- Preparation -->
+    <string name="decompressing_gz">gz ファイルの展開中…</string>
+    <string name="decompressing_xz">xz ファイルの展開中…</string>
+    <string name="compressing_to_gz">イメージファイルを準備中…</string>
+    <string name="extracting_file">ファイルを展開中…</string>
+    <string name="copying_file">ファイルをコピー中…</string>
+    <string name="processing">処理中…</string>
+    <!-- Installation -->
+    <string name="installation_prompt">インストールプロンプトを呼び出しました。ユーザーの確認を待機しています…</string>
+    <string name="creating_partition">%1$s パーティションを作成中</string>
+    <string name="installing_partition">%1$s パーティションを処理中…</string>
+    <string name="installing">インストール中…</string>
+    <!-- ADB install -->
+    <string name="require_adb_cmd_to_continue">準備が完了しました。インストールを続行するにはコマンドが必要です。</string>
+    <string name="see_commands">コマンドを表示</string>
+    <!-- Installation errors -->
+    <!-- Already running a installed DSU -->
+    <string name="already_running_dsu">インストールされた DSU の実行時に DSU をインストールすることはできません。デバイスをデフォルトの OS へ再起動してください。</string>
+    <!-- Already installed DSU card -->
+    <string name="discard_dsu_otg">DSU がすでにインストールされています。続行するには破棄してください。\n\n**DSU のインストールに保存されているすべてのデータは削除されます。</string>
+    <string name="discarding">破棄中…</string>
+    <string name="discard_dsu">DSU を破棄</string>
+    <!-- Allocation error card -->
+    <string name="allocation_error">割り当てエラー</string>
+    <string name="allocation_error_description">SD カードへの割り当てに失敗しました。以下の解決策を試してください:\n - DSU Sideloader Magisk モジュールをインストールする\n - SD カードのマウントを解除する (オプションで常にセットするよう設定できます)</string>
+    <string name="allocation_error_action">SD カードのマウントを解除して再試行する</string>
+    <!-- No free storage error card -->
+    <string name="storage_error">ストレージエラー</string>
+    <string name="storage_error_description">インストールを続けるために少なくとも%1$s%%の空き容量が必要です。空き容量を増やして再試行してください。</string>
+    <!-- Filesystem features not found error card -->
+    <string name="fs_features_error">FS 機能が利用できません</string>
+    <string name="fs_features_error_description">お使いのカーネルは、GSI デーモンが想定しているものとは違うパスに F2FS を登録しています。以下の解決策を試してください:\n - DSU Sideloader Magisk モジュールをインストールする\n - カーネルを変更する</string>
+    <!-- SELinux error card -->
+    <string name="selinux_error">SELinux エラー</string>
+    <string name="selinux_error_description">SELinux により DSU のインストールが失敗しているようです。以下の解決策を試してください:\n - DSU Sideloader Magisk モジュールをインストールする\n - SD カードを使用している場合は、マウントを解除する (設定にオプションがあります).\n - SELinux を Permissive にする (非推奨、デバイスのセキュリティが低下します)</string>
+    <string name="selinux_error_action">Permissive にして再試行</string>
+    <!-- Extents error card -->
+    <string name="extents_error_title">エクステントエラー</string>
+    <string name="extents_error_description">Android 10 デバイスでは、イメージ/ファイルシステムは 512 以上のエクステントを必要とします。以下の解決策を試してください:\n - DSU Sideloader Magisk モジュールをインストールする</string>
+    <!-- Other errors card -->
+    <string name="failed_create_partition">パーティション %1$s の作成に失敗しました。</string>
+    <!--
+        About screen
+    -->
+    <string name="role_design_icon">デザイン参照、アプリアイコン</string>
+    <string name="translators_title">翻訳者</string>
+    <string name="contributors_title">貢献者</string>
+    <string name="contributors_text">このプロジェクトを支援した人</string>
+    <!--
+        ADB screen
+    -->
+    <string name="adb_how_to_adb_shell">root 化されていないデバイスでインストールを開始するには、adb シェルでこのコマンドを実行する必要があります。</string>
+    <string name="adb_how_to_shell">PC なしで adb シェルを実行している場合（例：LADB、Shizuku の Rish、WebADB、Bugjaeger..）、代わりにこのコマンドを実行する必要があります:</string>
+    <string name="adb_how_to_done">完了したら、通知を確認してインストール状況を確認してください。このアプリは閉じて大丈夫です。</string>
+    <string name="copy_text">テキストをコピー</string>
+    <string name="copied">コピーしました</string>
+    <!--
+        View logs screen
+    -->
+    <string name="installation_logs">インストールログ</string>
+    <string name="save_logs">ログを保存</string>
+    <string name="saved_logs">ログを保存しました！</string>
+    <!--
+        Generic and multipurpose strings
+     -->
+    <string name="no">いいえ</string>
+    <string name="yes">はい</string>
+    <string name="ok">OK</string>
+    <string name="grant">許可する</string>
+    <string name="refuse">拒否する</string>
+    <string name="proceed">続行する</string>
+    <string name="cancel">キャンセル</string>
+    <string name="close">閉じる</string>
+    <string name="mreturn">戻る</string>
+    <string name="installation">インストール</string>
+    <string name="discard">破棄する</string>
+    <string name="close_app">アプリを閉じる</string>
+    <string name="close_app_question">アプリを閉じますか？</string>
+
+    <!--
+        Hello translator, since you have translated our app
+        feel free to put your name inside "translators_list", it will be shown on about screen.
+
+        If there is more than one translator, append names and separate each one by using a comma, like:
+        Collaborator 1, Collaborator 2, Collaborator 3
+    -->
+    <string name="translators_list" comment="translators_list&#10;Hello translator, since you have translated our app, feel free to put your name inside &quot;translators_list&quot;, it will be shown on about screen.&#10;If there is more than one translator, append names and separate each one by using a comma, like:&#10;Collaborator 1, Collaborator 2, Collaborator 3">AndroPlus</string>
+</resources>
