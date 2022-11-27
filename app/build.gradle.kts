@@ -59,12 +59,16 @@ android {
     }
 
     val gitDescribe: String by lazy {
-        val stdout = ByteArrayOutputStream()
-        rootProject.exec {
-            commandLine("git", "describe", "--tags")
-            standardOutput = stdout
+        try {
+            val stdout = ByteArrayOutputStream()
+            rootProject.exec {
+                commandLine("git", "describe", "--tags")
+                standardOutput = stdout
+            }
+            stdout.toString().trim()
+        } catch (e: Exception) {
+            "No git info"
         }
-        stdout.toString().trim()
     }
 
     buildTypes {
