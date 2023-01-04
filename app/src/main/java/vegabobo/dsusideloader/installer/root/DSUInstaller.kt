@@ -23,6 +23,7 @@ import vegabobo.dsusideloader.model.DSUInstallationSource
 import vegabobo.dsusideloader.model.ImagePartition
 import vegabobo.dsusideloader.model.Type
 import vegabobo.dsusideloader.preparation.InstallationStep
+import vegabobo.dsusideloader.service.PrivilegedProvider
 
 /**
  * DSU Installer implementation using Android APIs
@@ -217,6 +218,7 @@ class DSUInstaller(
     }
 
     private fun startInstallation() {
+        PrivilegedProvider.getService().setDynProp()
         if (isInUse) {
             onInstallationError(InstallationStep.ERROR_ALREADY_RUNNING_DYN_OS, "")
             return

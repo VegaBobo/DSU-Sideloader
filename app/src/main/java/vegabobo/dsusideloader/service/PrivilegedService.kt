@@ -9,9 +9,11 @@ import android.os.Build
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.os.Process
+import android.os.SystemProperties
 import android.os.image.IDynamicSystemService
 import android.os.storage.IStorageManager
 import android.os.storage.VolumeInfo
+import android.util.Log
 import kotlin.system.exitProcess
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import vegabobo.dsusideloader.BuildConfig
@@ -31,6 +33,18 @@ class PrivilegedService : IPrivilegedService.Stub() {
         val serviceManager = Class.forName("android.os.ServiceManager")
         val binder = HiddenApiBypass.invoke(serviceManager, null, "getService", service)
         return binder as IBinder
+    }
+
+    fun setProp(key: String, value: String) {
+        try {
+            SystemProperties.set(key, value)
+        } catch (e: Exception) {
+            Log.w(BuildConfig.APPLICATION_ID, e.stackTraceToString())
+        }
+    }
+
+    override fun setDynProp() {
+        setProp("persist.sys.fflag.override.settings_dynamic_system", "true")
     }
 
     override fun getUid(): Int {

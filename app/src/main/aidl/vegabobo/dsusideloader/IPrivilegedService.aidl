@@ -6,6 +6,7 @@ import android.os.storage.VolumeInfo;
 interface IPrivilegedService {
     void exit() = 1;
     void destroy() = 16777114;
+    void setDynProp() = 100;
     int getUid() = 1000;
 
     // Activity Manager

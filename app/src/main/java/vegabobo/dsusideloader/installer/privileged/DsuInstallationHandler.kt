@@ -34,6 +34,7 @@ open class DsuInstallationHandler(
         val length = session.dsuInstallation.fileSize
 
         PrivilegedProvider.run {
+            setDynProp()
             forceStopPackage("com.android.dynsystem")
 
             val dynIntent = Intent()

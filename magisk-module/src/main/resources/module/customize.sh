@@ -20,4 +20,5 @@ if [[ $API -le "33" && $API -ge "29" ]] &&
   [[ $ARCH == arm64 || $ARCH == arm ]]; then
   install_gsid
   clean
+  setprop persist.sys.fflag.override.settings_dynamic_system true
 fi
