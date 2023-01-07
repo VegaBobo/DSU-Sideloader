@@ -7,6 +7,8 @@ import androidx.core.net.toUri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.documentfile.provider.DocumentFile
+import java.io.File
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import kotlinx.coroutines.CoroutineScope
@@ -108,6 +110,18 @@ class StorageManager(
         outputStream.write(content.toByteArray())
         outputStream.close()
         return FilenameUtils.getFilePath(file.uri, false).replace("file://", "")
+    }
+
+    fun writeStringToExternalFileDir(content: String, filename: String): String {
+        val externalFilesDir = appContext.getExternalFilesDir(null)
+            ?: throw IOException("externalFilesDir cannot be null.")
+        val newFile = File(externalFilesDir.absolutePath + "/$filename")
+        if (newFile.exists()) {
+            newFile.delete()
+        }
+        newFile.createNewFile()
+        newFile.writeBytes(content.toByteArray())
+        return newFile.absolutePath
     }
 
     fun writeStringToUri(content: String, uri: Uri): String {

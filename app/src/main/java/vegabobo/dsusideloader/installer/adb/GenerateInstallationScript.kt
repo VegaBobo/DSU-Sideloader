@@ -15,7 +15,7 @@ class GenerateInstallationScript(
 ) {
 
     fun writeToFile(): String {
-        return storageManager.writeStringToFile(getShellScript(), InstallationScript.FILENAME)
+        return storageManager.writeStringToExternalFileDir(getShellScript(), InstallationScript.FILENAME)
     }
 
     private fun getShellScript(): String {
