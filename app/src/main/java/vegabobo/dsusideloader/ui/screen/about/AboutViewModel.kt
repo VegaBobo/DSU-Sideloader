@@ -4,7 +4,8 @@ import android.app.Application
 import android.content.Intent
 import android.util.Log
 import androidx.core.content.FileProvider
-import androidx.lifecycle.ViewModel
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import vegabobo.dsusideloader.BuildConfig
+import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.preferences.AppPrefs
 
 @Serializable
@@ -34,13 +36,19 @@ data class UpdaterResponse(
 @HiltViewModel
 class AboutViewModel @Inject constructor(
     val application: Application,
-) : ViewModel() {
-
+    override val dataStore: DataStore<Preferences>,
+) : BaseViewModel(dataStore) {
     private val tag = this.javaClass.simpleName
 
     private val _uiState = MutableStateFlow(AboutScreenUiState())
     val uiState: StateFlow<AboutScreenUiState> = _uiState.asStateFlow()
     var response = UpdaterResponse()
+
+    var developerOptionsCounter = 0
+
+    fun resetDeveloperOptionsCounter() {
+        developerOptionsCounter = 0
+    }
 
     private fun updateUpdaterCard(update: (UpdaterCardState) -> UpdaterCardState) =
         _uiState.update { it.copy(updaterCardState = update(it.updaterCardState.copy())) }
@@ -112,6 +120,28 @@ class AboutViewModel @Inject constructor(
             intent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
             intent.flags += Intent.FLAG_GRANT_READ_URI_PERMISSION
             application.startActivity(intent)
+        }
+    }
+
+    fun onClickImage() {
+        developerOptionsCounter++
+        if (developerOptionsCounter > 7) {
+            resetDeveloperOptionsCounter()
+            viewModelScope.launch {
+                val newDevOptPrefValue = !readBoolPref(AppPrefs.DEVELOPER_OPTIONS)
+                println("newState: $newDevOptPrefValue")
+                updateBoolPref(
+                    AppPrefs.DEVELOPER_OPTIONS,
+                    newDevOptPrefValue,
+                ) { preferenceValue ->
+                    _uiState.value.toastDisplay.update { if (preferenceValue) DevOptToastDisplay.ENABLED_DEV_OPT else DevOptToastDisplay.DISABLED_DEV_OPT }
+                }
+                // if developer options have been disabled
+                // then restore developer preferences to their default values
+                if (!newDevOptPrefValue) {
+                    updateBoolPref(AppPrefs.DISABLE_STORAGE_CHECK, false)
+                }
+            }
         }
     }
 }

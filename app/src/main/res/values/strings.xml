@@ -152,6 +152,8 @@
 
     <string name="keep_screen_on">Keep screen on</string>
 
+    <string name="developer_options">Developer options</string>
+
     <string name="other">Other</string>
 
     <string name="operation_mode">Operation mode</string>
@@ -172,6 +174,9 @@
     <string name="download">Download</string>
 
     <string name="application">Application</string>
+
+    <string name="developer_options_enabled">Developer options enabled</string>
+    <string name="developer_options_disabled">Developer options disabled</string>
 
     <string name="github_repo">GitHub Repository</string>
     <string name="github_repo_description">Source code on GitHub</string>

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.model.Session
+import vegabobo.dsusideloader.preferences.AppPrefs
 import vegabobo.dsusideloader.util.OperationModeUtils
 
 @HiltViewModel
@@ -29,7 +30,7 @@ class SettingsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
-    init {
+    fun reloadPreferences() {
         uiState.value.preferences.forEach { entry ->
             viewModelScope.launch {
                 val isEnabled = readBoolPref(entry.key)
@@ -40,6 +41,10 @@ class SettingsViewModel @Inject constructor(
         if (session.isRoot()) {
             _uiState.update { it.copy(isRoot = true) }
         }
+    }
+
+    init {
+        reloadPreferences()
     }
 
     fun togglePreference(preference: String, value: Boolean) {
@@ -64,5 +69,15 @@ class SettingsViewModel @Inject constructor(
 
     fun checkOperationMode(): String {
         return OperationModeUtils.getOperationModeAsString(session.getOperationMode())
+    }
+
+    fun checkDevOpt() {
+        viewModelScope.launch {
+            val isDevOptEnabled = readBoolPref(AppPrefs.DEVELOPER_OPTIONS)
+            _uiState.update { it.copy(isDevOptEnabled = isDevOptEnabled) }
+            if (isDevOptEnabled) {
+                reloadPreferences()
+            }
+        }
     }
 }

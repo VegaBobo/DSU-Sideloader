@@ -1,5 +1,10 @@
 package vegabobo.dsusideloader.ui.screen.about
 
+import kotlinx.coroutines.flow.MutableStateFlow
+
+enum class DevOptToastDisplay {
+    NONE, ENABLED_DEV_OPT, DISABLED_DEV_OPT
+}
 enum class UpdateStatus {
     NOT_CHECKED,
     CHECKING_FOR_UPDATES,
@@ -16,4 +21,5 @@ data class UpdaterCardState(
 
 data class AboutScreenUiState(
     val updaterCardState: UpdaterCardState = UpdaterCardState(),
+    val toastDisplay: MutableStateFlow<DevOptToastDisplay> = MutableStateFlow(DevOptToastDisplay.NONE),
 )

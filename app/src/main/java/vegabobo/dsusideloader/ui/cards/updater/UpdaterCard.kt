@@ -3,6 +3,7 @@ package vegabobo.dsusideloader.ui.cards.updater
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,7 @@ import vegabobo.dsusideloader.ui.screen.about.UpdaterCardState
 @Composable
 fun UpdaterCard(
     uiState: UpdaterCardState,
+    onClickImage: () -> Unit,
     onClickCheckUpdates: () -> Unit,
     onClickDownloadUpdate: () -> Unit,
     onClickViewChangelog: () -> Unit,
@@ -91,7 +93,8 @@ fun UpdaterCard(
                             .size(96.dp)
                             .scale(scale.value)
                             .clip(CircleShape)
-                            .align(Alignment.Center),
+                            .align(Alignment.Center)
+                            .clickable { onClickImage() },
                         painter = painterResource(id = R.drawable.app_icon_mini),
                         contentDescription = "App icon",
                     )

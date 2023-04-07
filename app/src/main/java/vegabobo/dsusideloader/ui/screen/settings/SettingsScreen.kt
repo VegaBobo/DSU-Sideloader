@@ -5,6 +5,7 @@ import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.WarningAmber
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -25,6 +26,10 @@ fun Settings(
     settingsViewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        settingsViewModel.checkDevOpt()
+    }
 
     ApplicationScreen(
         topBar = {
@@ -64,23 +69,27 @@ fun Settings(
             onClick = { settingsViewModel.togglePreference(AppPrefs.UMOUNT_SD, !it) },
         )
         PreferenceItem(
-            title = stringResource(id = R.string.storage_check_title),
-            description = stringResource(id = R.string.storage_check_description),
-            showToggle = true,
-            isChecked = uiState.preferences[AppPrefs.DISABLE_STORAGE_CHECK]!!,
-            onClick = {
-                if (!it) {
-                    settingsViewModel.updateSheetDisplay(DialogSheetState.DISABLE_STORAGE_CHECK)
-                }
-                settingsViewModel.togglePreference(AppPrefs.DISABLE_STORAGE_CHECK, !it)
-            },
-        )
-        PreferenceItem(
             title = stringResource(id = R.string.keep_screen_on),
             showToggle = true,
             isChecked = uiState.preferences[AppPrefs.KEEP_SCREEN_ON]!!,
             onClick = { settingsViewModel.togglePreference(AppPrefs.KEEP_SCREEN_ON, !it) },
         )
+
+        if (uiState.isDevOptEnabled) {
+            Title(title = stringResource(id = R.string.developer_options))
+            PreferenceItem(
+                title = stringResource(id = R.string.storage_check_title),
+                description = stringResource(id = R.string.storage_check_description),
+                showToggle = true,
+                isChecked = uiState.preferences[AppPrefs.DISABLE_STORAGE_CHECK]!!,
+                onClick = {
+                    if (!it) {
+                        settingsViewModel.updateSheetDisplay(DialogSheetState.DISABLE_STORAGE_CHECK)
+                    }
+                    settingsViewModel.togglePreference(AppPrefs.DISABLE_STORAGE_CHECK, !it)
+                },
+            )
+        }
 
         Title(title = stringResource(id = R.string.other))
         PreferenceItem(

@@ -17,4 +17,5 @@ data class SettingsUiState(
     ),
     val dialogSheetDisplay: DialogSheetState = DialogSheetState.NONE,
     val isRoot: Boolean = false,
+    val isDevOptEnabled: Boolean = false,
 )

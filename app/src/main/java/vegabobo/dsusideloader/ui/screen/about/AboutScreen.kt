@@ -1,14 +1,18 @@
 package vegabobo.dsusideloader.ui.screen.about
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.updater.UpdaterCard
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
@@ -34,6 +38,30 @@ fun AboutScreen(
 ) {
     val uiState by aboutViewModel.uiState.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        aboutViewModel.resetDeveloperOptionsCounter()
+        uiState.toastDisplay.collectLatest {
+            when (it) {
+                DevOptToastDisplay.ENABLED_DEV_OPT ->
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.developer_options_enabled),
+                        Toast.LENGTH_LONG,
+                    ).show()
+
+                DevOptToastDisplay.DISABLED_DEV_OPT ->
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.developer_options_disabled),
+                        Toast.LENGTH_LONG,
+                    ).show()
+
+                else -> {}
+            }
+        }
+    }
 
     ApplicationScreen(
         modifier = Modifier.padding(start = 10.dp, end = 10.dp),
@@ -47,6 +75,7 @@ fun AboutScreen(
     ) {
         UpdaterCard(
             uiState = uiState.updaterCardState,
+            onClickImage = { aboutViewModel.onClickImage() },
             onClickCheckUpdates = { aboutViewModel.onClickCheckUpdates() },
             onClickDownloadUpdate = { aboutViewModel.onClickDownloadUpdate() },
             onClickViewChangelog = { uriHandler.openUri(aboutViewModel.response.changelogUrl) },
