@@ -25,7 +25,7 @@ fun UserdataCard(
     uiState: UserDataCardState,
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
-    onCheckedChange: (Boolean) -> Unit = {}
+    onCheckedChange: (Boolean) -> Unit = {},
 ) {
     CardBox(
         modifier = modifier,
@@ -33,12 +33,12 @@ fun UserdataCard(
         addToggle = true,
         isToggleEnabled = !isEnabled,
         isToggleChecked = uiState.isSelected,
-        onCheckedChange = onCheckedChange
+        onCheckedChange = onCheckedChange,
     ) {
         AnimatedVisibility(
             visible = uiState.isSelected,
             enter = expandVertically(),
-            exit = shrinkVertically()
+            exit = shrinkVertically(),
         ) {
             Column {
                 FileSelectionBox(
@@ -48,18 +48,18 @@ fun UserdataCard(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     textFieldValue = uiState.text,
                     textFieldTitle = stringResource(id = R.string.userdata_size_info),
-                    onValueChange = onValueChange
+                    onValueChange = onValueChange,
                 )
                 AnimatedVisibility(visible = uiState.isError) {
                     Text(
                         modifier = Modifier.padding(start = 1.dp),
                         text = stringResource(
                             id = R.string.allowed_userdata_allocation,
-                            uiState.maximumAllowed
+                            uiState.maximumAllowed,
                         ),
                         color = MaterialTheme.colorScheme.error,
                         lineHeight = 14.sp,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
                     )
                 }
             }

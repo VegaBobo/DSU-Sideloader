@@ -46,7 +46,7 @@ enum class OperationMode {
     SYSTEM, // #2
     ROOT, // #3
     SHIZUKU, // #4
-    ADB // #5
+    ADB, // #5
 }
 
 class OperationModeUtils {

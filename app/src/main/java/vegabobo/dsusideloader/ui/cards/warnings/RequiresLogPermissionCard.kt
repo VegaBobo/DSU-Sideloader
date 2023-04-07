@@ -18,12 +18,12 @@ import vegabobo.dsusideloader.ui.components.buttons.SecondaryButton
 @Composable
 fun RequiresLogPermissionCard(
     onClickGrant: () -> Unit,
-    onClickRefuse: () -> Unit
+    onClickRefuse: () -> Unit,
 ) {
     SimpleCard(
         modifier = Modifier.fillMaxWidth(),
         cardTitle = stringResource(id = R.string.missing_permission),
-        text = stringResource(id = R.string.missing_permission_description)
+        text = stringResource(id = R.string.missing_permission_description),
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             Row {

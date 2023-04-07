@@ -7,7 +7,7 @@ import vegabobo.dsusideloader.model.Session
 
 @HiltViewModel
 class AdbViewModel @Inject constructor(
-    private val session: Session
+    private val session: Session,
 ) : ViewModel() {
 
     fun obtainScriptPath(): String = session.installationScriptPath

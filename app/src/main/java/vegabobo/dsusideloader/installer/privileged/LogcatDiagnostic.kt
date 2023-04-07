@@ -11,7 +11,7 @@ class LogcatDiagnostic(
     private val onStepUpdate: (step: InstallationStep) -> Unit,
     private val onInstallationProgressUpdate: (progress: Float, partition: String) -> Unit,
     private val onInstallationSuccess: () -> Unit,
-    private val onLogLineReceived: () -> Unit
+    private val onLogLineReceived: () -> Unit,
 ) {
 
     private val tag = this.javaClass.simpleName

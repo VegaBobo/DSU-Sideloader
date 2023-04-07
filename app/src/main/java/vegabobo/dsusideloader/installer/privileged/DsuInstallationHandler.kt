@@ -16,7 +16,7 @@ import vegabobo.dsusideloader.service.PrivilegedProvider
  * Supported modes are: Shizuku (as shell or root), root and system
  */
 open class DsuInstallationHandler(
-    private val session: Session
+    private val session: Session,
 ) {
 
     private val tag = this.javaClass.simpleName
@@ -40,7 +40,7 @@ open class DsuInstallationHandler(
             val dynIntent = Intent()
             dynIntent.setClassName(
                 "com.android.dynsystem",
-                "com.android.dynsystem.VerificationActivity"
+                "com.android.dynsystem.VerificationActivity",
             )
             dynIntent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
             dynIntent.action = "android.os.image.action.START_INSTALL"

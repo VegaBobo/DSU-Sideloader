@@ -6,8 +6,8 @@ data class SettingsUiState(
     val preferences: HashMap<String, Boolean> = hashMapOf(
         AppPrefs.USE_BUILTIN_INSTALLER to false,
         AppPrefs.KEEP_SCREEN_ON to false,
-        AppPrefs.UMOUNT_SD to false
+        AppPrefs.UMOUNT_SD to false,
     ),
     val isShowingBuiltinInstallerSheet: Boolean = false,
-    val isRoot: Boolean = false
+    val isRoot: Boolean = false,
 )

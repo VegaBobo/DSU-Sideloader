@@ -25,13 +25,13 @@ import androidx.compose.ui.unit.dp
 fun BottomSheetContent(
     title: String,
     icon: ImageVector,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
-            .clip(RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp))
+            .clip(RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp)),
     ) {
         Surface(
             color = MaterialTheme.colorScheme.onBackground,
@@ -42,7 +42,7 @@ fun BottomSheetContent(
                 .width(32.dp)
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally),
-            content = {}
+            content = {},
         )
         Spacer(modifier = Modifier.height(12.dp))
         Icon(
@@ -52,14 +52,14 @@ fun BottomSheetContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally)
-                .padding(12.dp)
+                .padding(12.dp),
         )
         Text(
             color = MaterialTheme.colorScheme.onBackground,
             text = title,
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(12.dp))
         content()

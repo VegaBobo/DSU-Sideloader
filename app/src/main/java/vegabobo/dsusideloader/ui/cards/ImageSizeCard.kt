@@ -25,7 +25,7 @@ fun ImageSizeCard(
     uiState: ImageSizeCardState,
     modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
-    onCheckedChange: ((Boolean) -> Unit) = {}
+    onCheckedChange: ((Boolean) -> Unit) = {},
 ) {
     CardBox(
         modifier = modifier,
@@ -33,12 +33,12 @@ fun ImageSizeCard(
         addToggle = true,
         isToggleEnabled = !isEnabled,
         isToggleChecked = uiState.isSelected,
-        onCheckedChange = onCheckedChange
+        onCheckedChange = onCheckedChange,
     ) {
         AnimatedVisibility(
             visible = uiState.isSelected,
             enter = expandVertically(),
-            exit = shrinkVertically()
+            exit = shrinkVertically(),
         ) {
             Column {
                 FileSelectionBox(
@@ -48,7 +48,7 @@ fun ImageSizeCard(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     textFieldValue = uiState.text,
                     textFieldTitle = stringResource(id = R.string.image_size_info),
-                    onValueChange = onValueChange
+                    onValueChange = onValueChange,
                 )
                 AnimatedVisibility(visible = uiState.text.isEmpty()) {
                     Text(
@@ -56,7 +56,7 @@ fun ImageSizeCard(
                         text = stringResource(id = R.string.not_recommended_option),
                         color = MaterialTheme.colorScheme.error,
                         lineHeight = 14.sp,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
                     )
                 }
             }

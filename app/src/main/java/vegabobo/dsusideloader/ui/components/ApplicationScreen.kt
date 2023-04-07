@@ -35,12 +35,12 @@ fun ApplicationScreen(
     topBar: @Composable (TopAppBarScrollBehavior) -> Unit = {},
     bottomBar: @Composable () -> Unit = {},
     outsideContent: @Composable (PaddingValues) -> Unit = {},
-    content: @Composable () -> Unit = {}
+    content: @Composable () -> Unit = {},
 ) {
     val decayAnimationSpec = rememberSplineBasedDecay<Float>()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
         flingAnimationSpec = decayAnimationSpec,
-        state = rememberTopAppBarState()
+        state = rememberTopAppBarState(),
     )
 
     val scrollBehaviorModifier =
@@ -65,7 +65,7 @@ fun ApplicationScreen(
                         modifier = modifier
                             .padding(top = innerPadding.calculateTopPadding())
                             .then(scrollModifier),
-                        verticalArrangement = verticalArrangement
+                        verticalArrangement = verticalArrangement,
                     ) {
                         content()
                         Spacer(modifier = Modifier.padding(innerPadding.calculateBottomPadding()))
@@ -76,7 +76,7 @@ fun ApplicationScreen(
                         Spacer(modifier = Modifier.padding(innerPadding.calculateBottomPadding()))
                     }
                 }
-            }
+            },
         )
     }
 

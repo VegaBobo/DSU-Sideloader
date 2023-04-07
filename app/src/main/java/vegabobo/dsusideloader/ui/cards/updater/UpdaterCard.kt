@@ -43,7 +43,7 @@ fun UpdaterCard(
     uiState: UpdaterCardState,
     onClickCheckUpdates: () -> Unit,
     onClickDownloadUpdate: () -> Unit,
-    onClickViewChangelog: () -> Unit
+    onClickViewChangelog: () -> Unit,
 ) {
     fun isDownloading(): Boolean =
         uiState.isDownloading || uiState.updateStatus == UpdateStatus.CHECKING_FOR_UPDATES
@@ -55,19 +55,19 @@ fun UpdaterCard(
         uiState.updateStatus == UpdateStatus.UPDATE_FOUND
 
     SimpleCard(
-        addPadding = false
+        addPadding = false,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Surface(
                 modifier = Modifier
                     .padding(10.dp)
                     .padding(top = 16.dp),
-                color = MaterialTheme.colorScheme.inverseOnSurface
+                color = MaterialTheme.colorScheme.inverseOnSurface,
             ) {
                 Box {
                     val progressBarModifier = Modifier
@@ -79,7 +79,7 @@ fun UpdaterCard(
                     if (uiState.isDownloading) {
                         CircularProgressIndicator(
                             progress = uiState.progressBar,
-                            modifier = progressBarModifier
+                            modifier = progressBarModifier,
                         )
                     }
 
@@ -93,7 +93,7 @@ fun UpdaterCard(
                             .clip(CircleShape)
                             .align(Alignment.Center),
                         painter = painterResource(id = R.drawable.app_icon_mini),
-                        contentDescription = "App icon"
+                        contentDescription = "App icon",
                     )
                 }
             }
@@ -101,17 +101,17 @@ fun UpdaterCard(
                 text = stringResource(id = R.string.app_name),
                 fontSize = 22.sp,
                 style = MaterialTheme.typography.headlineMedium,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
             Text(
                 text = stringResource(
                     id = R.string.version_info,
                     BuildConfig.VERSION_NAME,
-                    BuildConfig.VERSION_CODE
+                    BuildConfig.VERSION_CODE,
                 ),
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.alpha(0.75f)
+                modifier = Modifier.alpha(0.75f),
             )
         }
         Spacer(modifier = Modifier.padding(4.dp))
@@ -128,23 +128,23 @@ fun UpdaterCard(
                 else ->
                     stringResource(id = R.string.check_updates_text_idle)
             },
-            onClick = { onClickCheckUpdates() }
+            onClick = { onClickCheckUpdates() },
         )
         AnimatedVisibility(visible = isUpdateFound()) {
             Row(
                 modifier = Modifier
                     .padding(all = 12.dp)
-                    .padding(end = 4.dp)
+                    .padding(end = 4.dp),
             ) {
                 Spacer(modifier = Modifier.weight(1F))
                 SecondaryButton(
                     text = stringResource(id = R.string.changelog),
                     onClick = { onClickViewChangelog() },
-                    modifier = Modifier.padding(end = 8.dp)
+                    modifier = Modifier.padding(end = 8.dp),
                 )
                 PrimaryButton(
                     text = stringResource(id = R.string.download),
-                    onClick = { onClickDownloadUpdate() }
+                    onClick = { onClickDownloadUpdate() },
                 )
             }
         }

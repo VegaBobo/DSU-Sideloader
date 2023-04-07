@@ -11,7 +11,7 @@ object InstallationScript {
 class GenerateInstallationScript(
     private val storageManager: StorageManager,
     private val parameters: Triple<Long, String, Long>,
-    private val instPrefs: InstallationPreferences = InstallationPreferences()
+    private val instPrefs: InstallationPreferences = InstallationPreferences(),
 ) {
 
     fun writeToFile(): String {

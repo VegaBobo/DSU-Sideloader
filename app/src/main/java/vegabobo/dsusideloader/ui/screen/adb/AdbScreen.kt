@@ -19,7 +19,7 @@ import vegabobo.dsusideloader.ui.screen.Destinations
 @Composable
 fun AdbScreen(
     navigate: (String) -> Unit,
-    adbViewModel: AdbViewModel = hiltViewModel()
+    adbViewModel: AdbViewModel = hiltViewModel(),
 ) {
     val scriptPath = adbViewModel.obtainScriptPath()
 
@@ -33,7 +33,7 @@ fun AdbScreen(
                 barTitle = stringResource(id = R.string.installation),
                 scrollBehavior = it,
                 onClickIcon = { navigate(Destinations.Preferences) },
-                onClickBackButton = { navigate(Destinations.Up) }
+                onClickBackButton = { navigate(Destinations.Up) },
             )
         },
         content = {
@@ -42,6 +42,6 @@ fun AdbScreen(
             Text(text = stringResource(id = R.string.adb_how_to_shell))
             CopyableTextCard(text = startInstallationCommand)
             Text(text = stringResource(id = R.string.adb_how_to_done))
-        }
+        },
     )
 }

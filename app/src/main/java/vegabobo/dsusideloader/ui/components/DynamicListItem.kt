@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.dp
 fun DynamicListItem(
     listLength: Int,
     currentValue: Int,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val shape = when (currentValue) {
         0 -> RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
@@ -17,7 +17,7 @@ fun DynamicListItem(
     }
     CardBox(
         addPadding = false,
-        roundedCornerShape = shape
+        roundedCornerShape = shape,
     ) {
         content()
     }

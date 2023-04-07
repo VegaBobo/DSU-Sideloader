@@ -20,7 +20,7 @@ fun SimpleCard(
     justifyText: Boolean = false,
     textScrollable: Boolean = false,
     addPadding: Boolean = true,
-    content: @Composable () -> Unit = {}
+    content: @Composable () -> Unit = {},
 ) {
     CardBox(
         modifier = modifier,
@@ -28,14 +28,14 @@ fun SimpleCard(
         addToggle = addToggle,
         isToggleChecked = isToggleEnabled,
         addPadding = addPadding,
-        cardColor = cardColor
+        cardColor = cardColor,
     ) {
         val scroll = rememberScrollState(0)
         if (text.isNotEmpty()) {
             Text(
                 text = text,
                 textAlign = if (justifyText) TextAlign.Justify else TextAlign.Start,
-                modifier = if (textScrollable) Modifier.verticalScroll(scroll) else Modifier
+                modifier = if (textScrollable) Modifier.verticalScroll(scroll) else Modifier,
             )
         }
         content()

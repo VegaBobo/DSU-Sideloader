@@ -15,7 +15,7 @@ object PrivilegedProvider {
 
     fun run(
         onFail: () -> Unit = {},
-        onConnected: suspend IPrivilegedService.() -> Unit
+        onConnected: suspend IPrivilegedService.() -> Unit,
     ) {
         fun service() = this.connection.SERVICE!!
         CoroutineScope(Dispatchers.IO).launch {

@@ -18,7 +18,7 @@ fun ActionButton(
     colorText: Color? = null,
     textButton: Boolean = false,
     isEnabled: Boolean = true,
-    content: @Composable () -> Unit = {}
+    content: @Composable () -> Unit = {},
 ) {
     if (textButton) {
         TextButton(onClick = onClick) {
@@ -34,11 +34,11 @@ fun ActionButton(
                 ButtonDefaults.buttonColors(colorButton)
             } else {
                 ButtonDefaults.buttonColors()
-            }
+            },
         ) {
             Text(
                 text = text,
-                color = colorText ?: MaterialTheme.colorScheme.surface
+                color = colorText ?: MaterialTheme.colorScheme.surface,
             )
             content()
         }

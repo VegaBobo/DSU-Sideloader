@@ -30,7 +30,7 @@ object AboutLinks {
 @Composable
 fun AboutScreen(
     navigate: (String) -> Unit,
-    aboutViewModel: AboutViewModel = hiltViewModel()
+    aboutViewModel: AboutViewModel = hiltViewModel(),
 ) {
     val uiState by aboutViewModel.uiState.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
@@ -41,61 +41,61 @@ fun AboutScreen(
             TopBar(
                 barTitle = stringResource(id = R.string.about),
                 scrollBehavior = it,
-                onClickBackButton = { navigate(Destinations.Up) }
+                onClickBackButton = { navigate(Destinations.Up) },
             )
-        }
+        },
     ) {
         UpdaterCard(
             uiState = uiState.updaterCardState,
             onClickCheckUpdates = { aboutViewModel.onClickCheckUpdates() },
             onClickDownloadUpdate = { aboutViewModel.onClickDownloadUpdate() },
-            onClickViewChangelog = { uriHandler.openUri(aboutViewModel.response.changelogUrl) }
+            onClickViewChangelog = { uriHandler.openUri(aboutViewModel.response.changelogUrl) },
         )
         Title(
             stringResource(id = R.string.application),
-            modifier = Modifier.padding(top = 2.dp, bottom = 2.dp)
+            modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
         )
         SimpleCard(
-            addPadding = false
+            addPadding = false,
         ) {
             PreferenceItem(
                 title = stringResource(id = R.string.github_repo),
                 description = stringResource(id = R.string.github_repo_description),
-                onClick = { uriHandler.openUri(AboutLinks.REPOSITORY_URL) }
+                onClick = { uriHandler.openUri(AboutLinks.REPOSITORY_URL) },
             )
             PreferenceItem(
                 title = stringResource(id = R.string.libraries_title),
                 description = stringResource(id = R.string.libraries_description),
-                onClick = { navigate(Destinations.Libraries) }
+                onClick = { navigate(Destinations.Libraries) },
             )
         }
         Title(
             stringResource(id = R.string.collaborators),
-            modifier = Modifier.padding(top = 2.dp, bottom = 2.dp)
+            modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
         )
         SimpleCard(
-            addPadding = false
+            addPadding = false,
         ) {
             PreferenceItem(
                 title = "VegaBobo",
                 description = stringResource(id = R.string.role_developer),
-                onClick = { uriHandler.openUri(AboutLinks.VEGABOBO_GITHUB) }
+                onClick = { uriHandler.openUri(AboutLinks.VEGABOBO_GITHUB) },
             )
             PreferenceItem(
                 title = "WSTxda",
                 description = stringResource(id = R.string.role_design_icon),
-                onClick = { uriHandler.openUri(AboutLinks.WSTXDA_GITHUB) }
+                onClick = { uriHandler.openUri(AboutLinks.WSTXDA_GITHUB) },
             )
             if (stringResource(id = R.string.translators_list).isNotEmpty()) {
                 PreferenceItem(
                     title = stringResource(id = R.string.translators_title),
-                    description = stringResource(id = R.string.translators_list)
+                    description = stringResource(id = R.string.translators_list),
                 )
             }
             PreferenceItem(
                 title = stringResource(id = R.string.contributors_title),
                 description = stringResource(id = R.string.contributors_text),
-                onClick = { uriHandler.openUri(AboutLinks.CONTRIBUTORS_URL) }
+                onClick = { uriHandler.openUri(AboutLinks.CONTRIBUTORS_URL) },
             )
         }
     }

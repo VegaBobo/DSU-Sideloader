@@ -3,7 +3,7 @@ package vegabobo.dsusideloader.installer.adb
 import vegabobo.dsusideloader.model.DSUConstants
 
 class InstallationCmdline(
-    private val parameters: Triple<Long, String, Long>
+    private val parameters: Triple<Long, String, Long>,
 ) {
 
     fun getCmd(): String {

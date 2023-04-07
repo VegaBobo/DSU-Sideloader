@@ -48,7 +48,7 @@ class DSUInstaller(
     private val onInstallationProgressUpdate: (progress: Float, partition: String) -> Unit,
     private val onCreatePartition: (partition: String) -> Unit,
     private val onInstallationStepUpdate: (step: InstallationStep) -> Unit,
-    private val onInstallationSuccess: () -> Unit
+    private val onInstallationSuccess: () -> Unit,
 ) : () -> Unit, DynamicSystemImpl() {
 
     private val tag = this.javaClass.simpleName
@@ -76,7 +76,7 @@ class DSUInstaller(
         "dtbo",
         "super_empty",
         "system_other",
-        "scratch"
+        "scratch",
     )
 
     private fun isPartitionSupported(partitionName: String): Boolean =
@@ -86,7 +86,7 @@ class DSUInstaller(
         return HiddenApiBypass.invoke(
             sharedMemory.javaClass,
             sharedMemory,
-            "getFdDup"
+            "getFdDup",
         ) as ParcelFileDescriptor
     }
 
@@ -109,7 +109,7 @@ class DSUInstaller(
     private fun installWritablePartition(
         partition: String,
         partitionSize: Long,
-        readOnly: Boolean = false
+        readOnly: Boolean = false,
     ) {
         val job = Job()
         CoroutineScope(Dispatchers.IO + job).launch {
@@ -138,7 +138,7 @@ class DSUInstaller(
         }
         Log.d(
             tag,
-            "Partition $partition installed, readOnly: $readOnly, partitionSize: $partitionSize"
+            "Partition $partition installed, readOnly: $readOnly, partitionSize: $partitionSize",
         )
     }
 
@@ -146,10 +146,10 @@ class DSUInstaller(
         partition: String,
         uncompressedSize: Long,
         inputStream: InputStream,
-        readOnly: Boolean = true
+        readOnly: Boolean = true,
     ) {
         val sis = SparseInputStream(
-            BufferedInputStream(inputStream)
+            BufferedInputStream(inputStream),
         )
         val partitionSize = if (sis.unsparseSize != -1L) sis.unsparseSize else uncompressedSize
         onCreatePartition(partition)
@@ -166,7 +166,7 @@ class DSUInstaller(
                     val buffer = mappedBuffer.mBuffer
                     var numBytesRead: Int
                     while (0 < sis.read(readBuffer, 0, readBuffer.size)
-                        .also { numBytesRead = it }
+                            .also { numBytesRead = it }
                     ) {
                         if (installationJob.isCancelled) {
                             return
@@ -188,7 +188,7 @@ class DSUInstaller(
         }
         Log.d(
             tag,
-            "Partition $partition installed, readOnly: $readOnly, partitionSize: $partitionSize"
+            "Partition $partition installed, readOnly: $readOnly, partitionSize: $partitionSize",
         )
     }
 
@@ -235,7 +235,7 @@ class DSUInstaller(
                 installImage(
                     "system",
                     dsuInstallation.fileSize,
-                    dsuInstallation.uri
+                    dsuInstallation.uri,
                 )
             }
 
@@ -276,7 +276,7 @@ class DSUInstaller(
         installImage(
             partitionName,
             uncompressedSize,
-            openInputStream(uri)
+            openInputStream(uri),
         )
         if (installationJob.isCancelled) {
             remove()
@@ -292,7 +292,7 @@ class DSUInstaller(
         if (result != IGsiService.INSTALL_OK) {
             Log.d(
                 tag,
-                "Failed to create $partition partition, error code: $result (check: IGsiService.INSTALL_*)"
+                "Failed to create $partition partition, error code: $result (check: IGsiService.INSTALL_*)",
             )
             installationJob.cancel()
             onInstallationError(InstallationStep.ERROR_CREATE_PARTITION, partition)

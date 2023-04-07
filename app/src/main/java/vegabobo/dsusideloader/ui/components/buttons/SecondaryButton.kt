@@ -15,7 +15,7 @@ fun SecondaryButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
 ) {
     fun addAlpha(c: Int, a: Float): Color =
         Color(
@@ -23,8 +23,8 @@ fun SecondaryButton(
                 (android.graphics.Color.alpha(c) * a).roundToInt(),
                 c.red,
                 c.green,
-                c.blue
-            )
+                c.blue,
+            ),
         )
 
     val onSecondaryVariant = MaterialTheme.colorScheme.onSecondaryContainer.toArgb()
@@ -37,6 +37,6 @@ fun SecondaryButton(
         onClick = onClick,
         isEnabled = isEnabled,
         colorButton = colorButton,
-        colorText = colorText
+        colorText = colorText,
     )
 }

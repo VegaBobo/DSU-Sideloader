@@ -51,11 +51,11 @@ import kotlinx.coroutines.flow.StateFlow
 @Composable
 fun <T> StateFlow<T>.collectAsStateWithLifecycle(
     lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
-    minActiveState: Lifecycle.State = Lifecycle.State.STARTED
+    minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
 ): State<T> = collectAsStateWithLifecycle(
     initialValue = remember { this.value },
     lifecycle = lifecycle,
-    minActiveState = minActiveState
+    minActiveState = minActiveState,
 )
 
 /**
@@ -85,14 +85,14 @@ fun <T> StateFlow<T>.collectAsStateWithLifecycle(
 fun <T> Flow<T>.collectAsStateWithLifecycle(
     initialValue: T,
     lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle,
-    minActiveState: Lifecycle.State = Lifecycle.State.STARTED
+    minActiveState: Lifecycle.State = Lifecycle.State.STARTED,
 ): State<T> {
     val currentValue = remember(this) { initialValue }
     return produceState(
         initialValue = currentValue,
         key1 = this,
         key2 = lifecycle,
-        key3 = minActiveState
+        key3 = minActiveState,
     ) {
         lifecycle.repeatOnLifecycle(minActiveState) {
             this@collectAsStateWithLifecycle.collect {

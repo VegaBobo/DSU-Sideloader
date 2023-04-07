@@ -21,7 +21,7 @@ import vegabobo.dsusideloader.util.OperationModeUtils
 class SettingsViewModel @Inject constructor(
     override val dataStore: DataStore<Preferences>,
     private val session: Session,
-    val application: Application
+    val application: Application,
 ) : BaseViewModel(dataStore) {
 
     private val tag = this.javaClass.simpleName

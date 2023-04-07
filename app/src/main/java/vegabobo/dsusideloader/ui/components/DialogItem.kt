@@ -21,7 +21,7 @@ fun DialogItem(
     icon: ImageVector,
     title: String,
     text: String,
-    textColor: Color = Color.Unspecified
+    textColor: Color = Color.Unspecified,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
@@ -30,19 +30,19 @@ fun DialogItem(
                 .padding(end = 6.dp),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             imageVector = icon,
-            contentDescription = "Icon"
+            contentDescription = "Icon",
         )
         Column(Modifier.padding(4.dp)) {
             Text(
                 text = title,
                 fontSize = 12.sp,
-                color = textColor
+                color = textColor,
             )
             Text(
                 color = textColor,
                 text = text,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }

@@ -11,19 +11,19 @@ data class InstallationCardState(
     val errorText: String = "",
     val isProgressBarIndeterminate: Boolean = false,
     val installationProgress: Float = 0F,
-    val currentPartitionText: String = ""
+    val currentPartitionText: String = "",
 )
 
 data class UserDataCardState(
     val isSelected: Boolean = false,
     val isError: Boolean = false,
     val text: String = "",
-    val maximumAllowed: Int = 0
+    val maximumAllowed: Int = 0,
 )
 
 data class ImageSizeCardState(
     val isSelected: Boolean = false,
-    val text: String = ""
+    val text: String = "",
 )
 
 enum class AdditionalCardState {
@@ -32,7 +32,7 @@ enum class AdditionalCardState {
     UNAVAIABLE_STORAGE,
     NO_DYNAMIC_PARTITIONS,
     MISSING_READ_LOGS_PERMISSION,
-    GRANTING_READ_LOGS_PERMISSION
+    GRANTING_READ_LOGS_PERMISSION,
 }
 
 enum class SheetDisplayState {
@@ -41,7 +41,7 @@ enum class SheetDisplayState {
     CONFIRM_INSTALLATION,
     CANCEL_INSTALLATION,
     DISCARD_DSU,
-    VIEW_LOGS
+    VIEW_LOGS,
 }
 
 data class HomeUiState(
@@ -52,7 +52,7 @@ data class HomeUiState(
     val sheetDisplay: SheetDisplayState = SheetDisplayState.NONE,
     val installationLogs: String = "",
     val passedInitialChecks: Boolean = false,
-    val shouldKeepScreenOn: Boolean = false
+    val shouldKeepScreenOn: Boolean = false,
 ) {
     fun isInstalling(): Boolean {
         return installationCard.installationStep != InstallationStep.NOT_INSTALLING

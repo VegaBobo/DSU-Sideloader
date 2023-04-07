@@ -6,17 +6,17 @@ import androidx.lifecycle.ViewModel
 import vegabobo.dsusideloader.util.DataStoreUtils
 
 open class BaseViewModel(
-    open val dataStore: DataStore<Preferences>
+    open val dataStore: DataStore<Preferences>,
 ) : ViewModel() {
 
     suspend fun readStringPref(
-        key: String
+        key: String,
     ): String {
         return DataStoreUtils.readStringPref(dataStore, key, "")
     }
 
     suspend fun readBoolPref(
-        key: String
+        key: String,
     ): Boolean {
         return DataStoreUtils.readBoolPref(dataStore, key, false)
     }
@@ -24,7 +24,7 @@ open class BaseViewModel(
     suspend fun updateBoolPref(
         key: String,
         value: Boolean,
-        onRead: (Boolean) -> Unit = {}
+        onRead: (Boolean) -> Unit = {},
     ) {
         DataStoreUtils.updateBoolPref(dataStore, key, value) {
             onRead(value)
@@ -34,7 +34,7 @@ open class BaseViewModel(
     suspend fun updateStringPref(
         key: String,
         value: String,
-        onRead: (String) -> Unit = {}
+        onRead: (String) -> Unit = {},
     ) {
         DataStoreUtils.updateStringPref(dataStore, key, value) {
             onRead(value)

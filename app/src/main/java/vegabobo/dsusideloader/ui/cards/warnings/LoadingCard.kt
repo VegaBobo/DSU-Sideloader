@@ -15,11 +15,11 @@ fun GrantingPermissionCard() {
     SimpleCard(
         modifier = Modifier.fillMaxWidth(),
         cardTitle = stringResource(id = R.string.missing_permission),
-        text = stringResource(id = R.string.granting_permission)
+        text = stringResource(id = R.string.granting_permission),
     ) {
         LinearProgressIndicator(
             modifier = Modifier.fillMaxWidth()
-                .padding(top = 10.dp, bottom = 10.dp)
+                .padding(top = 10.dp, bottom = 10.dp),
         )
     }
 }

@@ -33,7 +33,7 @@ fun DialogLikeBottomSheet(
     onClickConfirm: () -> Unit = {},
     onClickCancel: () -> Unit = {},
     onDismiss: () -> Unit = onClickCancel,
-    content: @Composable ColumnScope.() -> Unit = {}
+    content: @Composable ColumnScope.() -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -46,25 +46,25 @@ fun DialogLikeBottomSheet(
         modifier = modifier,
         title = title,
         icon = icon,
-        onDismiss = onDismiss
+        onDismiss = onDismiss,
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = text,
             textAlign = TextAlign.Justify,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
         )
         content()
         Row(modifier = Modifier.padding(top = 16.dp)) {
             Spacer(modifier = Modifier.weight(1F))
             SecondaryButton(
                 text = cancelText,
-                onClick = { coroutineScope.launch { it() /* Hide Sheet before cancelling */; onClickCancel() } }
+                onClick = { coroutineScope.launch { it() /* Hide Sheet before cancelling */; onClickCancel() } },
             )
             Spacer(modifier = Modifier.padding(4.dp))
             PrimaryButton(
                 text = confirmText,
-                onClick = { coroutineScope.launch { it() /* Hide Sheet before confirming */; onClickConfirm() } }
+                onClick = { coroutineScope.launch { it() /* Hide Sheet before confirming */; onClickConfirm() } },
             )
         }
     }

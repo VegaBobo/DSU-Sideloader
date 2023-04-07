@@ -21,7 +21,7 @@ import vegabobo.dsusideloader.util.FilenameUtils
 
 class StorageManager(
     private val appContext: Context,
-    private val preferences: DataStore<Preferences>
+    private val preferences: DataStore<Preferences>,
 ) {
 
     object Constants {
@@ -61,7 +61,7 @@ class StorageManager(
                 // if we have permission in some folder we don't need to, permission to it will be revoked
                 appContext.revokeUriPermission(
                     folder.uri,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
                 )
             }
         }

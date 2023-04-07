@@ -21,7 +21,7 @@ import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 @Composable
 fun Settings(
     navigate: (String) -> Unit,
-    settingsViewModel: SettingsViewModel = hiltViewModel()
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -30,9 +30,9 @@ fun Settings(
             TopBar(
                 barTitle = stringResource(id = R.string.settings),
                 scrollBehavior = it,
-                onClickBackButton = { navigate(Destinations.Up) }
+                onClickBackButton = { navigate(Destinations.Up) },
             )
-        }
+        },
     ) {
         Title(title = stringResource(id = R.string.installation))
         PreferenceItem(
@@ -51,31 +51,31 @@ fun Settings(
             onClick = {
                 settingsViewModel.updateInstallerSheetState(!it)
                 settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, !it)
-            }
+            },
         )
         PreferenceItem(
             title = stringResource(id = R.string.unmount_sd_title),
             description = stringResource(id = R.string.unmount_sd_description),
             showToggle = true,
             isChecked = uiState.preferences[AppPrefs.UMOUNT_SD]!!,
-            onClick = { settingsViewModel.togglePreference(AppPrefs.UMOUNT_SD, !it) }
+            onClick = { settingsViewModel.togglePreference(AppPrefs.UMOUNT_SD, !it) },
         )
         PreferenceItem(
             title = stringResource(id = R.string.keep_screen_on),
             showToggle = true,
             isChecked = uiState.preferences[AppPrefs.KEEP_SCREEN_ON]!!,
-            onClick = { settingsViewModel.togglePreference(AppPrefs.KEEP_SCREEN_ON, !it) }
+            onClick = { settingsViewModel.togglePreference(AppPrefs.KEEP_SCREEN_ON, !it) },
         )
 
         Title(title = stringResource(id = R.string.other))
         PreferenceItem(
             title = stringResource(id = R.string.operation_mode),
-            description = settingsViewModel.checkOperationMode()
+            description = settingsViewModel.checkOperationMode(),
         )
         PreferenceItem(
             title = stringResource(id = R.string.about),
             description = stringResource(id = R.string.about_description),
-            onClick = { navigate(Destinations.About) }
+            onClick = { navigate(Destinations.About) },
         )
     }
 
@@ -90,7 +90,7 @@ fun Settings(
                 settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, false)
                 settingsViewModel.updateInstallerSheetState(false)
             },
-            onClickConfirm = { settingsViewModel.updateInstallerSheetState(false) }
+            onClickConfirm = { settingsViewModel.updateInstallerSheetState(false) },
         )
     }
 }

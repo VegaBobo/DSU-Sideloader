@@ -29,7 +29,7 @@ fun InstallationCard(
     onClickRebootToDynOS: () -> Unit,
     onSelectFileSuccess: (Uri) -> Unit,
     onClickViewLogs: () -> Unit,
-    onClickViewCommands: () -> Unit
+    onClickViewCommands: () -> Unit,
 ) {
     var chooseFile = Intent(Intent.ACTION_OPEN_DOCUMENT)
     chooseFile.type = "*/*"
@@ -38,7 +38,7 @@ fun InstallationCard(
         "application/x-gzip",
         "application/x-xz",
         "application/zip",
-        "application/octet-stream"
+        "application/octet-stream",
     )
     chooseFile.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes)
     chooseFile = Intent.createChooser(chooseFile, "")
@@ -56,7 +56,7 @@ fun InstallationCard(
     CardBox(
         cardTitle = stringResource(R.string.installation),
         addToggle = false,
-        modifier = modifier
+        modifier = modifier,
     ) {
         InstallationCardStep(
             uiState = uiState,
@@ -72,7 +72,7 @@ fun InstallationCard(
             onClickRebootToDynOS = onClickRebootToDynOS,
             onClickViewLogs = onClickViewLogs,
             onClickViewCommands = onClickViewCommands,
-            minPercentageOfFreeStorage = minPercentageOfFreeStorage
+            minPercentageOfFreeStorage = minPercentageOfFreeStorage,
         )
     }
 }

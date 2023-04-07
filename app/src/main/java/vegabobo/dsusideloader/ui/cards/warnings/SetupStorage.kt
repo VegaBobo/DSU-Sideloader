@@ -15,7 +15,7 @@ import vegabobo.dsusideloader.ui.util.launcherAcResult
 
 @Composable
 fun SetupStorage(
-    onSetupStorageSuccess: (Uri) -> Unit
+    onSetupStorageSuccess: (Uri) -> Unit,
 ) {
     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
     val launcherSetupStorage = launcherAcResult {
@@ -25,12 +25,12 @@ fun SetupStorage(
     SimpleCard(
         modifier = Modifier.fillMaxWidth(),
         cardTitle = stringResource(id = R.string.setup_storage),
-        text = stringResource(id = R.string.setup_storage_description)
+        text = stringResource(id = R.string.setup_storage_description),
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             PrimaryButton(
                 text = stringResource(id = R.string.setup),
-                onClick = { launcherSetupStorage.launch(intent) }
+                onClick = { launcherSetupStorage.launch(intent) },
             )
         }
     }

@@ -47,7 +47,7 @@ object HomeLinks {
 @Composable
 fun Home(
     navigate: (String) -> Unit,
-    homeViewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
@@ -71,7 +71,7 @@ fun Home(
                 barTitle = stringResource(id = R.string.app_name),
                 icon = Icons.Outlined.Settings,
                 scrollBehavior = it,
-                onClickIcon = { navigate(Destinations.Preferences) }
+                onClickIcon = { navigate(Destinations.Preferences) },
             )
         },
         content = {
@@ -80,7 +80,7 @@ fun Home(
                     AdditionalCardState.NO_DYNAMIC_PARTITIONS ->
                         UnsupportedCard(
                             onClickClose = { exitProcess(0) },
-                            onClickContinueAnyway = { homeViewModel.overrideDynamicPartitionCheck() }
+                            onClickContinueAnyway = { homeViewModel.overrideDynamicPartitionCheck() },
                         )
 
                     AdditionalCardState.SETUP_STORAGE ->
@@ -89,13 +89,13 @@ fun Home(
                     AdditionalCardState.UNAVAIABLE_STORAGE ->
                         StorageWarningCard(
                             minPercentageFreeStorage = homeViewModel.allocPercentageInt.toString(),
-                            onClick = { homeViewModel.overrideUnavaiableStorage() }
+                            onClick = { homeViewModel.overrideUnavaiableStorage() },
                         )
 
                     AdditionalCardState.MISSING_READ_LOGS_PERMISSION ->
                         RequiresLogPermissionCard(
                             onClickGrant = { homeViewModel.grantReadLogs() },
-                            onClickRefuse = { homeViewModel.refuseReadLogs() }
+                            onClickRefuse = { homeViewModel.refuseReadLogs() },
                         )
 
                     AdditionalCardState.GRANTING_READ_LOGS_PERMISSION ->
@@ -119,26 +119,26 @@ fun Home(
                     onClickRebootToDynOS = { homeViewModel.onClickRebootToDynOS() },
                     onClickViewLogs = { homeViewModel.showLogsWarning() },
                     onClickViewCommands = { navigate(Destinations.ADBInstallation) },
-                    minPercentageOfFreeStorage = homeViewModel.allocPercentageInt.toString()
+                    minPercentageOfFreeStorage = homeViewModel.allocPercentageInt.toString(),
                 )
                 UserdataCard(
                     isEnabled = uiState.isInstalling(),
                     uiState = uiState.userDataCard,
                     onCheckedChange = { homeViewModel.onCheckUserdataCard() },
-                    onValueChange = { homeViewModel.updateUserdataSize(it) }
+                    onValueChange = { homeViewModel.updateUserdataSize(it) },
                 )
                 ImageSizeCard(
                     isEnabled = uiState.isInstalling(),
                     uiState = uiState.imageSizeCard,
                     onCheckedChange = { homeViewModel.onCheckImageSizeCard() },
-                    onValueChange = { homeViewModel.updateImageSize(it) }
+                    onValueChange = { homeViewModel.updateImageSize(it) },
                 )
                 DsuInfoCard(
                     onClickViewDocs = { uriHandler.openUri(HomeLinks.DSU_DOCS) },
-                    onClickLearnMore = { uriHandler.openUri(HomeLinks.DSU_LEARN_MORE) }
+                    onClickLearnMore = { uriHandler.openUri(HomeLinks.DSU_LEARN_MORE) },
                 )
             }
-        }
+        },
     )
 
     when (uiState.sheetDisplay) {
@@ -148,32 +148,32 @@ fun Home(
                 userdata = homeViewModel.session.userSelection.getUserDataSizeAsGB(),
                 fileSize = homeViewModel.session.userSelection.userSelectedImageSize,
                 onClickConfirm = { homeViewModel.onConfirmInstallationSheet() },
-                onClickCancel = { homeViewModel.dismissSheet() }
+                onClickCancel = { homeViewModel.dismissSheet() },
             )
 
         SheetDisplayState.CANCEL_INSTALLATION ->
             CancelSheet(
                 onClickConfirm = { homeViewModel.onClickCancelInstallationButton() },
-                onClickCancel = { homeViewModel.dismissSheet() }
+                onClickCancel = { homeViewModel.dismissSheet() },
             )
 
         SheetDisplayState.IMAGESIZE_WARNING ->
             ImageSizeWarningSheet(
                 onClickConfirm = { homeViewModel.dismissSheet() },
-                onClickCancel = { homeViewModel.onCheckImageSizeCard() }
+                onClickCancel = { homeViewModel.onCheckImageSizeCard() },
             )
 
         SheetDisplayState.DISCARD_DSU ->
             DiscardDSUSheet(
                 onClickConfirm = { homeViewModel.onClickDiscardGsi() },
-                onClickCancel = { homeViewModel.dismissSheet() }
+                onClickCancel = { homeViewModel.dismissSheet() },
             )
 
         SheetDisplayState.VIEW_LOGS ->
             ViewLogsBottomSheet(
                 logs = uiState.installationLogs,
                 onClickSaveLogs = { homeViewModel.saveLogs(it) },
-                onDismiss = { homeViewModel.dismissSheet() }
+                onDismiss = { homeViewModel.dismissSheet() },
             )
 
         SheetDisplayState.NONE -> {}

@@ -11,10 +11,10 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun launcherAcResult(
-    result: (Uri) -> Unit
+    result: (Uri) -> Unit,
 ): ManagedActivityResultLauncher<Intent, ActivityResult> {
     return rememberLauncherForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
+        ActivityResultContracts.StartActivityForResult(),
     ) {
         if (it.resultCode == Activity.RESULT_OK) {
             result(it.data!!.data!!)

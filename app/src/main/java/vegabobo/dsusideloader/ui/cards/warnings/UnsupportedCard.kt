@@ -19,24 +19,24 @@ import vegabobo.dsusideloader.ui.components.buttons.SecondaryButton
 @Composable
 fun UnsupportedCard(
     onClickClose: () -> Unit = {},
-    onClickContinueAnyway: () -> Unit
+    onClickContinueAnyway: () -> Unit,
 ) {
     SimpleCard(
         modifier = Modifier.fillMaxWidth(),
         cardColor = MaterialTheme.colorScheme.errorContainer,
         cardTitle = stringResource(id = R.string.unsupported),
-        text = stringResource(id = R.string.device_unsupported_description)
+        text = stringResource(id = R.string.device_unsupported_description),
     ) {
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
             Row {
                 SecondaryButton(
                     text = stringResource(id = R.string.continue_anyway),
-                    onClick = onClickContinueAnyway
+                    onClick = onClickContinueAnyway,
                 )
                 Spacer(modifier = Modifier.padding(end = 8.dp))
                 ErrorButton(
                     onClick = onClickClose,
-                    text = stringResource(id = R.string.close)
+                    text = stringResource(id = R.string.close),
                 )
             }
         }

@@ -10,7 +10,7 @@ import vegabobo.dsusideloader.ui.components.DialogLikeBottomSheet
 @Composable
 fun ImageSizeWarningSheet(
     onClickConfirm: () -> Unit,
-    onClickCancel: () -> Unit
+    onClickCancel: () -> Unit,
 ) {
     DialogLikeBottomSheet(
         title = stringResource(id = R.string.dialog_image_size),
@@ -19,6 +19,6 @@ fun ImageSizeWarningSheet(
         confirmText = stringResource(id = R.string.set_anyway),
         cancelText = stringResource(id = R.string.cancel),
         onClickConfirm = onClickConfirm,
-        onClickCancel = onClickCancel
+        onClickCancel = onClickCancel,
     )
 }

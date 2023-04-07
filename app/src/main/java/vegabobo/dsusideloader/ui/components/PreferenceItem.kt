@@ -27,7 +27,7 @@ fun PreferenceItem(
     onClick: (Boolean) -> Unit = {},
     isChecked: Boolean = false,
     showToggle: Boolean = false,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -38,32 +38,32 @@ fun PreferenceItem(
                 start = 17.dp,
                 end = 17.dp,
                 bottom = 12.dp,
-                top = 12.dp
-            )
+                top = 12.dp,
+            ),
     ) {
         if (icon != null) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                modifier = Modifier.padding(end = 22.dp)
+                modifier = Modifier.padding(end = 22.dp),
             )
         }
         Row(modifier = Modifier.weight(0.5F)) {
             Column(
                 modifier = Modifier
-                    .align(Alignment.CenterVertically)
+                    .align(Alignment.CenterVertically),
             ) {
                 Text(
                     text = title,
                     fontSize = 20.sp,
-                    style = MaterialTheme.typography.headlineMedium
+                    style = MaterialTheme.typography.headlineMedium,
                 )
                 if (description.isNotEmpty()) {
                     Spacer(Modifier.height(2.dp))
                     Text(
                         text = description,
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.alpha(0.60F)
+                        modifier = Modifier.alpha(0.60F),
                     )
                 }
             }
@@ -73,7 +73,7 @@ fun PreferenceItem(
                 checked = isChecked,
                 enabled = isEnabled,
                 onCheckedChange = { onClick(isChecked) },
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(start = 8.dp),
             )
         }
     }

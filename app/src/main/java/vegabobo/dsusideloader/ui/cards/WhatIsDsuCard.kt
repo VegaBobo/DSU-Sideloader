@@ -15,24 +15,24 @@ import vegabobo.dsusideloader.ui.components.buttons.SecondaryButton
 fun DsuInfoCard(
     modifier: Modifier = Modifier,
     onClickViewDocs: () -> Unit,
-    onClickLearnMore: () -> Unit
+    onClickLearnMore: () -> Unit,
 ) {
     SimpleCard(
         modifier = modifier,
         cardTitle = stringResource(id = R.string.what_is_dsu),
         text = stringResource(id = R.string.what_is_dsu_description),
-        justifyText = true
+        justifyText = true,
     ) {
         Row(modifier = Modifier.padding(top = 6.dp)) {
             Spacer(modifier = Modifier.weight(1F))
             SecondaryButton(
                 text = stringResource(id = R.string.view_docs),
-                onClick = onClickViewDocs
+                onClick = onClickViewDocs,
             )
             Spacer(modifier = Modifier.padding(start = 10.dp))
             SecondaryButton(
                 text = stringResource(id = R.string.learn_more),
-                onClick = onClickLearnMore
+                onClick = onClickLearnMore,
             )
         }
     }

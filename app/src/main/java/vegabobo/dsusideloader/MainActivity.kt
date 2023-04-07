@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
 
     val userServiceArgs =
         Shizuku.UserServiceArgs(
-            ComponentName(BuildConfig.APPLICATION_ID, PrivilegedService::class.java.name)
+            ComponentName(BuildConfig.APPLICATION_ID, PrivilegedService::class.java.name),
         )
             .daemon(false)
             .processNameSuffix("service")
@@ -107,7 +107,7 @@ class MainActivity : ComponentActivity(), Shizuku.OnRequestPermissionResultListe
             Shell.setDefaultBuilder(
                 Shell.Builder.create()
                     .setFlags(Shell.FLAG_REDIRECT_STDERR)
-                    .setTimeout(10)
+                    .setTimeout(10),
             )
         }
     }

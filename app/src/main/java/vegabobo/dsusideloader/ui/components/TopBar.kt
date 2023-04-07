@@ -19,7 +19,7 @@ fun TopBar(
     icon: ImageVector? = null,
     iconContentDescription: String? = "icon",
     onClickIcon: () -> Unit = {},
-    onClickBackButton: (() -> Unit)? = null
+    onClickBackButton: (() -> Unit)? = null,
 ) {
     LargeTopAppBar(
         title = { Text(text = barTitle) },
@@ -28,7 +28,7 @@ fun TopBar(
                 IconButton(onClickBackButton) {
                     Icon(
                         imageVector = Icons.Outlined.ArrowBack,
-                        contentDescription = iconContentDescription
+                        contentDescription = iconContentDescription,
                     )
                 }
             }
@@ -38,11 +38,11 @@ fun TopBar(
                 IconButton(onClickIcon) {
                     Icon(
                         imageVector = icon,
-                        contentDescription = iconContentDescription
+                        contentDescription = iconContentDescription,
                     )
                 }
             }
         },
-        scrollBehavior = scrollBehavior
+        scrollBehavior = scrollBehavior,
     )
 }

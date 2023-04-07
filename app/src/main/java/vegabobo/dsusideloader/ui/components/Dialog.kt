@@ -26,7 +26,7 @@ fun Dialog(
     cancelText: String = "",
     onClickConfirm: () -> Unit = {},
     onClickCancel: () -> Unit = {},
-    content: @Composable () -> Unit = {}
+    content: @Composable () -> Unit = {},
 ) {
     AlertDialog(
         modifier = modifier,
@@ -54,17 +54,17 @@ fun Dialog(
                         text = title,
                         fontWeight = FontWeight.Medium,
                         style = MaterialTheme.typography.headlineSmall,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
                     )
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
                 if (text.isNotEmpty()) {
                     Text(
-                        text = text
+                        text = text,
                     )
                 }
                 content()
             }
-        }
+        },
     )
 }

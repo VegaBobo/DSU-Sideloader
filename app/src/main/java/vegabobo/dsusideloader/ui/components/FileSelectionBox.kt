@@ -20,7 +20,7 @@ fun FileSelectionBox(
     textFieldTitle: String,
     textFieldValue: String,
     textFieldInteraction: MutableInteractionSource = MutableInteractionSource(),
-    onValueChange: (String) -> Unit = {}
+    onValueChange: (String) -> Unit = {},
 ) {
     OutlinedTextField(
         modifier = modifier.fillMaxWidth(),
@@ -33,6 +33,6 @@ fun FileSelectionBox(
         readOnly = isReadOnly,
         keyboardOptions = keyboardOptions,
         interactionSource = textFieldInteraction,
-        label = { Text(text = textFieldTitle) }
+        label = { Text(text = textFieldTitle) },
     )
 }

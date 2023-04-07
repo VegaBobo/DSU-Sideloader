@@ -37,12 +37,12 @@ fun CustomBottomSheet(
     title: String,
     icon: ImageVector,
     onDismiss: () -> Unit = {},
-    content: @Composable ColumnScope.(hideSheet: suspend () -> Unit) -> Unit
+    content: @Composable ColumnScope.(hideSheet: suspend () -> Unit) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded }
+        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
     )
 
     // Initial state of BottomSheet is "Hidden"
@@ -79,7 +79,7 @@ fun CustomBottomSheet(
         sheetContent = {
             BottomSheetContent(
                 title = title,
-                icon = icon
+                icon = icon,
             ) {
                 val insets = WindowInsets
                     .systemBars
@@ -88,7 +88,7 @@ fun CustomBottomSheet(
                 Column(
                     modifier = Modifier
                         .align(Alignment.End)
-                        .padding(end = 18.dp, start = 18.dp, bottom = insets.calculateBottomPadding() + 14.dp, top = 14.dp)
+                        .padding(end = 18.dp, start = 18.dp, bottom = insets.calculateBottomPadding() + 14.dp, top = 14.dp),
                 ) {
                     // Shortcut used to hide sheet by event
                     content { sheetState.hide(); shouldCallOnDismiss.value = false; }
@@ -97,7 +97,7 @@ fun CustomBottomSheet(
         },
         modifier = modifier.fillMaxSize(),
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        sheetBackgroundColor = MaterialTheme.colorScheme.background
+        sheetBackgroundColor = MaterialTheme.colorScheme.background,
     ) {}
 
     // block touch on any part of screen
@@ -106,7 +106,7 @@ fun CustomBottomSheet(
         Surface(
             Modifier
                 .fillMaxSize()
-                .alpha(0F)
+                .alpha(0F),
         ) {
             BackHandler {}
         }

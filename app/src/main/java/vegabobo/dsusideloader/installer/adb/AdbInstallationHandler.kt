@@ -9,13 +9,13 @@ import vegabobo.dsusideloader.model.Session
  */
 class AdbInstallationHandler(
     private val storageManager: StorageManager,
-    val session: Session
+    val session: Session,
 ) {
     fun generate(onGenerated: (String) -> Unit) {
         val installationScriptPath = GenerateInstallationScript(
             storageManager,
             session.getInstallationParameters(),
-            session.preferences
+            session.preferences,
         ).writeToFile()
         onGenerated(installationScriptPath)
     }

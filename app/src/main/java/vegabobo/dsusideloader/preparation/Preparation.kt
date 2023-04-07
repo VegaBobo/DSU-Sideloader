@@ -15,7 +15,7 @@ class Preparation(
     private val onStepUpdate: (step: InstallationStep) -> Unit,
     private val onPreparationProgressUpdate: (progress: Float) -> Unit,
     private val onCanceled: () -> Unit,
-    private val onPreparationFinished: (preparedDSU: DSUInstallationSource) -> Unit
+    private val onPreparationFinished: (preparedDSU: DSUInstallationSource) -> Unit,
 ) : () -> Unit {
 
     private val userSelectedImageSize = session.userSelection.userSelectedImageSize
@@ -34,7 +34,7 @@ class Preparation(
             "img" -> {
                 DSUInstallationSource.SingleSystemImage(
                     userSelectedFileUri,
-                    storageManager.getFilesizeFromUri(userSelectedFileUri)
+                    storageManager.getFilesizeFromUri(userSelectedFileUri),
                 )
             }
 
@@ -103,7 +103,7 @@ class Preparation(
             xzFile,
             outputFile,
             job,
-            onPreparationProgressUpdate
+            onPreparationProgressUpdate,
         ).unpack()
         return prepareImage(imgFile.first)
     }
@@ -116,7 +116,7 @@ class Preparation(
             imageFile,
             outputFile,
             job,
-            onPreparationProgressUpdate
+            onPreparationProgressUpdate,
         ).pack()
         return Pair(compressedFilePair.first, storageManager.getFilesizeFromUri(imageFile))
     }
@@ -167,7 +167,7 @@ class Preparation(
             uri,
             "$partitionName.img",
             job,
-            onPreparationProgressUpdate
+            onPreparationProgressUpdate,
         ).unpack()
     }
 

@@ -19,26 +19,26 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun LogcatCard(
-    logs: String
+    logs: String,
 ) {
     Surface(
         color = MaterialTheme.colorScheme.inverseOnSurface,
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
             .fillMaxWidth()
-            .height(400.dp)
+            .height(400.dp),
     ) {
         Column(
             Modifier
                 .verticalScroll(rememberScrollState())
                 .padding(10.dp)
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             Text(
                 text = logs,
                 fontSize = 14.sp,
                 lineHeight = 18.sp,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
     }

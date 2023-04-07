@@ -81,7 +81,7 @@ class PrivilegedService : IPrivilegedService.Stub() {
                 0,
                 null,
                 null,
-                0
+                0,
             )
         } else {
             ACTIVITY_MANAGER!!.startActivityAsUser(
@@ -95,7 +95,7 @@ class PrivilegedService : IPrivilegedService.Stub() {
                 0,
                 null,
                 null,
-                0
+                0,
             )
         }
     }
@@ -235,7 +235,7 @@ class PrivilegedService : IPrivilegedService.Stub() {
                 "createPartition",
                 name,
                 size,
-                readOnly
+                readOnly,
             )
             return if (result as Boolean) IGsiService.INSTALL_OK else IGsiService.INSTALL_ERROR_GENERIC
         }

@@ -17,13 +17,13 @@ import androidx.core.view.WindowCompat
 private val DarkColorScheme = darkColorScheme(
     primary = Blue80,
     secondary = BlueGrey80,
-    tertiary = Purplish80
+    tertiary = Purplish80,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Blue40,
     secondary = BlueGrey40,
-    tertiary = Purplish40
+    tertiary = Purplish40,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -41,7 +41,7 @@ fun DSUHelperTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -63,6 +63,6 @@ fun DSUHelperTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

@@ -10,7 +10,7 @@ import vegabobo.dsusideloader.ui.components.DialogLikeBottomSheet
 @Composable
 fun CancelSheet(
     onClickConfirm: () -> Unit,
-    onClickCancel: () -> Unit
+    onClickCancel: () -> Unit,
 ) {
     DialogLikeBottomSheet(
         title = stringResource(id = R.string.cancel_installation_question),
@@ -19,6 +19,6 @@ fun CancelSheet(
         confirmText = stringResource(id = R.string.yes),
         cancelText = stringResource(id = R.string.no),
         onClickConfirm = onClickConfirm,
-        onClickCancel = onClickCancel
+        onClickCancel = onClickCancel,
     )
 }

@@ -28,12 +28,12 @@ data class UpdaterResponse(
     val versionCode: Int = -1,
     val versionName: String = "",
     val apkUrl: String = "",
-    val changelogUrl: String = ""
+    val changelogUrl: String = "",
 )
 
 @HiltViewModel
 class AboutViewModel @Inject constructor(
-    val application: Application
+    val application: Application,
 ) : ViewModel() {
 
     private val tag = this.javaClass.simpleName
@@ -92,7 +92,7 @@ class AboutViewModel @Inject constructor(
             var n: Int
             var readed: Long = 0
             while (-1 != input.read(buffer)
-                .also { n = it }
+                    .also { n = it }
             ) {
                 readed += buffer.size
                 output.write(buffer, 0, n)
@@ -105,7 +105,7 @@ class AboutViewModel @Inject constructor(
             val apkUri = FileProvider.getUriForFile(
                 application,
                 BuildConfig.APPLICATION_ID + ".provider",
-                finalFile
+                finalFile,
             )
             val intent = Intent(Intent.ACTION_VIEW)
             intent.setDataAndType(apkUri, "application/vnd.android.package-archive")

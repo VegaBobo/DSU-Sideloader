@@ -15,7 +15,7 @@ class FileUnPacker(
     private val inputFile: Uri,
     outputFile: String,
     private val installationJob: Job,
-    private val onProgressChange: (Float) -> Unit
+    private val onProgressChange: (Float) -> Unit,
 ) {
 
     private var finalFile: DocumentFile = storageManager.createDocumentFile(outputFile)
@@ -27,13 +27,13 @@ class FileUnPacker(
     private fun copy(
         inputStr: InputStream,
         outputStr: OutputStream,
-        onReadedBuffer: (Long) -> Unit
+        onReadedBuffer: (Long) -> Unit,
     ) {
         val buffer = ByteArray(8 * 1024)
         var n: Int
         var readed: Long = 0
         while (-1 != inputStr.read(buffer)
-            .also { n = it } && !installationJob.isCancelled
+                .also { n = it } && !installationJob.isCancelled
         ) {
             readed += buffer.size
             onReadedBuffer(readed)

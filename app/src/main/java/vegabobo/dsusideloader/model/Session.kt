@@ -7,14 +7,14 @@ import vegabobo.dsusideloader.util.OperationMode
 
 data class InstallationPreferences(
     var isUnmountSdCard: Boolean = false,
-    var useBuiltinInstaller: Boolean = false
+    var useBuiltinInstaller: Boolean = false,
 )
 
 class UserSelection(
     var userSelectedUserdata: Long = DSUConstants.DEFAULT_USERDATA,
     var userSelectedImageSize: Long = DSUConstants.DEFAULT_IMAGE_SIZE,
     var selectedFileUri: Uri = Uri.EMPTY,
-    var selectedFileName: String = ""
+    var selectedFileName: String = "",
 ) {
 
     fun getUserDataSizeAsGB(): String = "${(this.userSelectedUserdata / 1024L / 1024L / 1024L)}"
@@ -53,7 +53,7 @@ class Session(
     var userSelection: UserSelection = UserSelection(),
     var dsuInstallation: DSUInstallationSource = DSUInstallationSource(),
     var preferences: InstallationPreferences = InstallationPreferences(),
-    var operationMode: MutableStateFlow<OperationMode> = MutableStateFlow(OperationMode.ADB)
+    var operationMode: MutableStateFlow<OperationMode> = MutableStateFlow(OperationMode.ADB),
 ) {
 
     fun isRoot(): Boolean {

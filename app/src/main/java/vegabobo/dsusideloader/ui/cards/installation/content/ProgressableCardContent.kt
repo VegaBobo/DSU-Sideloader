@@ -22,7 +22,7 @@ fun ProgressableCardContent(
     textFirstButton: String = "",
     textSecondButton: String = "",
     onClickFirstButton: (() -> Unit)? = null,
-    onClickSecondButton: (() -> Unit)? = null
+    onClickSecondButton: (() -> Unit)? = null,
 ) {
     Text(text = text)
     AnimatedVisibility(visible = showProgressBar) {
@@ -34,7 +34,7 @@ fun ProgressableCardContent(
         } else {
             LinearProgressIndicator(
                 modifier = progressBarModifier,
-                progress = progress
+                progress = progress,
             )
         }
     }
@@ -44,7 +44,7 @@ fun ProgressableCardContent(
         if (onClickSecondButton != null) {
             SecondaryButton(
                 text = textSecondButton,
-                onClick = onClickSecondButton
+                onClick = onClickSecondButton,
             )
         }
         if (onClickFirstButton != null && onClickSecondButton != null) {
@@ -53,7 +53,7 @@ fun ProgressableCardContent(
         if (onClickFirstButton != null) {
             PrimaryButton(
                 text = textFirstButton,
-                onClick = onClickFirstButton
+                onClick = onClickFirstButton,
             )
         }
     }

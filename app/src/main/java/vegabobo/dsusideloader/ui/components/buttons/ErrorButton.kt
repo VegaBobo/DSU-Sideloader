@@ -9,13 +9,13 @@ fun ErrorButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
-    isEnabled: Boolean = true
+    isEnabled: Boolean = true,
 ) {
     ActionButton(
         modifier = modifier,
         text = text,
         onClick = onClick,
         isEnabled = isEnabled,
-        colorButton = MaterialTheme.colorScheme.error
+        colorButton = MaterialTheme.colorScheme.error,
     )
 }

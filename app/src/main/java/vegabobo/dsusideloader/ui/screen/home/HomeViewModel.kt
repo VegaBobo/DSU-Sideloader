@@ -43,7 +43,7 @@ class HomeViewModel @Inject constructor(
     val application: Application,
     override val dataStore: DataStore<Preferences>,
     private val storageManager: StorageManager,
-    var session: Session
+    var session: Session,
 ) : BaseViewModel(dataStore) {
 
     private val tag = this.javaClass.simpleName
@@ -88,7 +88,7 @@ class HomeViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 installationCard = InstallationCardState(),
-                sheetDisplay = SheetDisplayState.NONE
+                sheetDisplay = SheetDisplayState.NONE,
             )
         }
 
@@ -198,7 +198,7 @@ class HomeViewModel @Inject constructor(
                 onStepUpdate = this@HomeViewModel::onStepUpdate,
                 onPreparationProgressUpdate = this@HomeViewModel::onPreparationProgressUpdate,
                 onCanceled = this@HomeViewModel::onClickCancelInstallationButton,
-                onPreparationFinished = this@HomeViewModel::onPreparationFinished
+                onPreparationFinished = this@HomeViewModel::onPreparationFinished,
             ).invoke()
         }
     }
@@ -245,7 +245,7 @@ class HomeViewModel @Inject constructor(
             onInstallationProgressUpdate = this::onInstallationProgressUpdate,
             onCreatePartition = this::onCreatePartition,
             onInstallationStepUpdate = this::onStepUpdate,
-            onInstallationSuccess = this::onRootInstallationSuccess
+            onInstallationSuccess = this::onRootInstallationSuccess,
         ).invoke()
     }
 
@@ -267,7 +267,7 @@ class HomeViewModel @Inject constructor(
                 onStepUpdate = this::onStepUpdate,
                 onInstallationProgressUpdate = this::onInstallationProgressUpdate,
                 onInstallationSuccess = this::onInstallationSuccess,
-                onLogLineReceived = this::onLogLineReceived
+                onLogLineReceived = this::onLogLineReceived,
             )
         }
         viewModelScope.launch(Dispatchers.IO + installationJob) {
@@ -376,7 +376,7 @@ class HomeViewModel @Inject constructor(
         val sizeWithSuffix = FilenameUtils.appendToDigitsToString(input, "GB")
         Log.d(
             tag,
-            "selectedSize: $selectedSize, maximumAllowedForAllocation: $maximumAllowedForAllocation"
+            "selectedSize: $selectedSize, maximumAllowedForAllocation: $maximumAllowedForAllocation",
         )
 
         if (selectedSize.isNotEmpty() && selectedSize.toInt() > maximumAllowedForAllocation) {
@@ -386,7 +386,7 @@ class HomeViewModel @Inject constructor(
                 it.copy(
                     text = fixedSize,
                     isError = true,
-                    maximumAllowed = maximumAllowedForAllocation
+                    maximumAllowed = maximumAllowedForAllocation,
                 )
             }
             viewModelScope.launch {
@@ -424,7 +424,7 @@ class HomeViewModel @Inject constructor(
     fun takeUriPermission(uri: Uri) {
         application.contentResolver.takePersistableUriPermission(
             uri,
-            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
         )
         viewModelScope.launch {
             if (storageManager.arePermissionsGrantedToFolder(uri.toString())) {
@@ -460,7 +460,7 @@ class HomeViewModel @Inject constructor(
             it.copy(
                 text = filename,
                 isTextFieldEnabled = false,
-                isInstallable = true
+                isInstallable = true,
             )
         }
     }
@@ -474,7 +474,7 @@ class HomeViewModel @Inject constructor(
         val intent = Intent()
         intent.setClassName(
             BuildConfig.APPLICATION_ID,
-            "${BuildConfig.APPLICATION_ID}.MainActivity"
+            "${BuildConfig.APPLICATION_ID}.MainActivity",
         )
         intent.flags += Intent.FLAG_ACTIVITY_NEW_TASK
         PrivilegedProvider.run {
@@ -523,7 +523,7 @@ class HomeViewModel @Inject constructor(
             if (error == InstallationStep.ERROR_SELINUX && !session.isRoot()) {
                 it.copy(
                     installationStep = InstallationStep.ERROR_SELINUX_ROOTLESS,
-                    errorText = errorContent
+                    errorText = errorContent,
                 )
             } else {
                 it.copy(installationStep = error, errorText = errorContent)
@@ -539,7 +539,7 @@ class HomeViewModel @Inject constructor(
         updateInstallationCard {
             it.copy(
                 installationStep = InstallationStep.CREATING_PARTITION,
-                currentPartitionText = partition
+                currentPartitionText = partition,
             )
         }
 }

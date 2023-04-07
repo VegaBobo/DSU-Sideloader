@@ -24,7 +24,7 @@ import vegabobo.dsusideloader.ui.util.launcherAcResult
 fun ViewLogsBottomSheet(
     logs: String,
     onClickSaveLogs: (Uri) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     val context = LocalContext.current
     val logsSavedText = stringResource(id = R.string.saved_logs)
@@ -37,13 +37,13 @@ fun ViewLogsBottomSheet(
     CustomBottomSheet(
         title = stringResource(id = R.string.installation_logs),
         icon = Icons.Outlined.Description,
-        onDismiss = onDismiss
+        onDismiss = onDismiss,
     ) {
         LogcatCard(logs = logs)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp)
+                .padding(top = 8.dp),
         ) {
             Spacer(modifier = Modifier.weight(1F))
             PrimaryButton(
@@ -54,7 +54,7 @@ fun ViewLogsBottomSheet(
                     intent.type = "text/plain"
                     intent.putExtra(Intent.EXTRA_TITLE, "logs")
                     saveLogsResult.launch(intent)
-                }
+                },
             )
         }
     }

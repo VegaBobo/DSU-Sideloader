@@ -10,7 +10,7 @@ import vegabobo.dsusideloader.ui.components.DialogLikeBottomSheet
 @Composable
 fun DiscardDSUSheet(
     onClickConfirm: () -> Unit,
-    onClickCancel: () -> Unit
+    onClickCancel: () -> Unit,
 ) {
     DialogLikeBottomSheet(
         title = stringResource(id = R.string.discard_dsu_question),
@@ -19,6 +19,6 @@ fun DiscardDSUSheet(
         confirmText = stringResource(id = R.string.yes),
         cancelText = stringResource(id = R.string.cancel),
         onClickConfirm = onClickConfirm,
-        onClickCancel = onClickCancel
+        onClickCancel = onClickCancel,
     )
 }
