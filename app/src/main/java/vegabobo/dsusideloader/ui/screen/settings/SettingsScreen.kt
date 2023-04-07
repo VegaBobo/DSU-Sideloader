@@ -2,6 +2,7 @@ package vegabobo.dsusideloader.ui.screen.settings
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.NewReleases
+import androidx.compose.material.icons.outlined.WarningAmber
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,7 +50,9 @@ fun Settings(
             isEnabled = uiState.isRoot && !settingsViewModel.isAndroidQ(),
             isChecked = uiState.preferences[AppPrefs.USE_BUILTIN_INSTALLER]!!,
             onClick = {
-                settingsViewModel.updateInstallerSheetState(!it)
+                if (!it) {
+                    settingsViewModel.updateSheetDisplay(DialogSheetState.BUILT_IN_INSTALLER)
+                }
                 settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, !it)
             },
         )
@@ -59,6 +62,18 @@ fun Settings(
             showToggle = true,
             isChecked = uiState.preferences[AppPrefs.UMOUNT_SD]!!,
             onClick = { settingsViewModel.togglePreference(AppPrefs.UMOUNT_SD, !it) },
+        )
+        PreferenceItem(
+            title = stringResource(id = R.string.storage_check_title),
+            description = stringResource(id = R.string.storage_check_description),
+            showToggle = true,
+            isChecked = uiState.preferences[AppPrefs.DISABLE_STORAGE_CHECK]!!,
+            onClick = {
+                if (!it) {
+                    settingsViewModel.updateSheetDisplay(DialogSheetState.DISABLE_STORAGE_CHECK)
+                }
+                settingsViewModel.togglePreference(AppPrefs.DISABLE_STORAGE_CHECK, !it)
+            },
         )
         PreferenceItem(
             title = stringResource(id = R.string.keep_screen_on),
@@ -79,18 +94,35 @@ fun Settings(
         )
     }
 
-    if (uiState.isShowingBuiltinInstallerSheet) {
-        DialogLikeBottomSheet(
-            title = stringResource(id = R.string.experimental_feature),
-            icon = Icons.Outlined.NewReleases,
-            text = stringResource(id = R.string.experimental_feature_description),
-            confirmText = stringResource(id = R.string.yes),
-            cancelText = stringResource(id = R.string.cancel),
-            onClickCancel = {
-                settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, false)
-                settingsViewModel.updateInstallerSheetState(false)
-            },
-            onClickConfirm = { settingsViewModel.updateInstallerSheetState(false) },
-        )
+    when (uiState.dialogSheetDisplay) {
+        DialogSheetState.BUILT_IN_INSTALLER ->
+            DialogLikeBottomSheet(
+                title = stringResource(id = R.string.experimental_feature),
+                icon = Icons.Outlined.NewReleases,
+                text = stringResource(id = R.string.experimental_feature_description),
+                confirmText = stringResource(id = R.string.yes),
+                cancelText = stringResource(id = R.string.cancel),
+                onClickCancel = {
+                    settingsViewModel.togglePreference(AppPrefs.USE_BUILTIN_INSTALLER, false)
+                    settingsViewModel.updateSheetDisplay(DialogSheetState.NONE)
+                },
+                onClickConfirm = { settingsViewModel.updateSheetDisplay(DialogSheetState.NONE) },
+            )
+
+        DialogSheetState.DISABLE_STORAGE_CHECK ->
+            DialogLikeBottomSheet(
+                title = stringResource(id = R.string.warning_storage_check_text),
+                icon = Icons.Outlined.WarningAmber,
+                text = stringResource(id = R.string.warning_storage_check_description),
+                confirmText = stringResource(id = R.string.continue_anyway),
+                cancelText = stringResource(id = R.string.cancel),
+                onClickCancel = {
+                    settingsViewModel.togglePreference(AppPrefs.DISABLE_STORAGE_CHECK, false)
+                    settingsViewModel.updateSheetDisplay(DialogSheetState.NONE)
+                },
+                onClickConfirm = { settingsViewModel.updateSheetDisplay(DialogSheetState.NONE) },
+            )
+
+        else -> {}
     }
 }

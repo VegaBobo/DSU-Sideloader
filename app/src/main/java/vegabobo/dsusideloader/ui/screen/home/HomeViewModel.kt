@@ -54,6 +54,7 @@ class HomeViewModel @Inject constructor(
     var checkDynamicPartitions = true
     var checkUnavaiableStorage = true
     var checkReadLogsPermission = true
+    var disabledStorageCheck = false
 
     var installationJob: Job = Job()
     var logger: LogcatDiagnostic? = null
@@ -151,6 +152,9 @@ class HomeViewModel @Inject constructor(
             val shouldKeepScreenOn = readBoolPref(AppPrefs.KEEP_SCREEN_ON)
             Log.d(tag, "shouldKeepScreenOn: $shouldKeepScreenOn")
             _uiState.update { it.copy(shouldKeepScreenOn = shouldKeepScreenOn) }
+
+            disabledStorageCheck = readBoolPref(AppPrefs.DISABLE_STORAGE_CHECK)
+            Log.d(tag, "disabledStorageCheck: $shouldKeepScreenOn")
         }
     }
 
@@ -376,10 +380,10 @@ class HomeViewModel @Inject constructor(
         val sizeWithSuffix = FilenameUtils.appendToDigitsToString(input, "GB")
         Log.d(
             tag,
-            "selectedSize: $selectedSize, maximumAllowedForAllocation: $maximumAllowedForAllocation",
+            "disabledStorageCheck: $disabledStorageCheck, selectedSize: $selectedSize, maximumAllowedForAllocation: $maximumAllowedForAllocation",
         )
 
-        if (selectedSize.isNotEmpty() && selectedSize.toInt() > maximumAllowedForAllocation) {
+        if (!disabledStorageCheck && selectedSize.isNotEmpty() && selectedSize.toInt() > maximumAllowedForAllocation) {
             val fixedSize =
                 FilenameUtils.appendToDigitsToString("$maximumAllowedForAllocation", "GB")
             updateUserdataCard {

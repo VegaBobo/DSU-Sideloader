@@ -144,6 +144,12 @@
     <string name="unmount_sd_title">Unmount SD</string>
     <string name="unmount_sd_description">Temporary unmount sd when installing</string>
 
+    <string name="warning_storage_check_text">Warning</string>
+    <string name="warning_storage_check_description">DSU installation will allocate some free space on your device, disabling storage checks may let into errors.\nThis option is not recommended. Only continue if you know what you\'re doing!</string>
+
+    <string name="storage_check_title">Disable storage check</string>
+    <string name="storage_check_description">Disable userdata storage checking, not recommended</string>
+
     <string name="keep_screen_on">Keep screen on</string>
 
     <string name="other">Other</string>

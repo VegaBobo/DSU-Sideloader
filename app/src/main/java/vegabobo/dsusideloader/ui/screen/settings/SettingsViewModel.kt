@@ -58,8 +58,8 @@ class SettingsViewModel @Inject constructor(
 
     fun isAndroidQ(): Boolean = Build.VERSION.SDK_INT == 29
 
-    fun updateInstallerSheetState(isShowing: Boolean) {
-        _uiState.update { it.copy(isShowingBuiltinInstallerSheet = isShowing) }
+    fun updateSheetDisplay(sheet: DialogSheetState) {
+        _uiState.update { it.copy(dialogSheetDisplay = sheet) }
     }
 
     fun checkOperationMode(): String {
