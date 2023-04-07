@@ -4,7 +4,9 @@ function install_gsid() {
   ui_print "- API Level: $API"
   ui_print "- Arch: $ARCH"
   mkdir -p $MODPATH/system/bin
-  cat "$MODPATH/bin-$ARCH/$API/gsid" >$MODPATH/system/bin/gsid
+  cp "$MODPATH/bin-$ARCH/$API/gsid" $MODPATH/system/bin/gsid
+  chmod +x $MODPATH/system/bin/gsid
+  chcon u:object_r:gsid_exec:s0 $MODPATH/system/bin/gsid
 
   # Minimum allowed for allocation is hardcoded in gsid binary
   # values below are used by DSU Sideloader UI, nothing else
