@@ -5,7 +5,7 @@ import androidx.compose.material.icons.outlined.NewReleases
 import androidx.compose.material.icons.outlined.WarningAmber
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
- import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -89,6 +89,13 @@ fun Settings(
                     settingsViewModel.togglePreference(AppPrefs.DISABLE_STORAGE_CHECK, !it)
                 },
             )
+            PreferenceItem(
+                title = stringResource(id = R.string.full_logcat_logging_title),
+                description = stringResource(id = R.string.full_logcat_logging_description),
+                showToggle = true,
+                isChecked = uiState.preferences[AppPrefs.FULL_LOGCAT_LOGGING]!!,
+                onClick = { settingsViewModel.togglePreference(AppPrefs.FULL_LOGCAT_LOGGING, !it) },
+            )
         }
 
         Title(title = stringResource(id = R.string.other))
@@ -120,7 +127,7 @@ fun Settings(
 
         DialogSheetState.DISABLE_STORAGE_CHECK ->
             DialogLikeBottomSheet(
-                title = stringResource(id = R.string.warning_storage_check_text),
+                title = stringResource(id = R.string.warning_storage_check_title),
                 icon = Icons.Outlined.WarningAmber,
                 text = stringResource(id = R.string.warning_storage_check_description),
                 confirmText = stringResource(id = R.string.continue_anyway),

@@ -140,6 +140,7 @@ class AboutViewModel @Inject constructor(
                 // then restore developer preferences to their default values
                 if (!newDevOptPrefValue) {
                     updateBoolPref(AppPrefs.DISABLE_STORAGE_CHECK, false)
+                    updateBoolPref(AppPrefs.FULL_LOGCAT_LOGGING, false)
                 }
             }
         }

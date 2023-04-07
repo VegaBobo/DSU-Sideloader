@@ -93,12 +93,6 @@ android {
         }
         buildTypes.forEach {
             it.buildConfigField("String", "GITHASH", "\"$gitDescribe\"")
-
-            // Enables full logging on LogcatDiagnostic.kt
-            // not recommended, may decrease app performance
-            // used only for diagnostic unknown problems
-            var enhancedLogcatLogging = it.name == "miniDebug"
-            it.buildConfigField("Boolean", "LOG_EVERYTHING", "$enhancedLogcatLogging")
         }
     }
     compileOptions {

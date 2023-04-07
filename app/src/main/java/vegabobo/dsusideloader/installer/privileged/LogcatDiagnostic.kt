@@ -2,7 +2,6 @@ package vegabobo.dsusideloader.installer.privileged
 
 import android.util.Log
 import java.util.concurrent.atomic.AtomicBoolean
-import vegabobo.dsusideloader.BuildConfig
 import vegabobo.dsusideloader.preparation.InstallationStep
 import vegabobo.dsusideloader.util.CmdRunner
 
@@ -17,6 +16,7 @@ class LogcatDiagnostic(
     private val tag = this.javaClass.simpleName
     var logs = ""
     val isLogging = AtomicBoolean(false)
+    var shouldLogEverything = false
 
     fun startLogging(prependString: String) {
         if (isLogging.get()) {
@@ -24,10 +24,10 @@ class LogcatDiagnostic(
         }
         logs = ""
         isLogging.set(true)
-        Log.d(tag, "startLogging(), isLogging: ${isLogging.get()}")
+        Log.d(tag, "startLogging(), logEveryting: $shouldLogEverything, isLogging: ${isLogging.get()}")
         CmdRunner.run("logcat -c")
         val logCmd =
-            if (BuildConfig.LOG_EVERYTHING) {
+            if (shouldLogEverything) {
                 "logcat"
             } else {
                 "logcat -v tag gsid:* *:S DynamicSystemService:* *:S DynamicSystemInstallationService:* *:S DynSystemInstallationService:* *:S"

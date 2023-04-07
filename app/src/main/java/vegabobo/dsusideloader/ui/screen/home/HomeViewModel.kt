@@ -275,6 +275,7 @@ class HomeViewModel @Inject constructor(
             )
         }
         viewModelScope.launch(Dispatchers.IO + installationJob) {
+            logger!!.shouldLogEverything = readBoolPref(AppPrefs.FULL_LOGCAT_LOGGING)
             logger!!.startLogging(generateUsefulLogInfo())
         }
     }
