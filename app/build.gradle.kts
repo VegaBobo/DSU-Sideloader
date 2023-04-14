@@ -1,6 +1,10 @@
 import java.util.Properties
 import java.io.ByteArrayOutputStream
 
+fun getReleaseSigningConfig(): File {
+    return File(".sign/dsu_sideloader.prop")
+}
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -33,22 +37,20 @@ android {
     }
 
     signingConfigs {
-        create("release") {
-
-            /**
-             * .sign/dsu_sideloader.prop
-             *
-             * keystore=some/path/keystore.jks
-             * keystore_pw=keystore_password
-             * alias=alias
-             * alias_pw=alias_password
-             *
-             */
-
-            val signingConfigProp = File(".sign/dsu_sideloader.prop")
-            if (signingConfigProp.exists()) {
+        val releaseSigningConfig = getReleaseSigningConfig()
+        if (releaseSigningConfig.exists()) {
+            create("release") {
+                /**
+                 * .sign/dsu_sideloader.prop
+                 *
+                 * keystore=some/path/keystore.jks
+                 * keystore_pw=keystore_password
+                 * alias=alias
+                 * alias_pw=alias_password
+                 *
+                 */
                 val props = Properties()
-                props.load(signingConfigProp.inputStream())
+                props.load(releaseSigningConfig.inputStream())
 
                 storeFile = File(props.getProperty("keystore"))
                 storePassword = props.getProperty("keystore_pw")
@@ -73,7 +75,9 @@ android {
 
     buildTypes {
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+            if (getReleaseSigningConfig().exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -119,8 +123,8 @@ android {
 }
 
 aboutLibraries {
-	// Remove the "generated" timestamp to allow for reproducible builds
-	excludeFields = arrayOf("generated")
+    // Remove the "generated" timestamp to allow for reproducible builds
+    excludeFields = arrayOf("generated")
 }
 
 kotlin.sourceSets.all {
