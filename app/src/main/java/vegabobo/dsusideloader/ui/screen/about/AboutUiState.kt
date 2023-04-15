@@ -22,4 +22,5 @@ data class UpdaterCardState(
 data class AboutScreenUiState(
     val updaterCardState: UpdaterCardState = UpdaterCardState(),
     val toastDisplay: MutableStateFlow<DevOptToastDisplay> = MutableStateFlow(DevOptToastDisplay.NONE),
+    val isUpdaterAvailable: Boolean = false,
 )

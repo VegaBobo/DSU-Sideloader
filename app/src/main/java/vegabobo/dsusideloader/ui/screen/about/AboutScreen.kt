@@ -75,6 +75,7 @@ fun AboutScreen(
     ) {
         UpdaterCard(
             uiState = uiState.updaterCardState,
+            isUpdaterAvailable = uiState.isUpdaterAvailable,
             onClickImage = { aboutViewModel.onClickImage() },
             onClickCheckUpdates = { aboutViewModel.onClickCheckUpdates() },
             onClickDownloadUpdate = { aboutViewModel.onClickDownloadUpdate() },

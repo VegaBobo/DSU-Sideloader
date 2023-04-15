@@ -42,6 +42,7 @@ import vegabobo.dsusideloader.ui.screen.about.UpdaterCardState
 @Composable
 fun UpdaterCard(
     uiState: UpdaterCardState,
+    isUpdaterAvailable: Boolean,
     onClickImage: () -> Unit,
     onClickCheckUpdates: () -> Unit,
     onClickDownloadUpdate: () -> Unit,
@@ -118,38 +119,42 @@ fun UpdaterCard(
             )
         }
         Spacer(modifier = Modifier.padding(4.dp))
-        PreferenceItem(
-            title = stringResource(id = R.string.check_updates_title),
-            description =
-            when (uiState.updateStatus) {
-                UpdateStatus.NO_UPDATE_FOUND ->
-                    stringResource(id = R.string.check_updates_text_updated)
+        if (isUpdaterAvailable) {
+            PreferenceItem(
+                title = stringResource(id = R.string.check_updates_title),
+                description =
+                when (uiState.updateStatus) {
+                    UpdateStatus.NO_UPDATE_FOUND ->
+                        stringResource(id = R.string.check_updates_text_updated)
 
-                UpdateStatus.UPDATE_FOUND ->
-                    stringResource(R.string.check_updates_text_found, uiState.updateVersion)
+                    UpdateStatus.UPDATE_FOUND ->
+                        stringResource(R.string.check_updates_text_found, uiState.updateVersion)
 
-                else ->
-                    stringResource(id = R.string.check_updates_text_idle)
-            },
-            onClick = { onClickCheckUpdates() },
-        )
-        AnimatedVisibility(visible = isUpdateFound()) {
-            Row(
-                modifier = Modifier
-                    .padding(all = 12.dp)
-                    .padding(end = 4.dp),
-            ) {
-                Spacer(modifier = Modifier.weight(1F))
-                SecondaryButton(
-                    text = stringResource(id = R.string.changelog),
-                    onClick = { onClickViewChangelog() },
-                    modifier = Modifier.padding(end = 8.dp),
-                )
-                PrimaryButton(
-                    text = stringResource(id = R.string.download),
-                    onClick = { onClickDownloadUpdate() },
-                )
+                    else ->
+                        stringResource(id = R.string.check_updates_text_idle)
+                },
+                onClick = { onClickCheckUpdates() },
+            )
+            AnimatedVisibility(visible = isUpdateFound()) {
+                Row(
+                    modifier = Modifier
+                        .padding(all = 12.dp)
+                        .padding(end = 4.dp),
+                ) {
+                    Spacer(modifier = Modifier.weight(1F))
+                    SecondaryButton(
+                        text = stringResource(id = R.string.changelog),
+                        onClick = { onClickViewChangelog() },
+                        modifier = Modifier.padding(end = 8.dp),
+                    )
+                    PrimaryButton(
+                        text = stringResource(id = R.string.download),
+                        onClick = { onClickDownloadUpdate() },
+                    )
+                }
             }
+        } else {
+            Spacer(modifier = Modifier.padding(6.dp))
         }
     }
 }
