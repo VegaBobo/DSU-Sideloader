@@ -285,7 +285,7 @@ class HomeViewModel @Inject constructor(
             "SDK: Android ${Build.VERSION.RELEASE} (${Build.VERSION.SDK_INT})\n" +
             "$session\n" +
             "Package: ${BuildConfig.APPLICATION_ID}\n" +
-            "Version: ${BuildConfig.VERSION_NAME} - ${BuildConfig.VERSION_CODE} (${BuildConfig.BUILD_TYPE}/${BuildConfig.GITHASH})\n" +
+            "Version: ${BuildConfig.VERSION_NAME} - ${BuildConfig.VERSION_CODE} (${BuildConfig.BUILD_TYPE}})\n" +
             "checkDynamicPartitions: $checkDynamicPartitions\n" +
             "checkUnavaiableStorage: $checkUnavaiableStorage\n" +
             "checkReadLogsPermission: $checkReadLogsPermission\n" +

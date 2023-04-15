@@ -60,19 +60,6 @@ android {
         }
     }
 
-    val gitDescribe: String by lazy {
-        try {
-            val stdout = ByteArrayOutputStream()
-            rootProject.exec {
-                commandLine("git", "describe", "--tags")
-                standardOutput = stdout
-            }
-            stdout.toString().trim()
-        } catch (e: Exception) {
-            "No git info"
-        }
-    }
-
     buildTypes {
         getByName("release") {
             if (getReleaseSigningConfig().exists()) {
@@ -94,9 +81,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-        }
-        buildTypes.forEach {
-            it.buildConfigField("String", "GITHASH", "\"$gitDescribe\"")
         }
     }
     compileOptions {
