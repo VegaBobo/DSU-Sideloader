@@ -33,6 +33,7 @@ enum class AdditionalCardState {
     NO_DYNAMIC_PARTITIONS,
     MISSING_READ_LOGS_PERMISSION,
     GRANTING_READ_LOGS_PERMISSION,
+    BOOTLOADER_UNLOCKED_WARNING,
 }
 
 enum class SheetDisplayState {

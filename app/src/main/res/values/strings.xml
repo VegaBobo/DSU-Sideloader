@@ -21,6 +21,9 @@
     <string name="missing_permission_description">DSU Sideloader requires READ_LOGS permission (which allows logcat reading).\nThis permission is used to obtain installation progress and diagnose errors in DSU installation.\n\n** Granting this permission may require a application restart.</string>
     <string name="granting_permission">Waiting service to grant permission, please wait…</string>
 
+    <string name="unlocked_bl_warn">Unlocked bootloader</string>
+    <string name="unlocked_bl_warn_desc">DSU Sideloader requires unlocked bootloader, installing images with locked bootloader may be dangerous in some devices, before using this app, you: \n- MUST unlock bootloader.\n- MUST have some way to restore device stock firmware.\n- RECOMMENDED to do a full backup.\nThis app have been made to be used by developers and advanced users, you have been warned.</string>
+
     <!-- Installation card -->
     <string name="select_gsi_info">Select a file to be installed</string>
     <string name="dsu_already_installed">A DSU installation is already present.</string>

@@ -26,6 +26,7 @@ import vegabobo.dsusideloader.ui.cards.warnings.GrantingPermissionCard
 import vegabobo.dsusideloader.ui.cards.warnings.RequiresLogPermissionCard
 import vegabobo.dsusideloader.ui.cards.warnings.SetupStorage
 import vegabobo.dsusideloader.ui.cards.warnings.StorageWarningCard
+import vegabobo.dsusideloader.ui.cards.warnings.UnlockedBootloaderCard
 import vegabobo.dsusideloader.ui.cards.warnings.UnsupportedCard
 import vegabobo.dsusideloader.ui.components.ApplicationScreen
 import vegabobo.dsusideloader.ui.components.TopBar
@@ -100,6 +101,9 @@ fun Home(
 
                     AdditionalCardState.GRANTING_READ_LOGS_PERMISSION ->
                         GrantingPermissionCard()
+
+                    AdditionalCardState.BOOTLOADER_UNLOCKED_WARNING ->
+                        UnlockedBootloaderCard { homeViewModel.onClickBootloaderUnlockedWarning() }
 
                     AdditionalCardState.NONE -> {}
                 }

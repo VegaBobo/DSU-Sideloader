@@ -142,6 +142,13 @@ class HomeViewModel @Inject constructor(
                 return@launch
             }
 
+            val seenUnlockedBootloaderWarning = readBoolPref(AppPrefs.BOOTLOADER_UNLOCKED_WARNING)
+            if (!seenUnlockedBootloaderWarning) {
+                _uiState.update { it.copy(passedInitialChecks = false) }
+                updateAdditionalCardState(AdditionalCardState.BOOTLOADER_UNLOCKED_WARNING)
+                return@launch
+            }
+
             updateAdditionalCardState(AdditionalCardState.NONE)
             _uiState.update { it.copy(passedInitialChecks = true) }
         }
@@ -168,6 +175,13 @@ class HomeViewModel @Inject constructor(
         checkUnavaiableStorage = false
         Log.d(tag, "checkUnavaiableStorage: $checkUnavaiableStorage")
         initialChecks()
+    }
+
+    fun onClickBootloaderUnlockedWarning() {
+        viewModelScope.launch {
+            updateBoolPref(AppPrefs.BOOTLOADER_UNLOCKED_WARNING, true)
+            initialChecks()
+        }
     }
 
     //

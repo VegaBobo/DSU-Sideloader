@@ -12,6 +12,7 @@ object AppPrefs {
         "https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/updater.json"
     const val AUTHOR_SIGN_DIGEST = "0da046eb480972124e2fe2251ebc5b19ea9e13d9"
     const val USER_PREFERENCES = "user_preferences"
+    const val BOOTLOADER_UNLOCKED_WARNING = "bootloader_unlocked_warning"
     const val SAF_PATH = "writable_path"
     const val DEVELOPER_OPTIONS = "developer_options"
     const val USE_BUILTIN_INSTALLER = "builtin_installer"
