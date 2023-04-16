@@ -1,0 +1,18 @@
+DSU Sideloader is basically a "front-end" for Android's DSU feature.
+
+<ul>
+  <li>Android 10 or higher</li>
+  <li>Unlocked Bootloader</li>
+  <li>Device with Dynamic Partitions</li>
+  <li>GSI you want to use!</li>
+</ul>
+
+For those who don't know, explaining in a really quick and simplified way, DSU (Dynamic System Updates), is a feature introduced on Android 10, that let developers boot GSIs without touching current system partition, this is done by creating new partitions to hold a GSI and a separated userdata, to boot on them when desired.
+
+You must unlock device bootloader before using DSU, locked bootloader will only allow booting images from trusted signatures (which in reality, for most devices, means that it will only boot images signed by device OEM), for this reason, unlocked bootloader is a requirement, also, installing images with locked bootloader in some devices may be dangerous.
+
+Once installation finishes, Android creates a persistent notification allowing you to boot into "Dynamic System" (GSI installed via DSU), and you can boot into installed GSI, without touching your system partition, or breaking the "real userdata" partition.
+
+After booting Dynamic System, you can try and test whatever you want, when you need to switch back to device's original system image, everything you need to do, is just, a simple reboot!
+
+You can read more about DSU Sideloader and DSU feature here: <a href='https://github.com/VegaBobo/DSU-Sideloader/blob/master/README.md'>GitHub README.md</a>
