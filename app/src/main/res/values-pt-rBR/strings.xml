@@ -15,6 +15,8 @@
     <string name="missing_permission">Permissão ausente</string>
     <string name="missing_permission_description">O DSU Sideloader requer a permissão de READ_LOGS (que permite a leitura de logcat).\nEsta permissão é utilizada para obter o progresso da instalação e diagnosticar erros na instalação da DSU.\n\n** Conceder esta permissão pode exigir que o aplicativo seja reiniciado.</string>
     <string name="granting_permission">Aguardando o serviço para conceder permissão, por favor aguarde…</string>
+    <string name="unlocked_bl_warn">Bootloader desbloqueado</string>
+    <string name="unlocked_bl_warn_desc">DSU Sideloader requer bootloader desbloqueado, instalar imagens com bootloader bloqueado pode ser perigoso em alguns dispositivos, antes de usar esse app, você:\n- DEVE desbloquear o bootloader.\n- DEVE ter uma maneira de restaurar o firmware original do seu aparelho.\n- RECOMENDADO fazer um backup completo.\nEsse app foi feito para ser utilizado por desenvolvedores e usuários avançados, você foi avisado.</string>
     <!-- Installation card -->
     <string name="select_gsi_info">Selecione um arquivo</string>
     <string name="dsu_already_installed">Uma instalação de DSU já está presente.</string>
@@ -36,7 +38,7 @@
     <string name="copying_file">Copiando arquivo…</string>
     <string name="processing">Processando…</string>
     <!-- Installation -->
-    <string name="installation_prompt">Solicitação de instalação invocada, aguardando confirmação do usuário para prosseguir..</string>
+    <string name="installation_prompt">Solicitando instalação, aguardando confirmação do usuário para prosseguir..</string>
     <string name="creating_partition">Criando partição %1$s…</string>
     <string name="installing_partition">Processando partição %1$s…</string>
     <string name="installing">Instalando…</string>
@@ -47,7 +49,7 @@
     <!-- Already running a installed DSU -->
     <string name="already_running_dsu">Instalar uma DSU enquanto estiver executando uma DSU instalada não é suportado, por favor reinicie seu dispositivo para o SO padrão.</string>
     <!-- Already installed DSU card -->
-    <string name="discard_dsu_otg">Uma instalação de DSU já está presente, descartar para continuar?\n\n**Todos os dados relacionados a DSU serão excluídos.</string>
+    <string name="discard_dsu_otg">Uma instalação de DSU já está presente, descartar para continuar?\n\n**Todos os dados armazenados na instalação da DSU serão excluídos.</string>
     <string name="discarding">Descartando…</string>
     <string name="discard_dsu">Descartar DSU</string>
     <!-- Allocation error card -->
@@ -91,7 +93,7 @@
     <string name="not_recommended_option">Esta opção é altamente não recomendada!</string>
     <!-- Image size dialog -->
     <string name="dialog_image_size">Definir tamanho da imagem?</string>
-    <string name="dialog_image_size_description">DSU Sideloader definirá este parâmetro automaticamente para você, definir o tamanho da imagem manualmente é altamente não recomendado.</string>
+    <string name="dialog_image_size_description">DSU Sideloader definirá este parâmetro automaticamente para você, definir o tamanho da imagem manualmente é altamente desaconselhável.</string>
     <string name="set_anyway">Definir mesmo assim</string>
     <!-- What is DSU card -->
     <string name="what_is_dsu">O que é DSU?</string>
@@ -109,7 +111,14 @@
     <string name="requires_root">Requer root</string>
     <string name="unmount_sd_title">Ejetar cartão SD</string>
     <string name="unmount_sd_description">Ejeta temporariamente o SD durante a instalação</string>
+    <string name="warning_storage_check_title">Aviso</string>
+    <string name="warning_storage_check_description">A instalação de DSU aloca espaço livre do dispositivo, desabilitar checagens de armazenamento pode resultar em erros.\nEssa opção não é recomendada, apenas continue se você sabe o que está fazendo!</string>
+    <string name="storage_check_title">Desligar checagem de espaço</string>
+    <string name="storage_check_description">Desliga verificação de espaço disponível, não recomendado</string>
+    <string name="full_logcat_logging_title">Registros completos</string>
+    <string name="full_logcat_logging_description">Sessão de logs captura registros sem filtros, reduz desempenho aplicativo</string>
     <string name="keep_screen_on">Manter tela ligada</string>
+    <string name="developer_options">Opções de desenvolvedor</string>
     <string name="other">Outros</string>
     <string name="operation_mode">Modo de operação</string>
     <string name="about">Sobre</string>
@@ -125,6 +134,8 @@
     <string name="changelog">Alterações</string>
     <string name="download">Baixar</string>
     <string name="application">Aplicativo</string>
+    <string name="developer_options_enabled">Opções de desenvolvimento habilitadas</string>
+    <string name="developer_options_disabled">Opções de desenvolvimento desabilitadas</string>
     <string name="github_repo">Repositório do GitHub</string>
     <string name="github_repo_description">Código fonte no GitHub</string>
     <string name="collaborators">Colaboradores</string>
@@ -133,14 +144,7 @@
     <string name="role_developer">Desenvolvedor</string>
     <string name="role_design_icon">Referência de design, ícone do aplicativo</string>
     <string name="translators_title">Tradutores</string>
-    <!--
-        Hello translator, since you have translated our app
-        feel free to put your name inside "translators_list", it will be shown on about screen.
-
-        If there is more than one translator, append names and separate each one by using a comma, like:
-        Collaborator 1, Collaborator 2, Collaborator 3
-    -->
-    <string name="translators_list">Hitalo, Dan</string>
+    <string name="translators_list" comment="Hello translator, since you have translated our app, feel free to put your name inside &quot;translators_list&quot;, it will be shown on about screen.&#10;If there is more than one translator, append names and separate each one by using a comma, like:&#10;Collaborator 1, Collaborator 2, Collaborator 3">Hitalo, Dan</string>
     <string name="contributors_title">Colaboradores</string>
     <string name="contributors_text">Pessoas que ajudaram neste projeto</string>
     <!--
