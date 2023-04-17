@@ -116,7 +116,8 @@ fun AboutScreen(
                 description = stringResource(id = R.string.role_design_icon),
                 onClick = { uriHandler.openUri(AboutLinks.WSTXDA_GITHUB) },
             )
-            if (stringResource(id = R.string.translators_list).isNotEmpty()) {
+            val translators = stringResource(id = R.string.translators_list)
+            if (translators.isNotEmpty() && translators != "translators_list") {
                 PreferenceItem(
                     title = stringResource(id = R.string.translators_title),
                     description = stringResource(id = R.string.translators_list),

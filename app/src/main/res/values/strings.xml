@@ -197,14 +197,7 @@
 
     <string name="translators_title">Translators</string>
 
-    <!--
-        Hello translator, since you have translated our app
-        feel free to put your name inside "translators_list", it will be shown on about screen.
-
-        If there is more than one translator, append names and separate each one by using a comma, like:
-        Collaborator 1, Collaborator 2, Collaborator 3
-    -->
-    <string name="translators_list"></string>
+    <string name="translators_list" comment="Hello translator, since you have translated our app, feel free to put your name inside &quot;translators_list&quot;, it will be shown on about screen.&#10;If there is more than one translator, append names and separate each one by using a comma, like:&#10;Collaborator 1, Collaborator 2, Collaborator 3">translators_list</string>
 
     <string name="contributors_title">Contributors</string>
     <string name="contributors_text">People that helped with this project</string>
