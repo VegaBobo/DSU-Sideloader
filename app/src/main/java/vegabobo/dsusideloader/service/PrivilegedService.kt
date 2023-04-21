@@ -14,6 +14,7 @@ import android.os.image.IDynamicSystemService
 import android.os.storage.IStorageManager
 import android.os.storage.VolumeInfo
 import android.util.Log
+import java.io.File
 import kotlin.system.exitProcess
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import vegabobo.dsusideloader.BuildConfig
@@ -45,6 +46,56 @@ class PrivilegedService : IPrivilegedService.Stub() {
 
     override fun setDynProp() {
         setProp("persist.sys.fflag.override.settings_dynamic_system", "true")
+    }
+
+    override fun fetchDsuSlots(): MutableList<String> {
+        if (uid != 0) return mutableListOf()
+        val dsuSlotsFolderPath = "/data/gsi"
+        val dsuSlotsFolder = File(dsuSlotsFolderPath)
+        val filesInDsuSlotDir = dsuSlotsFolder.listFiles() ?: return mutableListOf()
+        var foundSlots = arrayListOf<String>()
+        val knownFiles = listOf("ota", "remount")
+        filesInDsuSlotDir.forEach {
+            if (it != null && !knownFiles.contains(it.name)) {
+                foundSlots.add(it.name)
+            }
+        }
+        return foundSlots
+    }
+
+    override fun isDsuSlotCreated(slot: String?): Boolean {
+        if (uid != 0 || slot == null) return false
+        return fetchDsuSlots().contains(slot)
+    }
+
+    override fun createNewDsuSlot(slot: String?) {
+        if (uid != 0 || slot == null) return
+        val slotDir = "/data/gsi/$slot"
+        val metadataDir = "/metadata/gsi/dsu/$slot"
+        File(slotDir).mkdir()
+        File(metadataDir).mkdir()
+    }
+
+    override fun dropDsuSlot(slot: String?) {
+        if (uid != 0 || slot == null) return
+        val slotDir = "/data/gsi/$slot"
+        val metadataDir = "/metadata/gsi/dsu/$slot"
+        val slotDirFile = File(slotDir)
+        val metadataDirFile = File(metadataDir)
+        if (slotDirFile.exists()) {
+            startInstallation(slot)
+            abort()
+            remove()
+            slotDirFile.deleteRecursively()
+        }
+        if (metadataDirFile.exists()) {
+            metadataDirFile.delete()
+        }
+    }
+
+    override fun setDsuSlotActiveAndReboot(slot: String?): Boolean {
+        if (uid != 0 || slot == null) return false
+        return enableGsi(true, slot) == 0
     }
 
     override fun getUid(): Int {
@@ -268,5 +319,23 @@ class PrivilegedService : IPrivilegedService.Stub() {
     override fun isInstalled(): Boolean {
         requiresDynamicSystem()
         return DYNAMIC_SYSTEM!!.isInstalled
+    }
+
+    // Gsi service
+
+    private var GSI_SERVICE: IGsiService? = null
+
+    private fun requiresGsiService() {
+        if (GSI_SERVICE == null) {
+            GSI_SERVICE = IGsiService.Stub.asInterface(getBinder("gsiservice"))
+        }
+    }
+
+    override fun enableGsi(oneShot: Boolean, dsuSlot: String?): Int {
+        Log.d("zzz", "Hello?")
+        requiresGsiService()
+        Log.d("zzz", "Passed?")
+        if (dsuSlot == null) return -1
+        return GSI_SERVICE!!.enableGsi(true, dsuSlot)
     }
 }

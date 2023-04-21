@@ -110,6 +110,11 @@
     <string name="installation_finished">Installation finished.</string>
     <string name="reboot_into_dsu">Reboot into DSU</string>
 
+    <!-- Slot Manager card -->
+    <string name="slot_manager">Slot manager</string>
+    <string name="reboot_to_slot">Reboot to slot</string>
+    <string name="discard_slot">Discard slot</string>
+
     <!-- Userdata card -->
     <string name="userdata_size">Userdata size</string>
     <string name="userdata_size_info">Size in gigabytes</string>
@@ -155,6 +160,8 @@
 
     <string name="full_logcat_logging_title">Full logcat logging</string>
     <string name="full_logcat_logging_description">Logs section will capture logs with no filters, may degrade app performance</string>
+
+    <string name="slot_manager_description">New experimental feature to manage DSU slots, must enable \"Built-in installer\"</string>
 
     <string name="keep_screen_on">Keep screen on</string>
 
@@ -235,6 +242,7 @@
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
     <string name="mreturn">Return</string>
+    <string name="back">back</string>
 
     <string name="installation">Installation</string>
     <string name="discard">Discard</string>

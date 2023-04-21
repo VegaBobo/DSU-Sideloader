@@ -1,6 +1,13 @@
 package vegabobo.dsusideloader.ui.screen.home
 
+import androidx.compose.runtime.mutableStateListOf
 import vegabobo.dsusideloader.preparation.InstallationStep
+
+data class ManageDsuCardState(
+    val slotsDetected: MutableList<String> = mutableStateListOf(),
+    val isSlotSelected: Boolean = false,
+    val selectedSlot: String = "",
+)
 
 data class InstallationCardState(
     val installationStep: InstallationStep = InstallationStep.NOT_INSTALLING,
@@ -46,6 +53,7 @@ enum class SheetDisplayState {
 }
 
 data class HomeUiState(
+    val manageDsuCard: ManageDsuCardState = ManageDsuCardState(),
     val installationCard: InstallationCardState = InstallationCardState(),
     val userDataCard: UserDataCardState = UserDataCardState(),
     val imageSizeCard: ImageSizeCardState = ImageSizeCardState(),
@@ -53,6 +61,7 @@ data class HomeUiState(
     val sheetDisplay: SheetDisplayState = SheetDisplayState.NONE,
     val installationLogs: String = "",
     val passedInitialChecks: Boolean = false,
+    val isSlotManagerAvail: Boolean = false,
     val shouldKeepScreenOn: Boolean = false,
 ) {
     fun isInstalling(): Boolean {

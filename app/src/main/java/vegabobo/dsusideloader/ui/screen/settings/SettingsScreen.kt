@@ -96,6 +96,13 @@ fun Settings(
                 isChecked = uiState.preferences[AppPrefs.FULL_LOGCAT_LOGGING]!!,
                 onClick = { settingsViewModel.togglePreference(AppPrefs.FULL_LOGCAT_LOGGING, !it) },
             )
+            PreferenceItem(
+                title = stringResource(id = R.string.slot_manager),
+                description = stringResource(id = R.string.slot_manager_description),
+                showToggle = true,
+                isChecked = uiState.preferences[AppPrefs.SLOT_MANAGER]!!,
+                onClick = { settingsViewModel.togglePreference(AppPrefs.SLOT_MANAGER, !it) },
+            )
         }
 
         Title(title = stringResource(id = R.string.other))

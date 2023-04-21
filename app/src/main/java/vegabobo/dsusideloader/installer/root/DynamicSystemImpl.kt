@@ -71,4 +71,16 @@ open class DynamicSystemImpl : IDynamicSystemService {
     fun forceStopDSU() {
         PrivilegedProvider.getService().forceStopPackage("com.android.dynsystem")
     }
+
+    fun isDsuSlotCreated(slot: String): Boolean {
+        return PrivilegedProvider.getService().isDsuSlotCreated(slot)
+    }
+
+    fun createNewDsuSlot(slot: String) {
+        PrivilegedProvider.getService().createNewDsuSlot(slot)
+    }
+
+    fun dropDsuSlot(slot: String) {
+        PrivilegedProvider.getService().dropDsuSlot(slot)
+    }
 }

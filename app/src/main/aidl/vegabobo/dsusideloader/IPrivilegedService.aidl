@@ -7,6 +7,14 @@ interface IPrivilegedService {
     void exit() = 1;
     void destroy() = 16777114;
     void setDynProp() = 100;
+
+    // Slot managing
+    List<String> fetchDsuSlots() = 101;
+    boolean isDsuSlotCreated(String slot) = 102;
+    void createNewDsuSlot(String slot) = 103;
+    void dropDsuSlot(String slot) = 104;
+    boolean setDsuSlotActiveAndReboot(String slot) = 105;
+
     int getUid() = 1000;
 
     // Activity Manager
@@ -36,4 +44,7 @@ interface IPrivilegedService {
     boolean setAshmem(in ParcelFileDescriptor fd, long size) = 4012;
     boolean submitFromAshmem(long bytes) = 4013;
     long suggestScratchSize() = 4014;
+
+    // Gsi Service
+    int enableGsi(boolean oneShot, @utf8InCpp String dsuSlot) = 5001;
 }

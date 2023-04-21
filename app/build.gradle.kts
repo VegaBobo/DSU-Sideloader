@@ -139,6 +139,7 @@ dependencies {
     kapt(Google.dagger.hilt.compiler)
 
     implementation(Google.android.material)
+    implementation("com.google.accompanist:accompanist-flowlayout:0.30.1")
     implementation(KotlinX.serialization.json)
 
     implementation("com.github.topjohnwu.libsu:core:_")

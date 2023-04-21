@@ -82,6 +82,9 @@ class HomeViewModel @Inject constructor(
     private fun updateImageSizeCard(update: (ImageSizeCardState) -> ImageSizeCardState) =
         _uiState.update { it.copy(imageSizeCard = update(it.imageSizeCard.copy())) }
 
+    private fun updateSlotManagerCard(update: (ManageDsuCardState) -> ManageDsuCardState) =
+        _uiState.update { it.copy(manageDsuCard = update(it.manageDsuCard.copy())) }
+
     private fun updateSheetState(sheetDisplay: SheetDisplayState) =
         _uiState.update { it.copy(sheetDisplay = sheetDisplay) }
 
@@ -100,16 +103,15 @@ class HomeViewModel @Inject constructor(
     //
 
     init {
-        // Check if a DSU is already installed
-        // Root-only because MANAGE_DYNAMIC_SYSTEM is required
+        // Root-only operations because MANAGE_DYNAMIC_SYSTEM is required
         if (session.isRoot()) {
             PrivilegedProvider.run {
-                if (isInUse) {
-                    updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_RUNNING_DYN_OS) }
+                if (!readBoolPref(AppPrefs.SLOT_MANAGER) && isInstalled) {
+                    updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
                     return@run
                 }
-                if (isInstalled) {
-                    updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_INSTALLED) }
+                if (isInUse) {
+                    updateInstallationCard { it.copy(installationStep = InstallationStep.DSU_ALREADY_RUNNING_DYN_OS) }
                     return@run
                 }
             }
@@ -151,6 +153,16 @@ class HomeViewModel @Inject constructor(
 
             updateAdditionalCardState(AdditionalCardState.NONE)
             _uiState.update { it.copy(passedInitialChecks = true) }
+            val isSlotManagerAvail = readBoolPref(AppPrefs.SLOT_MANAGER)
+            if (isSlotManagerAvail && session.isRoot()) {
+                _uiState.update { it.copy(isSlotManagerAvail = true) }
+                PrivilegedProvider.run {
+                    val slots = fetchDsuSlots()
+                    Log.d(BuildConfig.APPLICATION_ID, "? + $slots")
+                    _uiState.value.manageDsuCard.slotsDetected.clear()
+                    _uiState.value.manageDsuCard.slotsDetected.addAll(slots)
+                }
+            }
         }
     }
 
@@ -561,4 +573,28 @@ class HomeViewModel @Inject constructor(
                 currentPartitionText = partition,
             )
         }
+
+    // Slot manager
+    fun onClickSlot(slot: String) {
+        updateSlotManagerCard { it.copy(isSlotSelected = true, selectedSlot = slot) }
+    }
+
+    fun onClickSlotBack() {
+        updateSlotManagerCard { it.copy(isSlotSelected = false, selectedSlot = "") }
+    }
+
+    fun onClickRebootToSlot() {
+        val selectedSlot = uiState.value.manageDsuCard.selectedSlot
+        PrivilegedProvider.run {
+            setDsuSlotActiveAndReboot(selectedSlot)
+        }
+    }
+
+    fun onClickDiscardSlot() {
+        val selectedSlot = uiState.value.manageDsuCard.selectedSlot
+        PrivilegedProvider.run {
+            dropDsuSlot(selectedSlot)
+            updateSlotManagerCard { it.copy(isSlotSelected = false, selectedSlot = "") }
+        }
+    }
 }

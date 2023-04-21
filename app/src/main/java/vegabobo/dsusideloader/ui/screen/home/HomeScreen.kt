@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.collectLatest
 import vegabobo.dsusideloader.R
 import vegabobo.dsusideloader.ui.cards.DsuInfoCard
 import vegabobo.dsusideloader.ui.cards.ImageSizeCard
+import vegabobo.dsusideloader.ui.cards.SlotManagerCard
 import vegabobo.dsusideloader.ui.cards.UserdataCard
 import vegabobo.dsusideloader.ui.cards.installation.InstallationCard
 import vegabobo.dsusideloader.ui.cards.warnings.GrantingPermissionCard
@@ -109,6 +110,15 @@ fun Home(
                 }
             }
             if (uiState.passedInitialChecks && uiState.additionalCard == AdditionalCardState.NONE) {
+                if (uiState.isSlotManagerAvail) {
+                    SlotManagerCard(
+                        uiState = uiState.manageDsuCard,
+                        onClickSlot = { homeViewModel.onClickSlot(it) },
+                        onClickRebootToSlot = { homeViewModel.onClickRebootToSlot() },
+                        onClickDiscardSlot = { homeViewModel.onClickDiscardSlot() },
+                        onClickBack = { homeViewModel.onClickSlotBack() },
+                    )
+                }
                 InstallationCard(
                     uiState = uiState.installationCard,
                     onClickInstall = { homeViewModel.onClickInstall() },

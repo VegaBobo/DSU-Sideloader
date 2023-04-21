@@ -40,6 +40,7 @@ import vegabobo.dsusideloader.service.PrivilegedProvider
  * That's why this installation way requires root.
  */
 class DSUInstaller(
+    private val targetSlot: String = "dsu",
     private val application: Application,
     private val userdataSize: Long,
     private val dsuInstallation: DSUInstallationSource,
@@ -54,7 +55,6 @@ class DSUInstaller(
     private val tag = this.javaClass.simpleName
 
     object Constants {
-        const val DEFAULT_SLOT = "dsu"
         const val SHARED_MEM_SIZE: Int = 524288
         const val MIN_PROGRESS_TO_PUBLISH = (1 shl 27).toLong()
     }
@@ -228,7 +228,10 @@ class DSUInstaller(
             return
         }
         forceStopDSU()
-        startInstallation(Constants.DEFAULT_SLOT)
+        if (!isDsuSlotCreated(targetSlot)) {
+            createNewDsuSlot(targetSlot)
+        }
+        startInstallation(targetSlot)
         installWritablePartition("userdata", userdataSize)
         when (dsuInstallation.type) {
             Type.SINGLE_SYSTEM_IMAGE -> {
