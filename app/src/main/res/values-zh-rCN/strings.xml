@@ -1,40 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Home screen -->
-
+    <!--
+        Home screen
+     -->
     <!-- Warning cards -->
     <string name="unsupported">不支持 DSU 功能</string>
     <string name="device_unsupported_description">您的设备不是动态分区 (DSU 需要动态分区)。</string>
-
     <string name="setup_storage">设置应用存储目录</string>
     <string name="setup_storage_description">您需要选择一个文件夹作为 DSU Sideloader 的应用存储目录 (需要存储临时文件)。\n\n请选择或新建一个文件夹并允许 DSU Sideloader 访问。</string>
     <string name="setup">设定</string>
-
     <string name="storage_warning">可用存储空间不足</string>
     <string name="storage_warning_description">您的设备可用存储空间少于 %1$s%%，安装过程将会报错，请释放更多空间后重试。</string>
     <string name="continue_anyway">仍要继续</string>
-
     <string name="missing_permission">缺少所需权限</string>
     <string name="missing_permission_description">DSU Sideloader 需要 READ_LOGS 权限 (允许读取 logcat)。\n该权限用于获取安装进度及诊断 DSU 安装过程中的错误。\n\n**授予该权限后可能需要重启 DSU Sideloader。</string>
     <string name="granting_permission">等待授予权限，请等待…</string>
-
+    <string name="unlocked_bl_warn">解锁 bootloader</string>
+    <string name="unlocked_bl_warn_desc">DSU Sideloader 需要解锁 bootloader。在某些设备中安装带有锁定 bootloader 的镜像可能是非常危险的行为。 在使用此应用之前，您： \n- 必须解锁 bootloader。\n- 必须准备一些方法来还原设备原厂固件。\n- 我们推荐您对设备做一个完整的备份。\n此应用程序已被开发者和高级用户使用，您已被警告使用。</string>
     <!-- Installation card -->
     <string name="select_gsi_info">请选择一个要安装的 GSI 文件</string>
     <string name="dsu_already_installed">已安装 DSU</string>
-
     <string name="selected_file">选择文件</string>
     <string name="file_unsupported">不支持的文件</string>
-
     <string name="clear">清理</string>
     <string name="install">安装</string>
-
     <!-- Installation dialog -->
     <string name="proceed_installation">是否继续安装？</string>
     <string name="proceed_installation_description">安装时将使用以下参数:</string>
-
     <!-- Discard installed DSU dialog -->
     <string name="discard_dsu_question">是否移除已安装的DSU？</string>
     <string name="dsu_already_installed_warning">已安装 DSU 中的所有数据将在移除时删除，确定要移除么？</string>
-
     <!-- Preparation -->
     <string name="decompressing_gz">正在提取 gz 文件…</string>
     <string name="decompressing_xz">正在提取 xz 文件…</string>
@@ -42,48 +37,38 @@
     <string name="extracting_file">正在提取文件…</string>
     <string name="copying_file">正在复制文件…</string>
     <string name="processing">正在处理中…</string>
-
     <!-- Installation -->
     <string name="installation_prompt">DSU 安装弹窗已被调起，等待用户确认后继续。</string>
-
     <string name="creating_partition">创建 %1$s 分区</string>
     <string name="installing_partition">正在处理 %1$s 分区…</string>
     <string name="installing">正在安装…</string>
-
     <!-- ADB install -->
     <string name="require_adb_cmd_to_continue">准备工作已完成，您需要输入一个命令以继续安装。</string>
     <string name="see_commands">查看命令</string>
-
     <!-- Installation errors -->
-
-    <!-- Already installed DSU card -->
+    <!-- Already running a installed DSU -->
     <string name="already_running_dsu">不支持在运行已安装的 DSU 上安装 DSU ，请重启您的设备回到默认操作系统。</string>
+    <!-- Already installed DSU card -->
     <string name="discard_dsu_otg">已经安装了一个 DSU，是否要移除并继续安装？\n\n**已安装 DSU 中的所有数据将在移除时删除。</string>
     <string name="discarding">正在移除…</string>
     <string name="discard_dsu">移除 DSU</string>
-
     <!-- Allocation error card -->
     <string name="allocation_error">配置错误</string>
     <string name="allocation_error_description">在外置 sdcard 上分配空间不起作用，您可以尝试以下修复：\n - 安装 DSU Sideloader 的 Magisk 模块。\n - 卸载外置 sdcard（您可以在设置中修改这个选项）。</string>
     <string name="allocation_error_action">弹出 SD 卡并重试</string>
-
     <!-- No free storage error card -->
     <string name="storage_error">可用存储空间不足</string>
     <string name="storage_error_description">安卓系统限制至少需要%1$s%%以上的可用存储空间以进行DSU安装，请释放足够的空间后再尝试。</string>
-
     <!-- Filesystem features not found error card -->
     <string name="fs_features_error">Filesystem 不可用</string>
     <string name="fs_features_error_description">您设备的内核可能在其他的位置注册了 F2fs 而不是在 GSI daemon 所期望的位置，您可以尝试以下修复：\n - 安装 DSU Sideloader 的 Magisk 模块。\n - 更换您设备的内核。</string>
-
     <!-- SELinux error card -->
     <string name="selinux_error">SELinux 错误</string>
     <string name="selinux_error_description">SELinux 拒绝了 GSI daemon 程序的工作，您可以尝试以下修复：\n - 安装 DSU Sideloader 的 Magisk 模块。\n - 如果您使用了外置 sdcard，请尝试卸载它（在设置部分有该选项）。\n - 将 SELinux 设置为宽容模式(permissive)（不推荐，会极大降低您设备的安全性）。</string>
     <string name="selinux_error_action">在宽容模式下重试</string>
-
     <!-- Extents error card -->
     <string name="extents_error_title">Extents 问题</string>
     <string name="extents_error_description">在 Android 10 设备上，镜像/文件系统(Images/Filesystem) 需要至少 512 extents。您可以尝试以下修复：\n - 安装 DSU Sideloader 的 Magisk 模块。</string>
-
     <!-- Other errors card -->
     <string name="failed_create_partition">创建 %1$s 分区失败</string>
     <string name="unknown_error">未知错误</string>
@@ -91,62 +76,56 @@
     <string name="try_again">再次尝试</string>
     <string name="view_logs">查看日志</string>
     <string name="installation_canceled">取消安装</string>
-
     <!-- Cancel installation dialog -->
     <string name="cancel_installation_question">是否取消安装？</string>
     <string name="cancel_installation_description">已安装的部分将丢失，确定要取消吗？</string>
-
     <!-- Installation finished card -->
     <string name="installation_finished_rootless">DSU 安装成功，请检查通知栏提示并重启到动态系统</string>
     <string name="installation_finished">安装已完成</string>
     <string name="reboot_into_dsu">重启到 DSU</string>
-
     <!-- Userdata card -->
     <string name="userdata_size">DSU 用户空间大小</string>
     <string name="userdata_size_info">单位：GB</string>
     <string name="allowed_userdata_allocation">可分配用户空间大小: %1$s GB</string>
-
     <!-- Image size card -->
     <string name="image_size">DSU 镜像大小</string>
     <string name="image_size_info">单位：Bytes</string>
     <string name="not_recommended_option">该选项是非常危险的!</string>
-
     <!-- Image size dialog -->
     <string name="dialog_image_size">确定要设置镜像大小？</string>
     <string name="dialog_image_size_description">DSU Sideloader 会自动设置这个参数，手动设置镜像大小是非常危险的！</string>
     <string name="set_anyway">继续设置</string>
-
     <!-- What is DSU card -->
     <string name="what_is_dsu">什么是 DSU [动态系统更新]？</string>
     <string name="what_is_dsu_description">DSU (Dynamic System Updates) 是 Android 10 开始引入的一项功能。该功能允许开发者无损测试 Android 系统镜像而无需破坏原始设备系统空间，从 Android 11 开始 DSU 支持替换多个分区。</string>
     <string name="view_docs">查看文档</string>
     <string name="learn_more">学习更多</string>
-
-    <!-- Preferences screen -->
-
+    <!--
+        Settings screen
+    -->
     <string name="settings">设置</string>
-
     <string name="experimental_feature">实验性功能</string>
     <string name="experimental_feature_description">该功能还在测试，可能不稳定，确定启用吗？</string>
-
     <string name="builtin_installer">使用内置安装器</string>
     <string name="builtin_installer_description">使用内部 API 直接安装 DSU，安装过程将更快</string>
     <string name="requires_root">需要 Root</string>
-
     <string name="unmount_sd_title">弹出 SD 卡</string>
     <string name="unmount_sd_description">安装 DSU 时临时弹出 SD 卡</string>
-
+    <string name="warning_storage_check_title">警告</string>
+    <string name="warning_storage_check_description">DSU 安装过程会在您的设备上占据一些可用空间，禁用存储空间检查可能会导致错误发生。\n不建议开启此选项。 除非你知道你正在做什么！</string>
+    <string name="storage_check_title">禁用 userdata 存储空间检查</string>
+    <string name="storage_check_description">禁用 userdata 存储空间检查，不推荐开启</string>
+    <string name="full_logcat_logging_title">完整日志记录</string>
+    <string name="full_logcat_logging_description">日志部分将捕获没有过滤器过滤的日志，可能会降低应用程序性能。</string>
     <string name="keep_screen_on">保持亮屏</string>
-
+    <string name="developer_options">开发者选项</string>
     <string name="other">其他</string>
-
     <string name="operation_mode">实现方式</string>
-
     <string name="about">关于</string>
     <string name="about_description">贡献者、使用的库，以及更多…</string>
-
-    <!-- About screen -->
-
+    <!--
+        About screen
+    -->
     <string name="version_info">版本 %1$s (%2$d)</string>
     <string name="check_updates_title">检查更新</string>
     <string name="check_updates_text_idle">点击检查</string>
@@ -154,65 +133,48 @@
     <string name="check_updates_text_updated">您正在运行最新版本</string>
     <string name="changelog">更新日志</string>
     <string name="download">下载</string>
-
     <string name="application">应用</string>
-
+    <string name="developer_options_enabled">开发者选项已启用</string>
+    <string name="developer_options_disabled">开发者选项已禁用</string>
     <string name="github_repo">GitHub 仓库</string>
     <string name="github_repo_description">在 GitHub 上查看源代码</string>
-
     <string name="collaborators">合作者</string>
-
     <string name="libraries_title">依赖库</string>
     <string name="libraries_description">DSU Sideloader 使用的库</string>
-
     <string name="role_developer">开发者</string>
     <string name="role_design_icon">软件设计, 应用图标绘制</string>
-
     <string name="translators_title">简中翻译</string>
-
-    <!--
-        Hello translator, since you have translated our app
-        feel free to put your name inside "translators_list", it will be shown on about screen.
-
-        If there is more than one translator, append names and separate each one by using a comma, like:
-        <string name="translators_list">Collaborator 1, Collaborator 2, Collaborator 3</string>
-    -->
-    <string name="translators_list">AngelaCooljx, YuKongA</string>
-
+    <string name="translators_list" comment="Hello translator, since you have translated our app, feel free to put your name inside &quot;translators_list&quot;, it will be shown on about screen.&#10;If there is more than one translator, append names and separate each one by using a comma, like:&#10;Collaborator 1, Collaborator 2, Collaborator 3">AngelaCooljx, YuKongA</string>
     <string name="contributors_title">贡献者</string>
     <string name="contributors_text">所有参与过本项目的人们</string>
-
-    <!-- ADB screen -->
-
+    <!--
+        ADB screen
+    -->
     <string name="adb_how_to_adb_shell">要在无 Root 权限的设备上使用，您需要使用 adb shell 运行以下命令:</string>
     <string name="adb_how_to_shell">如果您要在没有电脑的情况下运行 adb shell (例如: LADB, Shizuku\'s Rish, WebADB, Bugjaeger..)，您可以去掉 adb shell 前缀，直接运行:</string>
     <string name="adb_how_to_done">安装开始后，您可以通过通知栏查看安装进度，您现在可以关闭 DSU Sideloader。</string>
-
     <string name="copy_text">复制文本</string>
     <string name="copied">复制成功</string>
-
-    <!-- View logs screen -->
-
+    <!--
+        View logs screen
+    -->
     <string name="installation_logs">安装日志</string>
     <string name="save_logs">保存日志</string>
     <string name="saved_logs">日志保存成功！</string>
-
-    <!-- Generic and multipurpose strings -->
-
+    <!--
+        Generic and multipurpose strings
+     -->
     <string name="no">否</string>
     <string name="yes">是</string>
     <string name="ok">确定</string>
-
     <string name="grant">授权</string>
     <string name="refuse">拒绝</string>
     <string name="proceed">继续</string>
     <string name="cancel">取消</string>
     <string name="close">关闭</string>
     <string name="mreturn">返回</string>
-
     <string name="installation">安装</string>
     <string name="discard">移除</string>
-
     <string name="close_app">关闭 DSU Sideloader</string>
     <string name="close_app_question">确定要关闭 DSU Sideloader 么？</string>
 </resources>
