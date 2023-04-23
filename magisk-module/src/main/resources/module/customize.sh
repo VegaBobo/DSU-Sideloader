@@ -24,3 +24,6 @@ if [[ $API -le "33" && $API -ge "29" ]] &&
   clean
   setprop persist.sys.fflag.override.settings_dynamic_system true
 fi
+
+echo "- Installing DSU Sideloader..."
+pm install $MODPATH/system/priv-app/DSUSideloader/ReleaseDSUSideloader.apk
