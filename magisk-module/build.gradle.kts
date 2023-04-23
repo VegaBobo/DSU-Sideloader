@@ -7,6 +7,7 @@ tasks.register<Zip>("assembleMagiskModule") {
     val name = "DSU Sideloader"
     val author = "VegaBobo"
     val description = "System mode for DSU Sideloader"
+    val updateJson = "https://raw.githubusercontent.com/VegaBobo/DSU-Sideloader/master/other/updater_module.json"
 
     val versionCode: Int by rootProject.extra
     val versionName: String by rootProject.extra
@@ -30,7 +31,8 @@ tasks.register<Zip>("assembleMagiskModule") {
             "version=$versionName\n" +
             "versionCode=$versionCode\n" +
             "author=$author\n" +
-            "description=$description"
+            "description=$description" +
+            "updateJson=$updateJson"
 
     fun getFilename():
             String = "module_${name.replace(" ", "_")}_$versionCode.zip"
