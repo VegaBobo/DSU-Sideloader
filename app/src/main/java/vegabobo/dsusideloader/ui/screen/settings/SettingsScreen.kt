@@ -17,6 +17,7 @@ import vegabobo.dsusideloader.ui.components.PreferenceItem
 import vegabobo.dsusideloader.ui.components.Title
 import vegabobo.dsusideloader.ui.components.TopBar
 import vegabobo.dsusideloader.ui.screen.Destinations
+import vegabobo.dsusideloader.util.OperationMode
 import vegabobo.dsusideloader.util.collectAsStateWithLifecycle
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,13 +90,15 @@ fun Settings(
                     settingsViewModel.togglePreference(AppPrefs.DISABLE_STORAGE_CHECK, !it)
                 },
             )
-            PreferenceItem(
-                title = stringResource(id = R.string.full_logcat_logging_title),
-                description = stringResource(id = R.string.full_logcat_logging_description),
-                showToggle = true,
-                isChecked = uiState.preferences[AppPrefs.FULL_LOGCAT_LOGGING]!!,
-                onClick = { settingsViewModel.togglePreference(AppPrefs.FULL_LOGCAT_LOGGING, !it) },
-            )
+            if (settingsViewModel.getOperationMode() != OperationMode.ADB) {
+                PreferenceItem(
+                    title = stringResource(id = R.string.full_logcat_logging_title),
+                    description = stringResource(id = R.string.full_logcat_logging_description),
+                    showToggle = true,
+                    isChecked = uiState.preferences[AppPrefs.FULL_LOGCAT_LOGGING]!!,
+                    onClick = { settingsViewModel.togglePreference(AppPrefs.FULL_LOGCAT_LOGGING, !it) },
+                )
+            }
         }
 
         Title(title = stringResource(id = R.string.other))

@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import vegabobo.dsusideloader.core.BaseViewModel
 import vegabobo.dsusideloader.model.Session
 import vegabobo.dsusideloader.preferences.AppPrefs
+import vegabobo.dsusideloader.util.OperationMode
 import vegabobo.dsusideloader.util.OperationModeUtils
 
 @HiltViewModel
@@ -69,6 +70,10 @@ class SettingsViewModel @Inject constructor(
 
     fun checkOperationMode(): String {
         return OperationModeUtils.getOperationModeAsString(session.getOperationMode())
+    }
+
+    fun getOperationMode(): OperationMode {
+        return session.getOperationMode()
     }
 
     fun checkDevOpt() {
