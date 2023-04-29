@@ -135,7 +135,7 @@ class AboutViewModel @Inject constructor(
             resetDeveloperOptionsCounter()
             viewModelScope.launch {
                 val newDevOptPrefValue = !readBoolPref(AppPrefs.DEVELOPER_OPTIONS)
-                println("newState: $newDevOptPrefValue")
+                Log.d(tag, "newDevOptPrefValue: $newDevOptPrefValue")
                 updateBoolPref(
                     AppPrefs.DEVELOPER_OPTIONS,
                     newDevOptPrefValue,
