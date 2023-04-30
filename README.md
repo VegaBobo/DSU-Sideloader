@@ -18,6 +18,16 @@ Google GSIs: https://developer.android.com/topic/generic-system-image/releases
 
 **Remember to use GSIs compatible with your architeture, vndk implementation..*
 
+## Downloads
+Builds are available at:
+
+| DSU Sideloader |
+|----------------|
+| <a href="https://github.com/VegaBobo/DSU-Sideloader/releases"><img src="https://img.shields.io/github/v/release/VegaBobo/DSU-Sideloader?label=GitHub" /></a> |
+| <a href="https://apt.izzysoft.de/fdroid/index/apk/vegabobo.dsusideloader"><img src="https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/vegabobo.dsusideloader" /></a> |
+
+For testing builds, you can check artifacts at [Actions](https://github.com/VegaBobo/DSU-Sideloader/actions) tab
+
 ## How to use?
 1. Install app
 2. When opening for the first time, you need to give read/write permission to a folder, create a new folder and allow access  
