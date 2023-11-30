@@ -19,12 +19,13 @@ Google GSIs: https://developer.android.com/topic/generic-system-image/releases
 **Remember to use GSIs compatible with your architeture, vndk implementation..*
 
 ## Downloads
+Builds are available at:
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-     alt="Get it on F-Droid"
-     height="80">](https://f-droid.org/packages/vegabobo.dsusideloader/)
+| DSU Sideloader |
+|----------------|
+| <a href="https://github.com/VegaBobo/DSU-Sideloader/releases"><img src="https://img.shields.io/github/v/release/VegaBobo/DSU-Sideloader?label=GitHub" /></a> |
+| <a href="https://apt.izzysoft.de/fdroid/index/apk/vegabobo.dsusideloader"><img src="https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/vegabobo.dsusideloader" /></a> |
 
-Or download the latest APK from the [Releases Section](https://github.com/VegaBobo/DSU-Sideloader/releases/latest).
 For testing builds, you can check artifacts at [Actions](https://github.com/VegaBobo/DSU-Sideloader/actions) tab
 
 ## How to use?
