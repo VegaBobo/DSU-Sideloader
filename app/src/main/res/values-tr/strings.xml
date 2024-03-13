@@ -1,0 +1,180 @@
+<resources>
+  <string name="app_name" translatable="false">DSU Sideloader</string>
+  <!--
+        Home screen
+     -->
+  <!-- Warning cards -->
+  <string name="unsupported">Desteklenmiyor</string>
+  <string name="device_unsupported_description">Cihazınız dinamik bölümleri desteklemiyor (DSU dinamik bölümler gerektirir).</string>
+  <string name="setup_storage">Depolama kurulumu</string>
+  <string name="setup_storage_description">Uygulama depolama alanı olarak kullanılacak bir klasör seçmeniz gerekiyor (geçici dosyaları depolamak için gereklidir).\n\nLütfen yeni bir klasör seçin veya oluşturun ve erişime izin verin.</string>
+  <string name="setup">Kurulum</string>
+  <string name="storage_warning">Depolama uyarısı</string>
+  <string name="storage_warning_description">%1$s%% 'dan daha az boş depolama alanınız var, yükleme işlemi başarısız olacak, lütfen biraz yer açın.</string>
+  <string name="continue_anyway">Yine de devam et</string>
+  <string name="missing_permission">İzin eksik</string>
+  <string name="missing_permission_description">DSU Sideloader, read_logs izni gerektirir (bu, logcat okumasına izin verir).\nBu izin, kurulum ilerlemesini elde etmek ve DSU kurulumundaki hataları teşhis etmek için kullanılır.\n\n** Bu iznin verilmesi bir uygulamanın yeniden başlatılmasını gerektirebilir.</string>
+  <string name="granting_permission">İzin vermek için hizmet bekleniyor, lütfen bekleyin…</string>
+  <string name="unlocked_bl_warn">Kilitli olmayan önyükleyici</string>
+  <string name="unlocked_bl_warn_desc">DSU Sideloader açık önyükleyici gerektirir, bazı cihazlarda kilitli önyükleyici ile resim yüklemek tehlikeli olabilir, bu uygulamayı kullanmadan önce:\n - önyükleyicinin kilidini açmanız gerekir.\n - cihaz stok yazılımını geri yüklemenin bir yolu OLMALIDIR.\n - tam yedekleme yapmanız ÖNERİLİR.\nBu uygulama geliştiriciler ve ileri düzey kullanıcılar tarafından kullanılmak üzere yapılmıştır, uyarıldınız.</string>
+  <!-- Installation card -->
+  <string name="select_gsi_info">Yüklenecek dosyayı seçin</string>
+  <string name="dsu_already_installed">Bir DSU kurulumu zaten mevcut.</string>
+  <string name="selected_file">Seçilen dosya</string>
+  <string name="file_unsupported">Desteklenmeyen dosya</string>
+  <string name="clear">Temizle</string>
+  <string name="install">Yükle</string>
+  <!-- Installation dialog -->
+  <string name="proceed_installation">Kuruluma devam edilsin mi?</string>
+  <string name="proceed_installation_description">Montaj aşağıda gösterilen parametreler kullanılarak yapılacaktır:</string>
+  <!-- Discard installed DSU dialog -->
+  <string name="discard_dsu_question">Kurulum atılsın mı?</string>
+  <string name="dsu_already_installed_warning">Kurulu DSU'da bulunan tüm veriler atıldıktan sonra silinecektir, emin misiniz?</string>
+  <!-- Preparation -->
+  <string name="decompressing_gz">Gz dosyası ayıklanıyor…</string>
+  <string name="decompressing_xz">Xz dosyası ayıklanıyor…</string>
+  <string name="compressing_to_gz">Görüntü dosyası hazırlanıyor…</string>
+  <string name="extracting_file">Dosya ayıklanıyor…</string>
+  <string name="copying_file">Dosya kopyalanıyor…</string>
+  <string name="processing">İşleniyor...</string>
+  <!-- Installation -->
+  <string name="installation_prompt">Kurulum istemi başlatıldı, devam etmek için kullanıcı onayı bekleniyor..</string>
+  <string name="creating_partition">%1$s bölümü oluşturuluyor</string>
+  <string name="installing_partition">%1$s bölümü işleniyor…</string>
+  <string name="installing">Yükleniyor…</string>
+  <!-- ADB install -->
+  <string name="require_adb_cmd_to_continue">Hazırlık tamamlandı, kuruluma devam etmek için bir komut gereklidir.</string>
+  <string name="see_commands">Komutlara bakın</string>
+  <!-- Installation errors -->
+  <!-- Already running a installed DSU -->
+  <string name="already_running_dsu">Yüklü bir DSU çalıştırırken bir DSU yüklemek desteklenmez, lütfen cihazınızı varsayılan işletim sistemine yeniden başlatın.</string>
+  <!-- Already installed DSU card -->
+  <string name="discard_dsu_otg">Bir DSU kurulumu zaten mevcut, devam etmek için atılsın mı?\n\n** DSU kurulumunda depolanan tüm veriler silinecektir.</string>
+  <string name="discarding">Siliniyor…</string>
+  <string name="discard_dsu">DSU'yu atın</string>
+  <!-- Allocation error card -->
+  <string name="allocation_error">Tahsis hatası</string>
+  <string name="allocation_error_description">SDCard tahsisi çalışmıyor, deneyebileceğiniz bazı düzeltmeler var:\n - DSU Sideloader Magisk modülünü yükleyin.\n - SDCard'ı kaldırın (bu seçeneği ayarlardan kalıcı olarak ayarlayabilirsiniz).</string>
+  <string name="allocation_error_action">SD'yi çıkarın ve yeniden deneyin</string>
+  <!-- No free storage error card -->
+  <string name="storage_error">Depolama hatası</string>
+  <string name="storage_error_description">Android, yüklemeye devam etmek, biraz yer açmak ve tekrar denemek için en az %1$s%% ücretsiz depolama alanı gerektirir.</string>
+  <!-- Filesystem features not found error card -->
+  <string name="fs_features_error">FS özellikleri kullanılamıyor</string>
+  <string name="fs_features_error_description">Çekirdeğinizin GSI servisinden beklenenden farklı bir yolda f2fs kaydetmesi muhtemeldir, deneyebileceğiniz bazı düzeltmeler vardır:\n - DSU Sideloader Magisk modülünü yükleyin.\n - Çekirdeği değiştirme.</string>
+  <!-- SELinux error card -->
+  <string name="selinux_error">SELinux hatası</string>
+  <string name="selinux_error_description">SELinux inkarları DSU kurulumunu engelliyor gibi görünüyor, deneyebileceğiniz bazı düzeltmeler var:\n - DSU Sideloader Magisk modülünü yükleyin.\n - Bir sdcard kullanıyorsanız, bağlantıyı kaldırmayı deneyin (ayarlar bölümünde bunun için bir seçenek vardır).\n - SELinux'unuzu izin verir şekilde değiştirin (önerilmez, cihazınızın güvenliğini zayıflatır).</string>
+  <string name="selinux_error_action">İzin vererek yeniden dene</string>
+  <!-- Extents error card -->
+  <string name="extents_error_title">Kapsam hatası</string>
+  <string name="extents_error_description">Android 10 cihazlarda, resimlerin/dosya sisteminin 512 'den fazla uzantıya sahip olması gerekir, deneyebileceğiniz bazı düzeltmeler vardır:\n - DSU Sideloader Magisk modülünü yükleyin.</string>
+  <!-- Other errors card -->
+  <string name="failed_create_partition">%1$s disk bölümü oluşturulamadı.</string>
+  <string name="unknown_error">Bilinmeyen hata.</string>
+  <string name="error">Hata</string>
+  <string name="try_again">Tekrar deneyin</string>
+  <string name="view_logs">Günlükleri görüntüle</string>
+  <string name="installation_canceled">Kurulum iptal edildi.</string>
+  <!-- Cancel installation dialog -->
+  <string name="cancel_installation_question">Kurulum iptal edilsin mi?</string>
+  <string name="cancel_installation_description">Yapılan tüm ilerlemeler kaybolacak, emin misin?</string>
+  <!-- Installation finished card -->
+  <string name="installation_finished_rootless">Görüntü başarıyla yüklendi, dinamik sisteme önyükleme yapmak için bildirimlerinizi kontrol edin.</string>
+  <string name="installation_finished">Kurulum tamamlandı.</string>
+  <string name="reboot_into_dsu">DSU'ya yeniden başlatma</string>
+  <!-- Userdata card -->
+  <string name="userdata_size">Kullanıcı veri boyutu</string>
+  <string name="userdata_size_info">Gigabayt cinsinden boyut</string>
+  <string name="allowed_userdata_allocation">Tahsis için maksimum kullanılabilir: %1 $sGB</string>
+  <!-- Image size card -->
+  <string name="image_size">Görüntü boyutu</string>
+  <string name="image_size_info">Bayt cinsinden boyut</string>
+  <string name="not_recommended_option">Bu seçenek kesinlikle tavsiye edilmez!</string>
+  <!-- Image size dialog -->
+  <string name="dialog_image_size">Resim boyutu ayarlansın mı?</string>
+  <string name="dialog_image_size_description">DSU Sideloader bu parametreyi sizin için otomatik olarak ayarlayacaktır, görüntü boyutunu manuel olarak ayarlamak kesinlikle tavsiye edilmez.</string>
+  <string name="set_anyway">Yine de ayarla</string>
+  <!-- What is DSU card -->
+  <string name="what_is_dsu">DSU nedir?</string>
+  <string name="what_is_dsu_description">DSU (Dinamik Sistem Güncellemeleri), geliştiricilerin cihaz bölümlerine dokunmadan Android sistem görüntülerini test etmelerine olanak tanıyan Android 10 'da tanıtılan bir özelliktir, Android 11 ile DSU birden fazla bölümün yerini alabilir.</string>
+  <string name="view_docs">Dokümanları görüntüle</string>
+  <string name="learn_more">Daha fazla bilgi edinin</string>
+  <!--
+        Settings screen
+    -->
+  <string name="settings">Ayarlar</string>
+  <string name="experimental_feature">Deneysel özellik</string>
+  <string name="experimental_feature_description">Bu özellik test ediliyor ve kararsız olabilir, emin misiniz?</string>
+  <string name="builtin_installer">Yerleşik yükleyici</string>
+  <string name="builtin_installer_description">Daha hızlı, görüntüleri doğrudan yüklemek için dahili API'leri kullanın</string>
+  <string name="requires_root">Kök gerektirir</string>
+  <string name="unmount_sd_title">SD'yi Ayır</string>
+  <string name="unmount_sd_description">Kurulum sırasında sd'yi geçici olarak çıkarın</string>
+  <string name="warning_storage_check_title">Uyarı</string>
+  <string name="warning_storage_check_description">DSU kurulumu cihazınıza biraz boş alan ayıracaktır, depolama kontrollerini devre dışı bırakmak hatalara neden olabilir.\nBu seçenek önerilmez. Yalnızca ne yaptığınızı biliyorsanız devam edin!</string>
+  <string name="storage_check_title">Depolama denetimini devre dışı bırak</string>
+  <string name="storage_check_description">Kullanıcı veri depolama denetimini devre dışı bırak, önerilmez</string>
+  <string name="full_logcat_logging_title">Tam logcat günlüğü</string>
+  <string name="full_logcat_logging_description">Günlükler bölümü, filtresiz günlükleri yakalar, uygulama performansını düşürebilir</string>
+  <string name="keep_screen_on">Ekranı açık tut</string>
+  <string name="developer_options">Geliştirici seçenekleri</string>
+  <string name="other">Diğer</string>
+  <string name="operation_mode">Çalışma modu</string>
+  <string name="about">Hakkında</string>
+  <string name="about_description">Krediler, kütüphaneler ve daha fazlası…</string>
+  <!--
+        About screen
+    -->
+  <string name="version_info">sürüm %1$s (%2$d)</string>
+  <string name="check_updates_title">Güncellemeleri kontrol et</string>
+  <string name="check_updates_text_idle">Kontrol etmek için dokunun</string>
+  <string name="check_updates_text_found">Yeni %1$s sürümü bulundu</string>
+  <string name="check_updates_text_updated">En son sürüm çalıştırılıyor</string>
+  <string name="changelog">Değişiklik Günlüğü</string>
+  <string name="download">İndir</string>
+  <string name="application">Uygulama</string>
+  <string name="developer_options_enabled">Geliştirici seçenekleri etkinleştirildi</string>
+  <string name="developer_options_disabled">Geliştirici seçenekleri devre dışı</string>
+  <string name="github_repo">GitHub Deposu</string>
+  <string name="github_repo_description">GitHub'daki kaynak kodu</string>
+  <string name="collaborators">İşbirlikçiler</string>
+  <string name="libraries_title">Kütüphaneler</string>
+  <string name="libraries_description">Bu uygulamada kullanılan kütüphaneler</string>
+  <string name="role_developer">Geliştirici</string>
+  <string name="role_design_icon">Tasarım referansı, uygulama simgesi</string>
+  <string name="translators_title">Çevirmenler</string>
+  <string name="translators_list" comment="Hello translator, since you have translated our app, feel free to put your name inside &quot;translators_list&quot;, it will be shown on about screen.&#xA;If there is more than one translator, append names and separate each one by using a comma, like:&#xA;Collaborator 1, Collaborator 2, Collaborator 3">translators_list</string>
+  <string name="contributors_title">Katkıda bulunanlar</string>
+  <string name="contributors_text">Bu projeye yardımcı olan kişiler</string>
+  <!--
+        ADB screen
+    -->
+  <string name="adb_how_to_adb_shell">Köklü olmayan cihazlarda yüklemeyi başlatmak için bu komutu adb shell üzerinde çalıştırmanız gerekir:</string>
+  <string name="adb_how_to_shell">PC olmadan adb kabuğu çalıştırıyorsanız (örneğin: LADB, Shizuku Rish, WebADB, Bugjaeger..), bunun yerine şu komutu çalıştırmalısınız:</string>
+  <string name="adb_how_to_done">Tamamlandıktan sonra, yükleme işlemini takip etmek için bildirimlerinizi kontrol edin, bu uygulamayı da kapatabilirsiniz.</string>
+  <string name="copy_text">Metni kopyala</string>
+  <string name="copied">Kopyalandı</string>
+  <!--
+        View logs screen
+    -->
+  <string name="installation_logs">Kurulum günlükleri</string>
+  <string name="save_logs">Günlükleri kaydet</string>
+  <string name="saved_logs">Günlükler kaydedildi!</string>
+  <!--
+        Generic and multipurpose strings
+     -->
+  <string name="no">Hayır</string>
+  <string name="yes">Evet</string>
+  <string name="ok">Tamam</string>
+  <string name="grant">İzin</string>
+  <string name="refuse">Reddet</string>
+  <string name="proceed">Devam et</string>
+  <string name="cancel">İptal</string>
+  <string name="close">Kapat</string>
+  <string name="mreturn">Geri dön</string>
+  <string name="installation">Kurulum</string>
+  <string name="discard">Sil</string>
+  <string name="close_app">Uygulamayı kapat</string>
+  <string name="close_app_question">Uygulama kapatılsın mı?</string>
+</resources>
